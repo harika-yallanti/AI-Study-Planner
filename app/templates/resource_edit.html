@@ -1,0 +1,322 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Resource | AI Study Planner</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --navy: #192f52;
+            --teal: #087d73;
+            --teal-dark: #06675f;
+            --background: #f2f6fb;
+            --surface: #ffffff;
+            --text: #1d2c43;
+            --muted: #687b96;
+            --border: #e1e9f3;
+            --shadow: 0 4px 15px rgba(24, 47, 82, 0.06);
+        }
+
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: var(--background);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 32px 24px;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 25px;
+            padding: 30px;
+            border-radius: 18px;
+            background: linear-gradient(110deg, var(--navy), var(--teal));
+            color: white;
+        }
+
+        .page-header h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .page-header p {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #d9eeec;
+        }
+
+        .back-link {
+            display: inline-flex;
+            padding: 11px 15px;
+            border: 1px solid rgba(255,255,255,.3);
+            border-radius: 9px;
+            color: white;
+            text-decoration: none;
+            white-space: nowrap;
+            font-size: 13px;
+            font-weight: 650;
+        }
+
+        .back-link:hover {
+            background: rgba(255,255,255,.15);
+        }
+
+        .card {
+            padding: 28px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 17px;
+            box-shadow: var(--shadow);
+        }
+
+        .card h2 {
+            color: var(--navy);
+            font-size: 21px;
+            margin-bottom: 8px;
+        }
+
+        .card-description {
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.7;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 21px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 700;
+            color: #334761;
+            margin-bottom: 9px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 14px 15px;
+            border: 1px solid #d8e2ef;
+            border-radius: 10px;
+            background: #fbfcfe;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 14px;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--teal);
+            box-shadow: 0 0 0 3px rgba(8,125,115,.12);
+            background: white;
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+            line-height: 1.7;
+        }
+
+        .help-text {
+            display: block;
+            margin-top: 8px;
+            font-size: 12px;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .save-button, .cancel-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 13px 20px;
+            border-radius: 9px;
+            font-size: 14px;
+            font-weight: 700;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .save-button {
+            border: none;
+            background: var(--teal);
+            color: white;
+        }
+
+        .save-button:hover {
+            background: var(--teal-dark);
+        }
+
+        .cancel-button {
+            border: 1px solid var(--border);
+            background: white;
+            color: var(--text);
+        }
+
+        .cancel-button:hover {
+            background: #f8fafc;
+        }
+
+        @media (max-width: 550px) {
+            body {
+                padding: 15px 10px;
+            }
+
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 23px;
+            }
+
+            .card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+
+        <header class="page-header">
+            <div>
+                <h1>Edit Learning Resource</h1>
+                <p>Update your saved study material or link.</p>
+            </div>
+
+            <a href="/resources" class="back-link">← Back to Resources</a>
+        </header>
+
+        <main class="card">
+            <h2>Resource Details</h2>
+            <p class="card-description">
+                Make your changes below and save them when you're finished.
+            </p>
+
+            <form
+                action="/resources/{{ resource.id }}/edit"
+                method="POST"
+                enctype="multipart/form-data"
+            >
+
+                <div class="form-group">
+                    <label for="subject_id">Subject</label>
+
+                    <select name="subject_id" id="subject_id" required>
+                        {% for subject in subjects %}
+                            <option
+                                value="{{ subject.id }}"
+                                {% if subject.id == resource.subject_id %}selected{% endif %}
+                            >
+                                {{ subject.subject_name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="title">Resource Title</label>
+
+                    <input
+                        type="text"
+                        id="title"
+                        name="title"
+                        maxlength="200"
+                        value="{{ resource.title }}"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Description (Optional)</label>
+
+                    <textarea
+                        id="description"
+                        name="description"
+            >{{ resource.description or "" }}</textarea>
+                </div>
+
+                {% if resource.resource_type == "link" %}
+
+                    <div class="form-group">
+                        <label for="resource_url">Website or YouTube URL</label>
+
+                        <input
+                            type="url"
+                            id="resource_url"
+                            name="resource_url"
+                            value="{{ resource.resource_url or '' }}"
+                            required
+                        >
+                    </div>
+
+                {% else %}
+
+                    <div class="form-group">
+                        <label>Current File</label>
+                        <input
+                            type="text"
+                            value="{{ resource.original_filename or 'Uploaded file' }}"
+                            disabled
+                        >
+                        <span class="help-text">
+                            Select a new file only if you want to replace the current one.
+                            Leave this empty to keep the existing file.
+                        </span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="uploaded_file">Replace File (Optional)</label>
+
+                        <input
+                            type="file"
+                            id="uploaded_file"
+                            name="uploaded_file"
+                            accept=".pdf,.ppt,.pptx,.doc,.docx,.txt,.csv,.jpg,.jpeg,.png"
+                        >
+                        <span class="help-text">
+                            Maximum file size: 15 MB.
+                        </span>
+                    </div>
+
+                {% endif %}
+
+                <div class="buttons">
+                    <button type="submit" class="save-button">
+                        Save Changes
+                    </button>
+
+                    <a href="/resources" class="cancel-button">
+                        Cancel
+                    </a>
+                </div>
+
+            </form>
+        </main>
+    </div>
+    
+</body>
+</html>

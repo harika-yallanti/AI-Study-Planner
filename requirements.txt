@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+sqlalchemy
+pymysql
+python-dotenv
+itsdangerous
+jinja2
+python-multipart
+firebase-admin

@@ -1,0 +1,1657 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Study Progress | AI Study Planner</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #1e293b;
+        }
+
+        .dashboard {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: #172b4d;
+            color: white;
+            padding: 25px 18px;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 40px;
+        }
+
+        .sidebar nav {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .sidebar nav a {
+            color: #dbeafe;
+            text-decoration: none;
+            padding: 13px 15px;
+            border-radius: 8px;
+        }
+
+        .sidebar nav a:hover,
+        .sidebar nav a.active {
+            background: #0f766e;
+            color: white;
+        }
+
+        .sidebar-bottom {
+            margin-top: auto;
+            padding-top: 30px;
+        }
+
+        #logoutButton {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: #dc2626;
+            color: white;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        .main-content {
+            flex: 1;
+            min-width: 0;
+            padding: 30px;
+        }
+
+        .page-header {
+            margin-bottom: 30px;
+        }
+
+        .page-header h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .page-header p {
+            color: #64748b;
+            line-height: 1.6;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            border: 1px solid #edf1f7;
+            border-radius: 14px;
+            padding: 24px;
+            box-shadow: 0 3px 10px rgba(23, 43, 77, 0.04);
+        }
+
+        .stat-label {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 18px;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #172b4d;
+            margin-bottom: 8px;
+        }
+
+        .stat-description {
+            color: #64748b;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .content-section {
+            background: white;
+            border: 1px solid #edf1f7;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 3px 10px rgba(23, 43, 77, 0.04);
+        }
+
+        .section-header {
+            margin-bottom: 25px;
+        }
+
+        .section-header h2 {
+            font-size: 20px;
+            margin-bottom: 6px;
+        }
+
+        .section-header p {
+            color: #64748b;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 520px;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 15px 12px;
+            border-bottom: 1px solid #edf1f7;
+            font-size: 13px;
+        }
+
+        th {
+            color: #64748b;
+            font-weight: bold;
+            background: #f8fafc;
+        }
+
+        td {
+            color: #334155;
+        }
+
+        .empty-state {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            color: #64748b;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #0f766e;
+            font-size: 14px;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 1000px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 700px) {
+            .dashboard {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                padding: 18px;
+            }
+
+            .logo {
+                margin-bottom: 18px;
+            }
+
+            .sidebar nav {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+
+            .sidebar-bottom {
+                margin-top: 18px;
+                padding-top: 0;
+            }
+
+            .main-content {
+                padding: 20px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stat-value {
+                font-size: 28px;
+            }
+        }
+        .progress-track {
+    width: 100%;
+}
+.subject-progress-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+}
+
+.subject-progress-item {
+    width: 100%;
+    min-width: 0;
+}
+
+.subject-progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.subject-progress-name {
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.subject-progress-time {
+    font-size: 13px;
+    color: #64748b;
+    white-space: nowrap;
+}
+
+.subject-progress {
+    display: block;
+    width: 100%;
+    height: 12px;
+    border: none;
+    border-radius: 10px;
+    accent-color: #0f766e;
+}
+
+.streak-card {
+    padding: 24px;
+    border-radius: 18px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05);
+    min-width: 0;
+}
+
+.current-streak-card {
+    background: linear-gradient(135deg, #fff7ed, #ffffff);
+}
+
+.longest-streak-card {
+    background: linear-gradient(135deg, #f0fdfa, #ffffff);
+}
+
+.streak-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+}
+
+.streak-label {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #64748b;
+    margin-bottom: 10px;
+}
+
+.streak-card h2 {
+    font-size: 38px;
+    font-weight: 750;
+    color: #172554;
+    margin: 0;
+}
+
+.streak-card h2 span {
+    font-size: 17px;
+    font-weight: 500;
+    color: #64748b;
+}
+
+.streak-icon {
+    width: 58px;
+    height: 58px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #ffedd5;
+    border-radius: 16px;
+    font-size: 30px;
+    flex-shrink: 0;
+}
+
+.trophy-icon {
+    background: #ccfbf1;
+}
+
+.streak-status {
+    margin-top: 22px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(148, 163, 184, 0.25);
+    color: #64748b;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.status-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background: #0f766e;
+    border-radius: 50%;
+    margin-right: 6px;
+}
+.streak-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+    margin: 24px 0;
+}
+
+.streak-card h2 {
+    font-size: 38px;
+    font-weight: 750;
+    color: #172554;
+    margin: 0;
+}
+
+.streak-card h2 span {
+    font-size: 17px;
+    font-weight: 500;
+    color: #64748b;
+}
+
+@media (max-width: 700px) {
+    .streak-grid {
+        grid-template-columns: 1fr;
+    }
+}
+.daily-goal-progress {
+    height: 9px;
+    background: #e2e8f0;
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 15px 0;
+}
+/* Main dashboard background and spacing */
+body {
+    background: #eef3fa;
+}
+
+.main-content {
+    padding: 32px;
+}
+
+.page-header {
+    margin-bottom: 32px;
+}
+
+.page-header h1 {
+    font-size: 30px;
+    font-weight: 750;
+    color: #172b4d;
+    letter-spacing: -0.7px;
+}
+
+.page-header p {
+    font-size: 14px;
+    margin-top: 8px;
+}
+
+/* Statistic cards */
+.stats-grid {
+    gap: 22px;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid #e3eaf4;
+    border-radius: 20px;
+    padding: 26px;
+    box-shadow: 0 6px 20px rgba(23, 43, 77, 0.06);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 26px rgba(23, 43, 77, 0.10);
+}
+
+.stat-card:nth-child(1) {
+    background: linear-gradient(135deg, #eaf2ff, #ffffff);
+}
+
+.stat-card:nth-child(2) {
+    background: linear-gradient(135deg, #e6faf5, #ffffff);
+}
+
+.stat-card:nth-child(3) {
+    background: linear-gradient(135deg, #f1eaff, #ffffff);
+}
+
+.stat-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #64748b;
+    margin-bottom: 16px;
+}
+
+.stat-value {
+    font-size: 34px;
+    font-weight: 750;
+    color: #172b4d;
+    letter-spacing: -0.5px;
+    margin-bottom: 10px;
+}
+
+.stat-value h2 {
+    font-size: inherit;
+    font-weight: inherit;
+}
+
+.stat-description {
+    font-size: 13px;
+    color: #64748b;
+    line-height: 1.6;
+}
+
+/* Daily study goal */
+.daily-goal-card {
+    background: linear-gradient(135deg, #ffffff, #eaf7ff) !important;
+}
+
+.daily-goal-progress {
+    height: 11px;
+    background: #dce6f2;
+    border-radius: 20px;
+    overflow: hidden;
+    margin: 18px 0;
+}
+
+.daily-goal-progress-fill {
+    height: 100%;
+    width: var(--progress);
+    background: linear-gradient(90deg, #0f766e, #14b8a6);
+    border-radius: 20px;
+    transition: width 0.4s ease;
+}
+
+/* Study streak cards */
+.streak-grid {
+    gap: 22px;
+    margin: 0 0 30px;
+}
+
+.streak-card {
+    border-radius: 20px;
+    padding: 26px;
+    box-shadow: 0 6px 20px rgba(23, 43, 77, 0.06);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.streak-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 26px rgba(23, 43, 77, 0.10);
+}
+
+.current-streak-card {
+    background: linear-gradient(135deg, #fff4e8, #ffffff);
+    border-color: #f7dfc6;
+}
+
+.longest-streak-card {
+    background: linear-gradient(135deg, #e5faf6, #ffffff);
+    border-color: #ccece4;
+}
+
+/* Subject-wise progress */
+.content-section {
+    border-radius: 20px;
+    padding: 28px;
+    border: 1px solid #e3eaf4;
+    box-shadow: 0 6px 20px rgba(23, 43, 77, 0.06);
+    margin-bottom: 28px;
+}
+
+.section-header {
+    margin-bottom: 28px;
+}
+
+.section-header h2 {
+    color: #172b4d;
+    font-size: 21px;
+    font-weight: 750;
+}
+
+.subject-progress-list {
+    gap: 25px;
+}
+
+.subject-progress-header {
+    margin-bottom: 11px;
+}
+
+.subject-progress-name {
+    color: #172b4d;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.subject-progress-time {
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.subject-progress {
+    appearance: none;
+    display: block;
+    width: 100%;
+    height: 12px;
+    border: none;
+    border-radius: 20px;
+    overflow: hidden;
+    background: #e5eaf2;
+}
+
+.subject-progress::-webkit-progress-bar {
+    background: #e5eaf2;
+    border-radius: 20px;
+}
+
+.subject-progress::-webkit-progress-value {
+    background: linear-gradient(90deg, #0f766e, #14b8a6);
+    border-radius: 20px;
+}
+
+.subject-progress::-moz-progress-bar {
+    background: linear-gradient(90deg, #0f766e, #14b8a6);
+    border-radius: 20px;
+}
+
+/* Recent study sessions table */
+table {
+    border-collapse: separate;
+    border-spacing: 0;
+    min-width: 600px;
+}
+
+th {
+    background: #edf3fa;
+    color: #475569;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+th:first-child {
+    border-radius: 10px 0 0 10px;
+}
+
+th:last-child {
+    border-radius: 0 10px 10px 0;
+}
+
+td {
+    padding: 17px 12px;
+    font-size: 13px;
+}
+
+tbody tr:hover td {
+    background: #f5f9ff;
+}
+
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Responsive layout */
+@media (max-width: 1000px) {
+    .main-content {
+        padding: 24px;
+    }
+
+    .stat-card {
+        padding: 22px;
+    }
+}
+
+@media (max-width: 700px) {
+    .main-content {
+        padding: 18px;
+    }
+
+    .page-header h1 {
+        font-size: 25px;
+    }
+
+    .content-section {
+        padding: 20px;
+    }
+
+    .stat-value {
+        font-size: 28px;
+    }
+
+    .subject-progress-header {
+        align-items: flex-start;
+    }
+}
+
+/* Study session duration badge */
+.duration-badge {
+    display: inline-block;
+    padding: 7px 12px;
+    border-radius: 10px;
+    background: #e0f2fe;
+    color: #075985;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+/* Study topic name */
+.session-topic {
+    color: #172b4d;
+    font-weight: 700;
+}
+
+/* Session table readability */
+tbody tr {
+    transition: background 0.2s ease;
+}
+
+tbody tr:hover {
+    background: #f5f9ff;
+}
+
+tbody tr:hover td {
+    background: transparent;
+}
+
+td {
+    vertical-align: middle;
+}
+
+/* Most studied subject highlight */
+.top-subject-card {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 22px;
+    margin-bottom: 28px;
+    border: 1px solid #ccece4;
+    border-radius: 18px;
+    background: linear-gradient(120deg, #e4faf4, #f5fffc);
+    box-shadow: 0 5px 16px rgba(15, 118, 110, 0.06);
+}
+
+.top-subject-icon {
+    width: 58px;
+    height: 58px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border-radius: 16px;
+    background: #ccfbf1;
+    font-size: 28px;
+}
+
+.top-subject-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.top-subject-label {
+    color: #0f766e;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    margin-bottom: 7px;
+}
+
+.top-subject-details h3 {
+    color: #172b4d;
+    font-size: 19px;
+    margin-bottom: 5px;
+}
+
+.top-subject-details p:last-child {
+    color: #64748b;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.top-subject-time {
+    color: #0f766e;
+    font-size: 21px;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+@media (max-width: 600px) {
+    .top-subject-card {
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .top-subject-time {
+        width: 100%;
+        padding-left: 70px;
+        font-size: 18px;
+    }
+}
+
+.analytics-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 15px;
+    padding: 22px;
+    margin-bottom: 22px;
+}
+
+.analytics-card:last-child {
+    margin-bottom: 0;
+}
+
+.analytics-heading {
+    margin-bottom: 20px;
+}
+
+.analytics-heading h3 {
+    color: #172b4d;
+    font-size: 17px;
+    margin-bottom: 7px;
+}
+
+.analytics-heading p {
+    color: #64748b;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.chart-container {
+    position: relative;
+    width: 100%;
+    height: 300px;
+}
+
+@media (max-width: 600px) {
+    .analytics-card {
+        padding: 16px;
+    }
+
+    .chart-container {
+        height: 250px;
+    }
+}
+body.dark-theme {
+    background: var(--page-bg, #0f172a);
+    color: var(--text-color, #e2e8f0);
+}
+
+body.dark-theme .main-content {
+    background: var(--page-bg, #0f172a);
+}
+
+body.dark-theme .page-header h1,
+body.dark-theme .stat-value,
+body.dark-theme .section-header h2,
+body.dark-theme .subject-progress-name,
+body.dark-theme .streak-card h2,
+body.dark-theme .top-subject-details h3,
+body.dark-theme .session-topic,
+body.dark-theme .analytics-heading h3 {
+    color: var(--text-color, #e2e8f0);
+}
+
+body.dark-theme .page-header p,
+body.dark-theme .stat-label,
+body.dark-theme .stat-description,
+body.dark-theme .section-header p,
+body.dark-theme .subject-progress-time,
+body.dark-theme .streak-label,
+body.dark-theme .streak-card h2 span,
+body.dark-theme .streak-status,
+body.dark-theme .top-subject-details p:last-child,
+body.dark-theme .analytics-heading p {
+    color: var(--muted-color, #94a3b8);
+}
+
+body.dark-theme .stat-card,
+body.dark-theme .content-section,
+body.dark-theme .streak-card {
+    background: var(--card-bg, #1e293b);
+    border-color: var(--border-color, #334155);
+    box-shadow: var(--shadow, 0 4px 14px rgba(0, 0, 0, 0.2));
+}
+
+body.dark-theme .stat-card:nth-child(1),
+body.dark-theme .stat-card:nth-child(2),
+body.dark-theme .stat-card:nth-child(3) {
+    background: var(--card-bg, #1e293b);
+}
+
+body.dark-theme .daily-goal-card {
+    background: var(--card-bg, #1e293b) !important;
+}
+
+body.dark-theme .daily-goal-progress {
+    background: #334155;
+}
+
+body.dark-theme .current-streak-card,
+body.dark-theme .longest-streak-card {
+    background: var(--card-bg, #1e293b);
+    border-color: var(--border-color, #334155);
+}
+
+body.dark-theme .streak-icon {
+    background: #3b2d1e;
+}
+
+body.dark-theme .trophy-icon {
+    background: #134e4a;
+}
+
+body.dark-theme .top-subject-card {
+    background: var(--card-bg, #1e293b);
+    border-color: var(--border-color, #334155);
+}
+
+body.dark-theme .top-subject-icon {
+    background: #134e4a;
+}
+
+body.dark-theme .top-subject-label,
+body.dark-theme .top-subject-time {
+    color: #5eead4;
+}
+
+body.dark-theme .analytics-card {
+    background: var(--input-bg, #172033);
+    border-color: var(--border-color, #334155);
+}
+
+body.dark-theme .empty-state {
+    background: var(--input-bg, #172033);
+    color: var(--muted-color, #94a3b8);
+}
+
+body.dark-theme th {
+    background: #172033;
+    color: #cbd5e1;
+}
+
+body.dark-theme td {
+    color: #e2e8f0;
+    border-color: var(--border-color, #334155);
+}
+
+body.dark-theme tbody tr:hover td {
+    background: #263449;
+}
+
+body.dark-theme .duration-badge {
+    background: #164e63;
+    color: #bae6fd;
+}
+
+body.dark-theme .subject-progress {
+    background: #334155;
+}
+
+body.dark-theme .subject-progress::-webkit-progress-bar {
+    background: #334155;
+}
+
+body.dark-theme .back-link {
+    color: #5eead4;
+}
+
+body.dark-theme .streak-status {
+    border-color: var(--border-color, #334155);
+}
+.dashboard {
+    display: grid;
+    grid-template-columns: 250px minmax(0, 1fr);
+    align-items: start;
+    min-height: 100vh;
+    width: 100%;
+}
+
+.sidebar {
+    position: sticky;
+    top: 0;
+    left: 0;
+    width: 250px;
+    height: 100vh;
+    min-height: 100vh;
+    padding: 25px 18px;
+    background: #172b4d;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    overflow-y: auto;
+    z-index: 100;
+}
+
+.sidebar .logo {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 40px;
+    flex-shrink: 0;
+}
+
+.sidebar nav {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+
+.sidebar nav a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 13px 15px;
+    color: #dbeafe;
+    text-decoration: none;
+    border-radius: 8px;
+    box-sizing: border-box;
+    transition: background 0.2s ease;
+}
+
+.sidebar nav a:hover,
+.sidebar nav a.active {
+    background: #0f766e;
+    color: white;
+}
+
+.sidebar-bottom {
+    margin-top: auto;
+    padding-top: 30px;
+    width: 100%;
+    flex-shrink: 0;
+}
+
+#logoutButton {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    background: #dc2626;
+    color: white;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+#logoutButton:hover {
+    background: #b91c1c;
+}
+
+.main-content {
+    grid-column: 2;
+    min-width: 0;
+    width: 100%;
+    padding: 32px;
+    box-sizing: border-box;
+}
+
+.page-header {
+    margin-bottom: 32px;
+}
+
+@media (max-width: 700px) {
+    .dashboard {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .sidebar {
+        position: relative;
+        top: auto;
+        width: 100%;
+        height: auto;
+        min-height: auto;
+        padding: 18px;
+        overflow: visible;
+    }
+
+    .sidebar .logo {
+        margin-bottom: 18px;
+    }
+
+    .sidebar nav {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .sidebar nav a {
+        width: auto;
+        padding: 11px 10px;
+        font-size: 13px;
+    }
+
+    .sidebar-bottom {
+        margin-top: 18px;
+        padding-top: 0;
+    }
+
+    .main-content {
+        grid-column: auto;
+        width: 100%;
+        padding: 20px;
+    }
+}
+    </style>
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <aside class="sidebar">
+
+        <div class="logo">AI Study Planner</div>
+
+        <nav>
+            {% if request.session.get("user_role") == "admin" %}
+                    <a href="/admin/users">Admin Dashboard</a>
+            {% endif %}
+            <a href="/dashboard">Dashboard</a>
+            <a href="/subjects">My Subjects</a>
+            <a href="/study-plan">Study Plan</a>
+            <a href="/study-progress" class="active">Study Progress</a>
+            <a href="/exams">Exams</a>
+            <a href="/notes" class="sidebar-link">
+                  <span class="sidebar-icon">📝</span>
+                        <span>Notes</span>
+            </a>
+            <a href="/resources" class="sidebar-link">
+                  <span class="sidebar-icon">📚</span>
+                        <span>Learning Resources</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <button id="logoutButton" type="button">Logout</button>
+        </div>
+
+    </aside>
+
+    <main class="main-content">
+
+        <header class="page-header">
+            <h1>Study Progress</h1>
+            <p>Track your study time, quiz performance, and learning activity.</p>
+        </header>
+
+        <section class="stats-grid">
+
+            <div class="stat-card">
+                <div class="stat-label">Total Study Time</div>
+
+                <div class="stat-value">
+                    <h2>
+                       {{ total_hours }}h
+                       {{ remaining_minutes }}m
+                       {{ remaining_seconds }}s
+                    </h2>
+                </div>
+
+                <p class="stat-description">
+                    Time from completed study sessions
+                </p>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Completed Sessions</div>
+
+                <div class="stat-value">
+                    {{ completed_sessions }}
+                </div>
+
+                <p class="stat-description">
+                    Study sessions you have finished
+        </p>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Average Quiz Score</div>
+
+                <div class="stat-value">
+                    {{ average_quiz_score }}%
+                </div>
+
+                <p class="stat-description">
+                    Based on {{ quiz_attempts }} quiz attempts
+                </p>
+            </div>
+
+            <div class="stat-card daily-goal-card">
+
+    <div class="stat-label">
+        Today's Study Goal
+    </div>
+
+    <div class="stat-value">
+        {{ today_hours }}h {{ today_minutes }}m
+    </div>
+
+    <p class="stat-description">
+        Studied today out of {{ daily_goal_minutes }} minutes
+    </p>
+
+    <div class="daily-goal-progress">
+    <div
+        class="daily-goal-progress-fill"
+        style="--progress: {{ daily_progress }}%;">
+    </div>
+</div>
+
+    <p class="stat-description">
+        {% if daily_progress >= 100 %}
+            Daily goal completed! Great work.
+        {% else %}
+            {{ daily_remaining_minutes }} minutes remaining today.
+        {% endif %}
+    </p>
+
+</div>
+
+            <div class="streak-card current-streak-card">
+
+    <div class="streak-card-top">
+        <div>
+            <p class="streak-label">CURRENT STREAK</p>
+            <h2>{{ current_streak }} <span>days</span></h2>
+        </div>
+
+        <div class="streak-icon">🔥</div>
+    </div>
+
+    <div class="streak-status">
+        {% if studied_today %}
+            <span class="status-dot"></span>
+            You've studied today. Keep it going!
+        {% else %}
+            Complete a session today to maintain your streak.
+        {% endif %}
+    </div>
+
+</div>
+
+
+<div class="streak-card longest-streak-card">
+
+    <div class="streak-card-top">
+        <div>
+            <p class="streak-label">PERSONAL BEST</p>
+            <h2>{{ longest_streak }} <span>days</span></h2>
+        </div>
+
+        <div class="streak-icon trophy-icon">🏆</div>
+    </div>
+
+    <div class="streak-status">
+        Your longest run of consecutive study days.
+    </div>
+
+</div>
+
+        </section>
+
+        <section class="content-section">
+
+    <div class="section-header">
+        <h2>Subject-wise Study Progress</h2>
+        <p>See how much time you have spent studying each subject.</p>
+    </div>
+
+    {% if subject_progress %}
+
+{% set ns = namespace(top_subject=None, max_seconds=-1) %}
+
+{% for subject in subject_progress %}
+    {% if subject.total_seconds > ns.max_seconds %}
+        {% set ns.max_seconds = subject.total_seconds %}
+        {% set ns.top_subject = subject %}
+    {% endif %}
+{% endfor %}
+
+<div class="top-subject-card">
+
+    <div class="top-subject-icon">📚</div>
+
+    <div class="top-subject-details">
+        <p class="top-subject-label">MOST STUDIED SUBJECT</p>
+
+        <h3>{{ ns.top_subject.subject_name }}</h3>
+
+        <p>
+            You've spent the most study time on this subject.
+        </p>
+    </div>
+
+    <div class="top-subject-time">
+        {% set seconds = ns.top_subject.total_seconds | int %}
+
+        {% if seconds >= 3600 %}
+            {{ seconds // 3600 }}h {{ (seconds % 3600) // 60 }}m
+        {% elif seconds >= 60 %}
+            {{ seconds // 60 }}m {{ seconds % 60 }}s
+        {% else %}
+            {{ seconds }}s
+        {% endif %}
+    </div>
+
+</div>
+
+<div class="subject-progress-list">
+
+        {% for subject in subject_progress %}
+
+        <div class="subject-progress-item">
+
+            <div class="subject-progress-header">
+
+                <span class="subject-progress-name">
+                    {{ subject.subject_name }}
+                </span>
+
+                <span class="subject-progress-time">
+                    {% set seconds = subject.total_seconds | int %}
+                    {% if seconds >= 3600 %}
+                    {{ seconds // 3600 }}h {{ (seconds % 3600) // 60 }}m
+                    {% elif seconds >= 60 %}
+                    {{ seconds // 60 }}m {{ seconds % 60 }}s
+                    {% else %}
+                    {{ seconds }}s
+                    {% endif %}
+                </span>
+
+            </div>
+
+            <progress
+                class="subject-progress"
+                value="{{ subject.percentage }}"
+                max="100">
+            </progress>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    {% else %}
+
+    <div class="empty-state">
+        No subjects found yet. Add a subject and start studying
+        to see your progress here.
+    </div>
+
+    {% endif %}
+
+</section>
+        
+<!-- Performance Analytics -->
+<section class="content-section">
+
+    <div class="section-header">
+        <h2>Performance Analytics</h2>
+        <p>
+            Understand your study habits and quiz performance over time.
+        </p>
+    </div>
+
+    <!-- Weekly study time chart -->
+    <div class="analytics-card">
+
+        <div class="analytics-heading">
+            <h3>Weekly Study Time</h3>
+            <p>Your completed study time over the last 7 days.</p>
+        </div>
+
+        <div class="chart-container">
+            <canvas id="weeklyStudyChart"></canvas>
+        </div>
+
+    </div>
+
+    <!-- Quiz performance chart -->
+    <div class="analytics-card">
+
+        <div class="analytics-heading">
+            <h3>Quiz Performance</h3>
+            <p>Your scores across your latest 7 quiz attempts.</p>
+        </div>
+
+        {% if quiz_chart_scores %}
+
+            <div class="chart-container">
+                <canvas id="quizPerformanceChart"></canvas>
+            </div>
+
+        {% else %}
+
+            <div class="empty-state">
+                No quiz attempts yet. Complete a topic quiz to see
+                your performance chart here.
+            </div>
+
+        {% endif %}
+
+    </div>
+
+    <!-- Subject-wise quiz performance -->
+    <div class="analytics-card">
+
+        <div class="analytics-heading">
+            <h3>Subject-wise Quiz Performance</h3>
+            <p>Compare your quiz scores across subjects.</p>
+        </div>
+
+        {% set subjects_with_quizzes = subject_quiz_data
+            | selectattr("quiz_attempts", "gt", 0)
+            | list %}
+
+        {% if subjects_with_quizzes %}
+
+            <div class="chart-container">
+                <canvas id="subjectQuizChart"></canvas>
+            </div>
+
+        {% else %}
+
+            <div class="empty-state">
+                Complete quizzes in your subjects to compare
+                your performance here.
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</section>
+        <section class="content-section">
+
+            <div class="section-header">
+                <h2>Recent Study Sessions</h2>
+                <p>Your latest completed sessions, including their start and end times.</p>
+            </div>
+
+            {% if recent_sessions %}
+
+            <div class="table-wrapper">
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Topic</th>
+                            <th>Subject</th>
+                            <th>Started</th>
+                            <th>Ended</th>
+                            <th>Duration</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for session in recent_sessions %}
+
+                        <tr>
+                            <td>
+                                <span class="session-topic">
+                                    {{ session.topic_name }}
+                                </span>
+                            </td>
+                            <td>{{ session.subject_name }}</td>
+                            <td>{{ session.started_at }}</td>
+                            <td>{{ session.ended_at }}</td>
+                            <td>
+                                <span class="duration-badge">
+                                    {{ session.duration_display }}
+                                </span>
+                            </td>
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+                </table>
+
+            </div>
+
+            {% else %}
+
+            <div class="empty-state">
+                You have not completed any study sessions yet.
+                Start studying a topic to build your history.
+            </div>
+
+            {% endif %}
+
+        </section>
+
+        
+
+    </main>
+
+</div>
+
+<script type="application/json" id="weekly-chart-data">
+    {{ weekly_chart_labels | tojson }}
+</script>
+
+<script type="application/json" id="weekly-minutes-data">
+    {{ weekly_chart_minutes | tojson }}
+</script>
+
+<script type="application/json" id="quiz-chart-data">
+    {{ quiz_chart_labels | tojson }}
+</script>
+
+<script type="application/json" id="quiz-scores-data">
+    {{ quiz_chart_scores | tojson }}
+</script>
+
+<script type="application/json" id="subject-quiz-labels-data">
+    {{ subject_quiz_labels | tojson }}
+</script>
+
+<script type="application/json" id="subject-quiz-scores-data">
+    {{ subject_quiz_scores | tojson }}
+</script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.getElementById("logoutButton").addEventListener(
+        "click",
+        async function () {
+            try {
+                const response = await fetch("/users/logout", {
+                    method: "POST"
+                });
+
+                if (response.ok) {
+                    window.location.href = "/login";
+                } else {
+                    alert("Unable to log out. Please try again.");
+                }
+            } catch (error) {
+                alert("Could not connect to the server.");
+            }
+        }
+    );
+
+    const weeklyLabels = JSON.parse(
+        document.getElementById("weekly-chart-data").textContent
+    );
+
+    const weeklyMinutes = JSON.parse(
+        document.getElementById("weekly-minutes-data").textContent
+    );
+
+    const quizLabels = JSON.parse(
+        document.getElementById("quiz-chart-data").textContent
+    );
+
+    const quizScores = JSON.parse(
+        document.getElementById("quiz-scores-data").textContent
+    );
+
+    const subjectQuizLabels = JSON.parse(
+        document.getElementById("subject-quiz-labels-data").textContent
+    );
+
+    const subjectQuizScores = JSON.parse(
+        document.getElementById("subject-quiz-scores-data").textContent
+    );
+
+    const weeklyCanvas = document.getElementById("weeklyStudyChart");
+
+    if (weeklyCanvas) {
+        new Chart(weeklyCanvas, {
+            type: "bar",
+            data: {
+                labels: weeklyLabels,
+                datasets: [{
+                    label: "Study Time (minutes)",
+                    data: weeklyMinutes,
+                    backgroundColor: "#0f766e",
+                    borderRadius: 7,
+                    maxBarThickness: 45
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: "Minutes"
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+    }
+
+    const quizCanvas = document.getElementById("quizPerformanceChart");
+
+    if (quizCanvas) {
+        new Chart(quizCanvas, {
+            type: "line",
+            data: {
+                labels: quizLabels,
+                datasets: [{
+                    label: "Quiz Score (%)",
+                    data: quizScores,
+                    borderColor: "#6366f1",
+                    backgroundColor: "rgba(99, 102, 241, 0.12)",
+                    fill: true,
+                    tension: 0.3,
+                    pointRadius: 5,
+                    pointHoverRadius: 7
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        min: 0,
+                        max: 100,
+                        title: {
+                            display: true,
+                            text: "Score (%)"
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    const subjectQuizCanvas = document.getElementById("subjectQuizChart");
+
+    if (subjectQuizCanvas) {
+        new Chart(subjectQuizCanvas, {
+            type: "bar",
+            data: {
+                labels: subjectQuizLabels,
+                datasets: [{
+                    label: "Average Quiz Score (%)",
+                    data: subjectQuizScores,
+                    backgroundColor: "#8b5cf6",
+                    borderRadius: 7
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        min: 0,
+                        max: 100,
+                        title: {
+                            display: true,
+                            text: "Score (%)"
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+    }
+</script>
+<script src="/static/js/theme.js"></script>
+</body>
+</html>

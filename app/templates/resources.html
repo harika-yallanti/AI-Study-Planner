@@ -1,0 +1,1054 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Learning Resources | AI Study Planner</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <script src="/static/js/theme.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #1e293b;
+        }
+
+        /* Dashboard layout */
+
+        .dashboard {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar - same as Dashboard */
+
+        .sidebar {
+            width: 250px;
+            background: #172b4d;
+            color: white;
+            padding: 25px 18px;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 40px;
+        }
+
+        .sidebar nav {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .sidebar nav a {
+            color: #dbeafe;
+            text-decoration: none;
+            padding: 13px 15px;
+            border-radius: 8px;
+            transition: 0.2s;
+        }
+
+        .sidebar nav a:hover,
+        .sidebar nav a.active {
+            background: #0f766e;
+            color: white;
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar-icon {
+            font-size: 17px;
+        }
+
+        .sidebar-bottom {
+            margin-top: auto;
+            padding-top: 30px;
+        }
+
+        #logoutButton {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: #dc2626;
+            color: white;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        #logoutButton:hover {
+            background: #b91c1c;
+        }
+
+        /* Main content - same as Dashboard */
+
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            min-width: 0;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 28px;
+        }
+
+        .topbar h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .topbar p {
+            color: #64748b;
+            line-height: 1.5;
+        }
+
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: white;
+            padding: 10px 16px;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(23, 43, 77, 0.05);
+        }
+
+        .avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: #0f766e;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .profile-name {
+            font-weight: bold;
+        }
+
+        .profile-label {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 4px;
+        }
+
+        /* Welcome banner - same as Dashboard */
+
+        .welcome-banner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 25px;
+            padding: 32px;
+            margin-bottom: 30px;
+            border-radius: 18px;
+            background: linear-gradient(120deg, #172b4d, #0f766e);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .welcome-label {
+            display: inline-block;
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 1.5px;
+            color: #a7f3d0;
+            margin-bottom: 12px;
+        }
+
+        .welcome-banner h2 {
+            font-size: 27px;
+            margin-bottom: 10px;
+            line-height: 1.3;
+        }
+
+        .welcome-banner p {
+            font-size: 14px;
+            color: #e0f2fe;
+            line-height: 1.7;
+            max-width: 540px;
+        }
+
+        .welcome-decoration {
+            font-size: 95px;
+            color: rgba(255, 255, 255, 0.15);
+            padding-right: 15px;
+            flex-shrink: 0;
+        }
+
+        /* Resource panels */
+
+        .resource-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+            gap: 22px;
+            align-items: start;
+        }
+
+        .content-section {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 3px 10px rgba(23, 43, 77, 0.04);
+            border: 1px solid #edf1f7;
+            min-width: 0;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 22px;
+        }
+
+        .section-header h2 {
+            font-size: 19px;
+        }
+
+        .section-description {
+            color: #64748b;
+            font-size: 13px;
+            line-height: 1.7;
+            margin-top: 8px;
+            margin-bottom: 22px;
+        }
+
+        /* Resource form */
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: bold;
+            color: #334761;
+            margin-bottom: 9px;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 14px 15px;
+            border: 1px solid #d8e2ef;
+            border-radius: 10px;
+            background: #fbfcfe;
+            color: #1e293b;
+            font-family: inherit;
+            font-size: 14px;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        input::placeholder,
+        textarea::placeholder {
+            color: #9aa9bc;
+        }
+
+        input:hover,
+        select:hover,
+        textarea:hover {
+            border-color: #a9c7d7;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: #0f766e;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.12);
+        }
+
+        textarea {
+            min-height: 120px;
+            padding: 16px;
+            line-height: 1.8;
+            resize: vertical;
+            background: #ffffff;
+        }
+
+        input[type="file"] {
+            padding: 12px;
+            background: #fbfcfe;
+        }
+
+        .help-text {
+            display: block;
+            margin-top: 9px;
+            font-size: 12px;
+            line-height: 1.6;
+            color: #64748b;
+        }
+
+        .primary-button {
+            width: 100%;
+            display: inline-block;
+            padding: 12px 20px;
+            border: none;
+            background: #0f766e;
+            color: white;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .primary-button:hover {
+            background: #115e59;
+            transform: translateY(-2px);
+        }
+
+        /* Saved resource cards */
+
+        .resources-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .resource-card {
+            padding: 20px;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            background: white;
+            transition: 0.2s;
+            min-width: 0;
+        }
+
+        .resource-card:hover {
+            border-color: #0f766e;
+            background: #fdfefe;
+            transform: translateY(-2px);
+        }
+
+        .resource-card h3 {
+            font-size: 16px;
+            line-height: 1.5;
+            color: #172b4d;
+            margin-bottom: 12px;
+            overflow-wrap: anywhere;
+        }
+
+        .resource-meta {
+            display: inline-block;
+            padding: 7px 10px;
+            margin-bottom: 15px;
+            border-radius: 7px;
+            background: #e0f2f1;
+            color: #0f766e;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .resource-description {
+            padding: 14px;
+            margin-bottom: 17px;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            background: #f8fafc;
+            color: #475569;
+            font-size: 14px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        .resource-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 5px;
+        }
+
+        .resource-action,
+        .edit-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 15px;
+            border: 1px solid #b9ded9;
+            border-radius: 8px;
+            background: #e0f2f1;
+            color: #0f766e;
+            font-size: 13px;
+            font-weight: bold;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+
+        .resource-action:hover,
+        .edit-button:hover {
+            background: #cde9e5;
+            border-color: #94cbc3;
+        }
+
+        .delete-form {
+            margin: 0;
+        }
+
+        .delete-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 15px;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+            background: #fef2f2;
+            color: #b91c1c;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .delete-button:hover {
+            background: #fee2e2;
+            border-color: #fca5a5;
+        }
+
+        /* Empty state */
+
+        .empty-state {
+            text-align: center;
+            padding: 30px 15px;
+            color: #64748b;
+            background: #f8fafc;
+            border-radius: 12px;
+            border: 1px dashed #cbd5e1;
+        }
+
+        .empty-state h3 {
+            font-size: 16px;
+            color: #1e293b;
+            margin-bottom: 9px;
+        }
+
+        .empty-state p {
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        /* Responsive layout */
+
+        @media (max-width: 1150px) {
+            .resource-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .sidebar {
+                width: 210px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .dashboard {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                padding: 18px;
+            }
+
+            .logo {
+                margin-bottom: 18px;
+            }
+
+            .sidebar nav {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+
+            .sidebar-bottom {
+                margin-top: 18px;
+                padding-top: 0;
+            }
+
+            .main-content {
+                padding: 20px;
+            }
+
+            .topbar {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .welcome-banner {
+                padding: 25px;
+            }
+            .welcome-banner h2 {
+    font-size: 27px;
+    margin-bottom: 10px;
+    line-height: 1.3;
+    color: #ffffff !important;
+}
+
+.welcome-banner p {
+    font-size: 14px;
+    color: #e0f2fe;
+    line-height: 1.7;
+    max-width: 540px;
+}
+
+            .welcome-decoration {
+                display: none;
+            }
+
+            .content-section {
+                padding: 20px;
+            }
+
+            .resource-card {
+                padding: 17px;
+            }
+
+            .resource-actions {
+                align-items: stretch;
+            }
+        }
+        
+/* Light mode text colors */
+.topbar h1,
+.section-header h2,
+.resource-card h3,
+.empty-state h3 {
+    color: #1e293b;
+}
+
+.topbar p,
+.section-description,
+.help-text,
+.empty-state p {
+    color: #64748b;
+}
+
+label {
+    color: #334761;
+}
+
+.resource-description {
+    color: #475569;
+}
+
+/* Dark mode headings */
+html[data-theme="dark"] .topbar h1,
+html[data-theme="dark"] .section-header h2,
+html[data-theme="dark"] .resource-card h3,
+html[data-theme="dark"] .empty-state h3,
+body.dark-theme .topbar h1,
+body.dark-theme .section-header h2,
+body.dark-theme .resource-card h3,
+body.dark-theme .empty-state h3 {
+    color: #f1f5f9;
+}
+
+/* Dark mode supporting text */
+html[data-theme="dark"] .topbar p,
+html[data-theme="dark"] .section-description,
+html[data-theme="dark"] .help-text,
+html[data-theme="dark"] .empty-state p,
+html[data-theme="dark"] .resource-description,
+body.dark-theme .topbar p,
+body.dark-theme .section-description,
+body.dark-theme .help-text,
+body.dark-theme .empty-state p,
+body.dark-theme .resource-description {
+    color: #cbd5e1;
+}
+
+/* Dark mode form labels */
+html[data-theme="dark"] label,
+body.dark-theme label {
+    color: #cbd5e1;
+}
+
+/* Dark mode input fields */
+html[data-theme="dark"] input,
+html[data-theme="dark"] select,
+html[data-theme="dark"] textarea,
+body.dark-theme input,
+body.dark-theme select,
+body.dark-theme textarea {
+    background-color: #172033;
+    color: #e2e8f0;
+    border-color: #475569;
+}
+
+html[data-theme="dark"] input::placeholder,
+html[data-theme="dark"] textarea::placeholder,
+body.dark-theme input::placeholder,
+body.dark-theme textarea::placeholder {
+    color: #94a3b8;
+}
+
+html[data-theme="dark"] input:focus,
+html[data-theme="dark"] select:focus,
+html[data-theme="dark"] textarea:focus,
+body.dark-theme input:focus,
+body.dark-theme select:focus,
+body.dark-theme textarea:focus {
+    background-color: #1e293b;
+    border-color: #14b8a6;
+}
+
+/* Dark mode saved resource cards */
+html[data-theme="dark"] .resource-card,
+html[data-theme="dark"] .empty-state,
+html[data-theme="dark"] .resource-description,
+body.dark-theme .resource-card,
+body.dark-theme .empty-state,
+body.dark-theme .resource-description {
+    background-color: #172033;
+    border-color: #334155;
+}
+
+/* Keep resource metadata readable */
+html[data-theme="dark"] .resource-meta,
+body.dark-theme .resource-meta {
+    background-color: #134e4a;
+    color: #99f6e4;
+}
+
+/* Keep resource actions readable */
+html[data-theme="dark"] .resource-action,
+html[data-theme="dark"] .edit-button,
+body.dark-theme .resource-action,
+body.dark-theme .edit-button {
+    background-color: #134e4a;
+    color: #99f6e4;
+    border-color: #2f6f68;
+}
+
+html[data-theme="dark"] .delete-button,
+body.dark-theme .delete-button {
+    background-color: #451a1a;
+    color: #fecaca;
+    border-color: #7f1d1d;
+}
+
+/* Keep the welcome banner readable */
+html[data-theme="dark"] .welcome-banner h2,
+body.dark-theme .welcome-banner h2 {
+    color: #ffffff;
+}
+
+html[data-theme="dark"] .welcome-banner p,
+body.dark-theme .welcome-banner p {
+    color: #e0f2fe;
+}
+.welcome-banner .welcome-content h2,
+.welcome-banner #welcomeHeading {
+    color: #ffffff !important;
+}
+    </style>
+</head>
+
+<body>
+
+    <div class="dashboard">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+
+            <div class="logo">
+                AI Study Planner
+            </div>
+
+            <nav>
+                {% if request.session.get("user_role") == "admin" %}
+                    <a href="/admin/users">Admin Dashboard</a>
+                {% endif %}
+
+                <a href="/dashboard">Dashboard</a>
+                <a href="/subjects">My Subjects</a>
+                <a href="/study-plan">Study Plan</a>
+                <a href="/study-progress">Study Progress</a>
+                <a href="/exams">Exams</a>
+
+                <a href="/notes" class="sidebar-link">
+                    <span class="sidebar-icon">📝</span>
+                    <span>Notes</span>
+                </a>
+
+                <a href="/resources" class="sidebar-link active">
+                    <span class="sidebar-icon">📚</span>
+                    <span>Learning Resources</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-bottom">
+                <button id="logoutButton" type="button">
+                    Logout
+                </button>
+            </div>
+
+        </aside>
+
+        <!-- Main content -->
+        <main class="main-content">
+
+            <header class="topbar">
+
+                <div>
+                    <h1>Learning Resources</h1>
+                    <p>Your personal space to organize and plan your studies.</p>
+                </div>
+
+                <div class="profile">
+
+                    <div class="avatar" id="profileAvatar">
+                        {{ request.session.get("user_name", "Student")[0]|upper }}
+                    </div>
+
+                    <div>
+                        <div class="profile-name" id="profileName">
+                            {{ request.session.get("user_name", "Student") }}
+                        </div>
+
+                        <div class="profile-label">
+                            {{ user_role|capitalize }}
+                        </div>
+                    </div>
+
+                </div>
+
+            </header>
+
+            <!-- Welcome banner -->
+            <section class="welcome-banner">
+
+                <div class="welcome-content">
+
+                    <span class="welcome-label">YOUR LEARNING SPACE</span>
+
+                    <h2 id="welcomeHeading">
+                        Keep your study materials organized
+                    </h2>
+
+                    <p>
+                        Save your notes, useful websites, and YouTube videos
+                        in one place so you can find them whenever you study.
+                    </p>
+
+                </div>
+
+                <div class="welcome-decoration">
+                    ✦
+                </div>
+
+            </section>
+
+            <!-- Resource panels -->
+            <div class="resource-layout">
+
+                <!-- Add resource -->
+                <section class="content-section">
+
+                    <div class="section-header">
+                        <h2>Add a Learning Resource</h2>
+                    </div>
+
+                    <p class="section-description">
+                        Select a subject, add a title, and upload a file or save
+                        a useful website or video link.
+                    </p>
+
+                    <form action="/resources/add" method="POST"
+                          enctype="multipart/form-data">
+
+                        <div class="form-group">
+                            <label for="subject_id">Subject</label>
+
+                            <select name="subject_id" id="subject_id" required>
+                                <option value="">Select a subject</option>
+
+                                {% for subject in subjects %}
+                                    <option value="{{ subject.id }}">
+                                        {{ subject.subject_name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="resource_type">Resource Type</label>
+
+                            <select name="resource_type" id="resource_type" required>
+                                <option value="file">Upload a File</option>
+                                <option value="link">Website / YouTube Link</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="title">Resource Title</label>
+
+                            <input
+                                type="text"
+                                name="title"
+                                id="title"
+                                placeholder="Example: Computer Networks - Unit 1 Notes"
+                                maxlength="200"
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="description">Description (Optional)</label>
+
+                            <textarea
+                                name="description"
+                                id="description"
+                                placeholder="Add a short description about this resource"
+                            ></textarea>
+                        </div>
+
+                        <!-- File upload -->
+                        <div class="form-group" id="file-section">
+
+                            <label for="uploaded_file">Choose a File</label>
+
+                            <input
+                                type="file"
+                                name="uploaded_file"
+                                id="uploaded_file"
+                                accept=".pdf,.ppt,.pptx,.doc,.docx,.txt,.csv,.jpg,.jpeg,.png"
+                            >
+
+                            <span class="help-text">
+                                Supported files: PDF, PPT, DOC, TXT, CSV and images.
+                                Maximum size: 15 MB.
+                            </span>
+
+                        </div>
+
+                        <!-- Website or video link -->
+                        <div class="form-group" id="link-section"
+                             style="display: none;">
+
+                            <label for="resource_url">Website or YouTube URL</label>
+
+                            <input
+                                type="url"
+                                name="resource_url"
+                                id="resource_url"
+                                placeholder="https://www.youtube.com/..."
+                            >
+
+                            <span class="help-text">
+                                Paste a complete website or YouTube video link.
+                            </span>
+
+                        </div>
+
+                        <button type="submit" class="primary-button">
+                            Save Resource
+                        </button>
+
+                    </form>
+
+                </section>
+
+                <!-- Saved resources -->
+                <section class="content-section">
+
+                    <div class="section-header">
+                        <h2>Saved Resources</h2>
+                    </div>
+
+                    <p class="section-description">
+                        Your previously saved study materials and links appear here.
+                    </p>
+
+                    {% if resources %}
+
+                        <div class="resources-list">
+
+                            {% for resource in resources %}
+
+                                <article class="resource-card">
+
+                                    <h3>{{ resource.title }}</h3>
+
+                                    <div class="resource-meta">
+
+                                        {{ resource.subject_name or "General" }}
+
+                                        {% if resource.topic_name %}
+                                            · {{ resource.topic_name }}
+                                        {% endif %}
+
+                                        {% if resource.created_at %}
+                                            · {{ resource.created_at.strftime("%d %b %Y") }}
+                                        {% endif %}
+
+                                    </div>
+
+                                    {% if resource.description %}
+
+                                        <div class="resource-description">
+                                            {{ resource.description }}
+                                        </div>
+
+                                    {% endif %}
+
+                                    <div class="resource-actions">
+
+                                        {% if resource.resource_type == "file" %}
+
+                                            <a
+                                                href="/resources/{{ resource.id }}/download"
+                                                class="resource-action"
+                                            >
+                                                Download File →
+                                            </a>
+
+                                        {% else %}
+
+                                            <a
+                                                href="{{ resource.resource_url }}"
+                                                class="resource-action"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                            >
+                                                Open Resource →
+                                            </a>
+
+                                        {% endif %}
+
+                                        <a
+                                            href="/resources/{{ resource.id }}/edit"
+                                            class="edit-button"
+                                        >
+                                            Edit
+                                        </a>
+
+                                        <form
+                                            class="delete-form"
+                                            action="/resources/{{ resource.id }}/delete"
+                                            method="POST"
+                                            onsubmit="return confirm('Are you sure you want to delete this resource? This action cannot be undone.');"
+                                        >
+                                            <button type="submit" class="delete-button">
+                                                Delete
+                                            </button>
+                                        </form>
+
+                                    </div>
+
+                                </article>
+
+                            {% endfor %}
+
+                        </div>
+
+                    {% else %}
+
+                        <div class="empty-state">
+
+                            <h3>No resources saved yet</h3>
+
+                            <p>
+                                Add your first study material using the form on the left.
+                            </p>
+
+                        </div>
+
+                    {% endif %}
+
+                </section>
+
+            </div>
+
+        </main>
+
+    </div>
+
+    <script>
+        const resourceType = document.getElementById("resource_type");
+        const fileSection = document.getElementById("file-section");
+        const linkSection = document.getElementById("link-section");
+
+        const uploadedFile = document.getElementById("uploaded_file");
+        const resourceUrl = document.getElementById("resource_url");
+
+        function updateResourceFields() {
+            const isFile = resourceType.value === "file";
+
+            fileSection.style.display = isFile ? "block" : "none";
+            linkSection.style.display = isFile ? "none" : "block";
+
+            uploadedFile.required = isFile;
+            resourceUrl.required = !isFile;
+
+            uploadedFile.disabled = !isFile;
+            resourceUrl.disabled = isFile;
+        }
+
+        resourceType.addEventListener("change", updateResourceFields);
+
+        updateResourceFields();
+
+        // Log out the current student.
+        const logoutButton = document.getElementById("logoutButton");
+
+        logoutButton.addEventListener("click", async function () {
+
+            try {
+                const response = await fetch("/users/logout", {
+                    method: "POST"
+                });
+
+                if (response.ok) {
+                    window.location.href = "/login";
+                } else {
+                    alert("Unable to log out. Please try again.");
+                }
+
+            } catch (error) {
+                alert("Could not connect to the server.");
+            }
+
+        });
+    </script>
+<script src="/static/js/theme.js"></script>
+</body>
+</html>

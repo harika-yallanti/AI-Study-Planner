@@ -1,0 +1,344 @@
+   /* Theme colors */
+
+:root {
+    color-scheme: light;
+
+    --page-bg: #f4f7fb;
+    --card-bg: #ffffff;
+    --text-color: #1e293b;
+    --muted-color: #64748b;
+    --border-color: #e2e8f0;
+    --input-bg: #ffffff;
+    --sidebar-bg: #172b4d;
+    --primary-color: #0f766e;
+    --shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+}
+
+/* Dark theme */
+
+html[data-theme="dark"] {
+    color-scheme: dark;
+
+    --page-bg: #0f172a;
+    --card-bg: #1e293b;
+    --text-color: #e2e8f0;
+    --muted-color: #94a3b8;
+    --border-color: #334155;
+    --input-bg: #172033;
+    --sidebar-bg: #172b4d;
+    --primary-color: #14b8a6;
+    --shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+html {
+    min-height: 100%;
+}
+
+body {
+    min-height: 100vh;
+    background-color: var(--page-bg);
+    color: var(--text-color);
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+
+.card,
+.dashboard-card,
+.subject-card,
+.topic-card,
+.exam-card,
+.note-card,
+.resource-card,
+.overview-card,
+.content-section,
+.profile,
+.subject-item,
+.action-link,
+.empty-state {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    border-color: var(--border-color);
+    box-shadow: var(--shadow);
+}
+
+   /* Sidebar */
+
+.sidebar {
+    background-color: var(--sidebar-bg);
+    color: #ffffff;
+    border-color: var(--border-color);
+}
+
+.sidebar nav a {
+    color: #dbeafe;
+}
+
+.sidebar nav a:hover,
+.sidebar nav a.active {
+    background-color: var(--primary-color);
+    color: #ffffff;
+}
+
+   /* Headings and text */
+
+h1,
+h2,
+h3,
+h4,
+.card-number,
+.profile-name {
+    color: var(--text-color);
+}
+
+p,
+small,
+.muted,
+.profile-label,
+.card-title,
+.card-description {
+    color: var(--muted-color);
+}
+
+   /* Forms and input fields */
+
+input,
+select,
+textarea {
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: var(--muted-color);
+    opacity: 0.8;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 1px;
+}
+
+   /* Buttons */
+
+button,
+.btn {
+    cursor: pointer;
+}
+
+.theme-button {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+}
+
+.primary-button,
+.empty-button {
+    background-color: var(--primary-color);
+    color: #ffffff;
+}
+
+.text-link {
+    color: var(--primary-color);
+}
+
+   /* Tables */
+
+table {
+    color: var(--text-color);
+    border-color: var(--border-color);
+}
+
+th {
+    background-color: var(--input-bg);
+    color: var(--text-color);
+}
+
+th,
+td {
+    border-color: var(--border-color);
+}
+
+   /* Dark theme overrides */
+
+/* Page backgrounds */
+
+html[data-theme="dark"] body,
+body.dark-theme {
+    background-color: var(--page-bg);
+    color: var(--text-color);
+}
+
+html[data-theme="dark"] .main-content,
+body.dark-theme .main-content {
+    background-color: var(--page-bg);
+    color: var(--text-color);
+}
+
+
+/* Cards and sections */
+
+html[data-theme="dark"] .card,
+html[data-theme="dark"] .dashboard-card,
+html[data-theme="dark"] .subject-card,
+html[data-theme="dark"] .topic-card,
+html[data-theme="dark"] .exam-card,
+html[data-theme="dark"] .note-card,
+html[data-theme="dark"] .resource-card,
+html[data-theme="dark"] .overview-card,
+html[data-theme="dark"] .content-section,
+html[data-theme="dark"] .profile,
+html[data-theme="dark"] .subject-item,
+html[data-theme="dark"] .action-link,
+html[data-theme="dark"] .empty-state,
+body.dark-theme .card,
+body.dark-theme .dashboard-card,
+body.dark-theme .subject-card,
+body.dark-theme .topic-card,
+body.dark-theme .exam-card,
+body.dark-theme .note-card,
+body.dark-theme .resource-card,
+body.dark-theme .overview-card,
+body.dark-theme .content-section,
+body.dark-theme .profile,
+body.dark-theme .subject-item,
+body.dark-theme .action-link,
+body.dark-theme .empty-state {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    border-color: var(--border-color);
+}
+
+
+/* Headings */
+
+html[data-theme="dark"] h1,
+html[data-theme="dark"] h2,
+html[data-theme="dark"] h3,
+html[data-theme="dark"] h4,
+html[data-theme="dark"] .card-number,
+html[data-theme="dark"] .profile-name,
+body.dark-theme h1,
+body.dark-theme h2,
+body.dark-theme h3,
+body.dark-theme h4,
+body.dark-theme .card-number,
+body.dark-theme .profile-name {
+    color: var(--text-color);
+}
+
+
+/* Paragraphs and muted text */
+
+html[data-theme="dark"] p,
+html[data-theme="dark"] small,
+html[data-theme="dark"] .muted,
+html[data-theme="dark"] .profile-label,
+html[data-theme="dark"] .card-title,
+html[data-theme="dark"] .card-description,
+body.dark-theme p,
+body.dark-theme small,
+body.dark-theme .muted,
+body.dark-theme .profile-label,
+body.dark-theme .card-title,
+body.dark-theme .card-description {
+    color: var(--muted-color);
+}
+
+
+/* Form fields */
+
+html[data-theme="dark"] input,
+html[data-theme="dark"] select,
+html[data-theme="dark"] textarea,
+body.dark-theme input,
+body.dark-theme select,
+body.dark-theme textarea {
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    border-color: var(--border-color);
+}
+
+html[data-theme="dark"] input::placeholder,
+html[data-theme="dark"] textarea::placeholder,
+body.dark-theme input::placeholder,
+body.dark-theme textarea::placeholder {
+    color: var(--muted-color);
+}
+
+
+/* Tables */
+
+html[data-theme="dark"] table,
+html[data-theme="dark"] th,
+html[data-theme="dark"] td,
+body.dark-theme table,
+body.dark-theme th,
+body.dark-theme td {
+    color: var(--text-color);
+    border-color: var(--border-color);
+}
+
+html[data-theme="dark"] th,
+body.dark-theme th {
+    background-color: var(--input-bg);
+}
+
+
+/* Empty states */
+
+html[data-theme="dark"] .empty-state h3,
+body.dark-theme .empty-state h3 {
+    color: var(--text-color);
+}
+
+   /* Tablet and mobile layouts */
+
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        position: relative;
+        height: auto;
+    }
+
+    .main-content {
+        width: 100%;
+        margin-left: 0;
+        padding: 20px 16px;
+    }
+
+    .dashboard-grid,
+    .subjects-grid,
+    .stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .page-header {
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+}
+
+
+
+   /* Small mobile screens */
+
+@media (max-width: 480px) {
+    .dashboard-grid,
+    .subjects-grid,
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .main-content {
+        padding: 16px 12px;
+    }
+
+    button,
+    .btn {
+        max-width: 100%;
+    }
+}

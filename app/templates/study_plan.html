@@ -1,0 +1,3129 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Study Plan | AI Study Planner</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+
+    
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+        background: #f4f7fb;
+        color: #1e293b;
+        line-height: 1.6;
+    }
+
+    /* Main dashboard layout */
+    .dashboard {
+        display: flex;
+        min-height: 100vh;
+    }
+
+    .sidebar {
+        width: 250px;
+        background: #172b4d;
+        color: white;
+        padding: 25px 18px;
+        display: flex;
+        flex-direction: column;
+        flex-shrink: 0;
+    }
+
+    .logo {
+        font-size: 22px;
+        font-weight: bold;
+        margin-bottom: 40px;
+    }
+
+    .sidebar nav {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .sidebar nav a {
+        color: #dbeafe;
+        text-decoration: none;
+        padding: 13px 15px;
+        border-radius: 8px;
+        transition: 0.2s;
+    }
+
+    .sidebar nav a:hover,
+    .sidebar nav a.active {
+        background: #0f766e;
+        color: white;
+    }
+
+    .sidebar-bottom {
+        margin-top: auto;
+        padding-top: 30px;
+    }
+
+    #logoutButton {
+        width: 100%;
+        padding: 12px;
+        border: none;
+        border-radius: 8px;
+        background: #dc2626;
+        color: white;
+        font-size: 15px;
+        cursor: pointer;
+    }
+
+    #logoutButton:hover {
+        background: #b91c1c;
+    }
+
+    /* Main content */
+    .main-content {
+        flex: 1;
+        padding: 30px;
+        min-width: 0;
+    }
+
+    .topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        margin-bottom: 28px;
+    }
+
+    .topbar h1 {
+        color: #1e293b;
+        font-size: 28px;
+        margin-bottom: 8px;
+    }
+
+    .topbar p {
+        color: #64748b;
+        line-height: 1.5;
+    }
+
+    .profile {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: white;
+        padding: 10px 16px;
+        border-radius: 12px;
+        box-shadow: 0 3px 10px rgba(23, 43, 77, 0.05);
+    }
+
+    .avatar {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        background: #0f766e;
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: bold;
+        font-size: 18px;
+    }
+
+    .profile-name {
+        font-weight: bold;
+    }
+
+    .profile-label {
+        font-size: 12px;
+        color: #64748b;
+        margin-top: 4px;
+    }
+
+    /* Study plan banner */
+    .study-banner {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 32px;
+        margin-bottom: 30px;
+        border-radius: 18px;
+        background: linear-gradient(120deg, #172b4d, #0f766e);
+        color: white;
+    }
+
+    .banner-label {
+        display: inline-block;
+        font-size: 12px;
+        font-weight: bold;
+        letter-spacing: 1.5px;
+        color: #a7f3d0;
+        margin-bottom: 12px;
+    }
+
+    .study-banner h2 {
+        color: white;
+        font-size: 27px;
+        margin-bottom: 10px;
+        line-height: 1.3;
+    }
+
+    .study-banner p {
+        font-size: 14px;
+        color: #e0f2fe;
+        line-height: 1.7;
+        max-width: 650px;
+    }
+
+    /* Common section cards */
+    .timetable-generator,
+    .scheduled-timetable,
+    .topic-form-card,
+    .active-study-card,
+    .study-focus-section,
+    .missed-sessions-section {
+        background: white;
+        padding: 25px;
+        border-radius: 15px;
+        box-shadow: 0 3px 10px rgba(23, 43, 77, 0.04);
+        border: 1px solid #edf1f7;
+        margin-bottom: 30px;
+    }
+
+    h2 {
+        color: #1e293b;
+        font-size: 20px;
+        margin-bottom: 10px;
+    }
+
+    h3 {
+        color: #1e293b;
+        font-size: 17px;
+        margin-bottom: 10px;
+    }
+
+    p {
+        color: #64748b;
+    }
+
+    /* Schedule messages */
+    .schedule-message {
+        padding: 14px 18px;
+        margin: 18px 0 25px;
+        border-radius: 10px;
+        background: #eff6ff;
+        border: 1px solid #bfdbfe;
+        color: #1d4ed8;
+        font-weight: 500;
+    }
+
+    /* Timetable generator */
+    .timetable-generator-header {
+        display: flex;
+        align-items: flex-start;
+        gap: 16px;
+        margin-bottom: 25px;
+    }
+
+    .timetable-generator-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        background: #e0f2f1;
+        color: #0f766e;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 23px;
+        flex-shrink: 0;
+    }
+
+    .timetable-generator-header h2 {
+        margin-bottom: 6px;
+    }
+
+    .timetable-generator-header p {
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+    .timetable-generator-form {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px;
+        align-items: end;
+    }
+
+    .form-group {
+        min-width: 0;
+    }
+
+    .form-group label,
+    .schedule-form label {
+        display: block;
+        color: #334155;
+        font-weight: 600;
+        margin-bottom: 7px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .schedule-form input,
+    .schedule-form select,
+    .schedule-form textarea,
+    .topic-form input,
+    .topic-form select,
+    .syllabus-upload-form input,
+    .syllabus-upload-form select {
+        width: 100%;
+        padding: 11px 13px;
+        border: 1px solid #cbd5e1;
+        border-radius: 9px;
+        background: white;
+        color: #1e293b;
+        font: inherit;
+        outline: none;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .schedule-form input:focus,
+    .schedule-form select:focus,
+    .topic-form input:focus,
+    .topic-form select:focus,
+    .syllabus-upload-form input:focus,
+    .syllabus-upload-form select:focus {
+        border-color: #0f766e;
+        box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.12);
+    }
+
+    .timetable-generator-submit {
+        grid-column: 1 / -1;
+    }
+
+    /* Buttons */
+    button,
+    .btn,
+    .schedule-button,
+    .add-button,
+    .reschedule-button,
+    .syllabus-upload-button,
+    .stop-study-button {
+        display: inline-block;
+        padding: 11px 20px;
+        border: none;
+        border-radius: 9px;
+        background: #0f766e;
+        color: white;
+        font: inherit;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    button:hover,
+    .btn:hover,
+    .schedule-button:hover,
+    .add-button:hover,
+    .reschedule-button:hover,
+    .syllabus-upload-button:hover,
+    .stop-study-button:hover {
+        background: #115e59;
+        transform: translateY(-1px);
+    }
+
+    /* Scheduled sessions */
+    .scheduled-timetable-header {
+        margin-bottom: 22px;
+    }
+
+    .scheduled-timetable-header p {
+        font-size: 14px;
+    }
+
+    .study-view-tabs {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #e2e8f0;
+        margin-bottom: 22px;
+    }
+
+    .study-view-button {
+        background: #f1f5f9;
+        color: #475569;
+        padding: 9px 18px;
+        border-radius: 8px;
+    }
+
+    .study-view-button:hover {
+        background: #e2e8f0;
+        color: #1e293b;
+    }
+
+    .study-view-button.active {
+        background: #0f766e;
+        color: white;
+    }
+
+    .study-view-button.active:hover {
+        background: #115e59;
+    }
+
+    .scheduled-session-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+    }
+
+    .scheduled-session-card {
+        border: 1px solid #e2e8f0;
+        border-radius: 13px;
+        padding: 20px;
+        background: white;
+        min-width: 0;
+    }
+
+    .scheduled-session-subject,
+    .topic-subject,
+    .study-focus-subject {
+        display: inline-block;
+        color: #0f766e;
+        background: #e0f2f1;
+        border-radius: 7px;
+        padding: 4px 9px;
+        font-size: 12px;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+
+    .scheduled-session-card h3 {
+        margin-bottom: 14px;
+        overflow-wrap: anywhere;
+    }
+
+    .scheduled-session-details {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px 20px;
+        margin-top: 14px;
+    }
+
+    .scheduled-session-detail {
+        display: flex;
+        gap: 7px;
+        align-items: center;
+        color: #64748b;
+        font-size: 13px;
+    }
+
+    .scheduled-session-detail strong {
+        color: #334155;
+        font-weight: 600;
+    }
+
+    .delete-session-form {
+        margin-top: 14px;
+    }
+
+    .delete-session-button {
+        padding: 8px 13px;
+        background: #fee2e2;
+        color: #b91c1c;
+        border: 1px solid #fecaca;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .delete-session-button:hover {
+        background: #fecaca;
+        color: #991b1b;
+    }
+
+    .scheduled-empty-state,
+    .empty-state,
+    .no-missed-sessions,
+    .no-subjects {
+        background: #f8fafc;
+        border: 1px dashed #cbd5e1;
+        border-radius: 12px;
+        padding: 28px;
+        text-align: center;
+        color: #64748b;
+        margin: 20px 0;
+    }
+
+    /* Weekly view */
+    .timetable-navigation {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+
+    .timetable-navigation h3 {
+        text-align: center;
+        margin: 0;
+    }
+
+    .timetable-navigation button {
+        padding: 8px 13px;
+        background: #f1f5f9;
+        color: #334155;
+        border: 1px solid #e2e8f0;
+    }
+
+    .timetable-navigation button:hover {
+        background: #e2e8f0;
+    }
+
+    .weekly-day-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .weekly-day-row {
+        border: 1px solid #e2e8f0;
+        border-radius: 11px;
+        overflow: hidden;
+    }
+
+    .weekly-day-header {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        padding: 16px;
+        background: #f8fafc;
+        color: #1e293b;
+        text-align: left;
+        border-radius: 0;
+    }
+
+    .weekly-day-header:hover {
+        background: #f1f5f9;
+    }
+
+    .weekly-day-info {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .weekly-day-info span {
+        font-size: 13px;
+        color: #64748b;
+        font-weight: normal;
+    }
+
+    .weekly-day-arrow {
+        font-size: 20px;
+        color: #64748b;
+    }
+
+    .weekly-session-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 15px;
+    }
+
+    .compact-study-session {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 14px;
+        padding: 14px;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        background: white;
+    }
+
+    .compact-study-session-info {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+    }
+
+    .compact-study-session-info strong {
+        color: #0f766e;
+        margin-bottom: 3px;
+    }
+
+    .compact-study-session-info span {
+        color: #1e293b;
+        font-weight: 600;
+        overflow-wrap: anywhere;
+    }
+
+    .compact-study-session-info small {
+        color: #64748b;
+        font-size: 12px;
+    }
+
+    /* Monthly calendar */
+    .monthly-calendar {
+        display: grid;
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+        gap: 7px;
+    }
+
+    .calendar-weekday {
+        text-align: center;
+        color: #64748b;
+        font-size: 12px;
+        font-weight: 700;
+        padding: 8px 0;
+    }
+
+    .monthly-calendar-days {
+        display: contents;
+    }
+
+    .calendar-day {
+        position: relative;
+        min-width: 0;
+        min-height: 48px;
+        padding: 8px;
+        background: #f8fafc;
+        color: #334155;
+        border: 1px solid #e2e8f0;
+        border-radius: 9px;
+    }
+
+    .calendar-day:hover {
+        background: #e0f2f1;
+        border-color: #0f766e;
+        color: #115e59;
+    }
+
+    .calendar-day-empty {
+        background: transparent;
+        border: none;
+    }
+
+    .calendar-day.has-sessions {
+        background: #e0f2f1;
+        color: #115e59;
+        border-color: #99f6e4;
+        font-weight: 700;
+    }
+
+    .calendar-day.calendar-today {
+        border: 2px solid #2563eb;
+    }
+
+    .calendar-day.calendar-selected {
+        background: #0f766e;
+        border-color: #0f766e;
+        color: white;
+    }
+
+    .calendar-session-dot {
+        position: absolute;
+        bottom: 5px;
+        left: 50%;
+        width: 5px;
+        height: 5px;
+        background: currentColor;
+        border-radius: 50%;
+        transform: translateX(-50%);
+    }
+
+    #monthlySelectedSessions {
+        margin-top: 25px;
+    }
+
+    #monthlySelectedSessions h3 {
+        margin-bottom: 12px;
+    }
+
+    .monthly-no-sessions {
+        padding: 15px;
+        background: #f8fafc;
+        border-radius: 9px;
+    }
+
+    /* Syllabus and topic forms */
+    .topic-form-card h2 {
+        margin-bottom: 8px;
+    }
+
+    .description {
+        font-size: 14px;
+        margin-bottom: 22px;
+    }
+
+    .syllabus-upload-form,
+    .topic-form {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .syllabus-upload-field,
+    .topic-form .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+    }
+
+    .syllabus-upload-field label,
+    .topic-form label {
+        font-weight: 600;
+        color: #334155;
+    }
+
+    .pdf-upload-box {
+        position: relative;
+    }
+
+    .pdf-upload-box input[type="file"] {
+        margin-bottom: 10px;
+    }
+
+    .pdf-upload-label {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 15px;
+        background: #f8fafc;
+        border: 1px dashed #cbd5e1;
+        border-radius: 10px;
+        cursor: pointer;
+    }
+
+    .pdf-upload-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 42px;
+        height: 42px;
+        border-radius: 10px;
+        background: #e0f2f1;
+        color: #0f766e;
+        font-size: 24px;
+    }
+
+    .pdf-upload-text {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+    }
+
+    .pdf-upload-text strong {
+        color: #1e293b;
+        overflow-wrap: anywhere;
+    }
+
+    .pdf-upload-text small {
+        color: #64748b;
+    }
+
+    .form-help {
+        color: #64748b;
+        font-size: 12px;
+    }
+
+    .submit-group {
+        margin-top: 5px;
+    }
+
+    /* Active study session */
+    .active-study-card {
+        border-left: 5px solid #0f766e;
+    }
+
+    
+    .active-study-header {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+
+    .active-study-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        background: #e0f2f1;
+        color: #0f766e;
+        font-size: 24px;
+    }
+
+    .active-study-label {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        color: #0f766e;
+    }
+
+    .studying-status {
+        margin-left: auto;
+        padding: 6px 12px;
+        border-radius: 20px;
+        background: #dcfce7;
+        color: #166534;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .status-dot {
+        display: inline-block;
+        width: 7px;
+        height: 7px;
+        background: #16a34a;
+        border-radius: 50%;
+        margin-right: 5px;
+    }
+
+    .study-timer {
+        font-size: 42px;
+        font-weight: bold;
+        color: #172b4d;
+        margin-top: 22px;
+        font-variant-numeric: tabular-nums;
+    }
+
+    .timer-caption {
+        font-size: 13px;
+    }
+
+    .active-study-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        flex-wrap: wrap;
+        margin-top: 22px;
+        padding-top: 18px;
+        border-top: 1px solid #e2e8f0;
+    }
+
+    .active-study-footer div {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .started-label {
+        color: #64748b;
+        font-size: 12px;
+    }
+
+    /* Missed study sessions */
+    .missed-sessions-section {
+        margin-top: 30px;
+    }
+
+    .missed-sessions-heading {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 10px;
+    }
+
+    .missed-sessions-heading h2 {
+        margin: 0;
+    }
+
+    .missed-sessions-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        background: #fee2e2;
+        color: #b91c1c;
+        font-weight: bold;
+    }
+
+    .missed-sessions-description {
+        font-size: 14px;
+        margin-bottom: 20px;
+    }
+
+    .missed-session-card {
+        background: white;
+        border: 1px solid #fecaca;
+        border-left: 5px solid #ef4444;
+        border-radius: 14px;
+        padding: 20px;
+        margin-bottom: 18px;
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+    }
+
+    .missed-session-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-bottom: 14px;
+    }
+
+    .missed-session-top h3 {
+        margin: 0;
+    }
+
+    .missed-session-subject {
+        color: #64748b;
+        font-size: 13px;
+    }
+
+    .missed-session-badge {
+        background: #fee2e2;
+        color: #991b1b;
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .missed-session-details {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px 24px;
+        margin-bottom: 18px;
+    }
+
+    .missed-session-detail {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        color: #475569;
+        font-size: 13px;
+    }
+
+    .missed-session-detail strong {
+        color: #1e293b;
+    }
+
+    .reschedule-form {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 18px;
+        margin-top: 16px;
+    }
+
+    .reschedule-fields {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+        margin-bottom: 16px;
+    }
+
+    .reschedule-fields label {
+        display: block;
+        font-weight: 600;
+        color: #334155;
+        margin-bottom: 6px;
+    }
+
+    .reschedule-fields input,
+    .reschedule-fields select {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        background: white;
+        color: #1e293b;
+        font: inherit;
+    }
+
+    .reschedule-fields input:focus,
+    .reschedule-fields select:focus {
+        outline: none;
+        border-color: #0f766e;
+        box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.12);
+    }
+
+    /* Study focus */
+    .study-focus-header {
+        margin-bottom: 20px;
+    }
+
+    .study-focus-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+    }
+
+    .study-focus-card {
+        padding: 20px;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        background: #ffffff;
+    }
+
+    .study-focus-card h3 {
+        overflow-wrap: anywhere;
+    }
+
+    .study-focus-card p {
+        font-size: 13px;
+        margin-bottom: 15px;
+    }
+
+    .study-focus-details {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .study-focus-details span {
+        background: #f1f5f9;
+        color: #475569;
+        border-radius: 7px;
+        padding: 5px 9px;
+        font-size: 12px;
+    }
+
+    /* Topic list and pagination */
+    .topics-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        margin: 30px 0 18px;
+    }
+
+    .topics-header h2 {
+        margin: 0;
+    }
+
+    .topic-count {
+        background: #e0f2f1;
+        color: #0f766e;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .topic-pagination {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+    }
+
+    .pagination-info {
+        color: #64748b;
+        font-size: 13px;
+    }
+
+    .pagination-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 7px;
+    }
+
+    .pagination-button {
+        display: inline-block;
+        padding: 8px 12px;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        background: white;
+        color: #334155;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .pagination-button:hover,
+    .pagination-button.active {
+        background: #0f766e;
+        color: white;
+        border-color: #0f766e;
+    }
+
+    .topics-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px;
+    }
+
+    .topic-card {
+        background: white;
+        padding: 23px;
+        border-radius: 14px;
+        box-shadow: 0 3px 10px rgba(23, 43, 77, 0.04);
+        border: 1px solid #edf1f7;
+        min-width: 0;
+    }
+
+    .topic-card-labels {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 12px;
+    }
+
+    .topic-card h3 {
+        overflow-wrap: anywhere;
+    }
+
+    .priority-badge {
+        display: inline-block;
+        padding: 5px 9px;
+        border-radius: 7px;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .priority-score {
+        margin-left: 4px;
+    }
+
+    .priority-high {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    .priority-medium {
+        background: #fef3c7;
+        color: #92400e;
+    }
+
+    .priority-low {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .topic-details {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin: 15px 0;
+    }
+
+    .topic-details .detail {
+        padding: 5px 9px;
+        background: #f1f5f9;
+        color: #475569;
+        border-radius: 7px;
+        font-size: 12px;
+    }
+
+    .study-session-actions {
+        margin: 16px 0;
+    }
+
+    .session-notice {
+        padding: 10px;
+        background: #fef3c7;
+        color: #92400e;
+        border-radius: 8px;
+        font-size: 13px;
+    }
+
+    .topic-study-summary {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+        padding-top: 15px;
+        border-top: 1px solid #e2e8f0;
+        color: #64748b;
+        font-size: 13px;
+    }
+
+    .topic-study-summary strong {
+        color: #1e293b;
+    }
+
+    .history-button {
+        margin-left: auto;
+        padding: 7px 12px;
+        background: #f1f5f9;
+        color: #334155;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        font-size: 12px;
+    }
+
+    .history-button:hover {
+        background: #e2e8f0;
+    }
+
+    .topic-session-history {
+        margin-top: 15px;
+        padding: 15px;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+    }
+
+    .topic-session-history h4 {
+        color: #334155;
+        margin-bottom: 12px;
+    }
+
+    .completed-session {
+        padding: 12px;
+        margin-bottom: 10px;
+        border: 1px solid #e2e8f0;
+        border-radius: 9px;
+        background: white;
+    }
+
+    .completed-session:last-child {
+        margin-bottom: 0;
+    }
+
+    .completed-session-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+
+    .completed-badge {
+        background: #dcfce7;
+        color: #166534;
+        padding: 4px 8px;
+        border-radius: 6px;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .completed-session-times {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .completed-session-times div {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+    }
+
+    .completed-session-times span {
+        color: #64748b;
+        font-size: 12px;
+    }
+
+    .completed-session-times strong {
+        color: #334155;
+        font-size: 13px;
+        overflow-wrap: anywhere;
+    }
+
+    /* Empty topic list */
+    .empty-state h3 {
+        margin-bottom: 9px;
+    }
+
+    .empty-state p {
+        font-size: 13px;
+        line-height: 1.6;
+        margin-bottom: 16px;
+    }
+
+    /* Responsive layout */
+    @media (max-width: 1150px) {
+        .timetable-generator-form {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .content-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 900px) {
+        .sidebar {
+            width: 210px;
+        }
+
+        .scheduled-session-grid,
+        .topics-grid,
+        .study-focus-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .timetable-generator-form {
+            grid-template-columns: 1fr;
+        }
+
+        .timetable-generator-submit {
+            grid-column: auto;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .dashboard {
+            flex-direction: column;
+        }
+
+        .sidebar {
+            width: 100%;
+            padding: 18px;
+        }
+
+        .logo {
+            margin-bottom: 18px;
+        }
+
+        .sidebar nav {
+            flex-direction: row;
+            flex-wrap: wrap;
+        }
+
+        .sidebar nav a {
+            padding: 10px 12px;
+        }
+
+        .sidebar-bottom {
+            margin-top: 18px;
+            padding-top: 0;
+        }
+
+        .main-content {
+            padding: 20px;
+        }
+
+        .topbar {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .study-banner {
+            padding: 25px;
+        }
+
+        .study-banner h2 {
+            font-size: 23px;
+        }
+
+        .timetable-generator,
+        .scheduled-timetable,
+        .topic-form-card,
+        .active-study-card,
+        .study-focus-section,
+        .missed-sessions-section {
+            padding: 18px;
+        }
+
+        .timetable-generator-header {
+            flex-direction: column;
+        }
+
+        .reschedule-fields {
+            grid-template-columns: 1fr;
+        }
+
+        .monthly-calendar {
+            gap: 3px;
+        }
+
+        .calendar-day {
+            min-height: 38px;
+            padding: 5px;
+            font-size: 12px;
+        }
+
+        .calendar-weekday {
+            font-size: 10px;
+        }
+
+        .compact-study-session {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .timetable-navigation {
+            flex-wrap: wrap;
+        }
+
+        .timetable-navigation h3 {
+            flex: 1;
+            font-size: 14px;
+        }
+
+        .topic-pagination {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .active-study-footer {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .study-timer {
+            font-size: 34px;
+        }
+
+        .history-button {
+            margin-left: 0;
+        }
+
+        .completed-session-times {
+            grid-template-columns: 1fr;
+        }
+    }
+    
+body {
+    background: var(--page-bg);
+    color: var(--text-color);
+}
+
+.main-content {
+    background: var(--page-bg);
+}
+
+.topbar h1,
+h2,
+h3,
+.topic-session-history h4 {
+    color: var(--text-color);
+}
+
+.topbar p,
+.profile-label,
+.scheduled-timetable-header p,
+.timetable-generator-header p,
+.description,
+.form-help,
+.timer-caption,
+.missed-sessions-description,
+.pagination-info {
+    color: var(--muted-color);
+}
+
+.profile,
+.timetable-generator,
+.scheduled-timetable,
+.topic-form-card,
+.active-study-card,
+.study-focus-section,
+.missed-sessions-section,
+.scheduled-session-card,
+.study-focus-card,
+.topic-card,
+.missed-session-card {
+    background: var(--card-bg);
+    color: var(--text-color);
+    border-color: var(--border-color);
+}
+
+.form-group label,
+.schedule-form label,
+.syllabus-upload-field label,
+.topic-form label,
+.reschedule-fields label {
+    color: var(--text-color);
+}
+
+.form-group input,
+.form-group select,
+.schedule-form input,
+.schedule-form select,
+.schedule-form textarea,
+.topic-form input,
+.topic-form select,
+.syllabus-upload-form input,
+.syllabus-upload-form select,
+.reschedule-fields input,
+.reschedule-fields select {
+    background: var(--input-bg);
+    color: var(--text-color);
+    border-color: var(--border-color);
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.schedule-form input:focus,
+.schedule-form select:focus,
+.topic-form input:focus,
+.topic-form select:focus,
+.syllabus-upload-form input:focus,
+.syllabus-upload-form select:focus,
+.reschedule-fields input:focus,
+.reschedule-fields select:focus {
+    border-color: #0f766e;
+}
+
+.study-view-button:not(.active),
+.timetable-navigation button,
+.weekly-day-header,
+.compact-study-session,
+.calendar-day,
+.monthly-no-sessions,
+.study-focus-details span,
+.topic-details .detail,
+.history-button,
+.topic-session-history,
+.completed-session,
+.pagination-button:not(.active),
+.reschedule-form,
+.pdf-upload-label,
+.scheduled-empty-state,
+.empty-state,
+.no-missed-sessions,
+.no-subjects {
+    background: var(--input-bg);
+    color: var(--text-color);
+    border-color: var(--border-color);
+}
+
+.scheduled-session-detail,
+.missed-session-detail,
+.started-label,
+.weekly-day-info span,
+.weekly-day-arrow,
+.calendar-weekday,
+.completed-session-times span,
+.completed-session-times strong,
+.topic-study-summary,
+.topic-study-summary strong,
+.compact-study-session-info span,
+.compact-study-session-info small,
+.missed-session-subject {
+    color: var(--muted-color);
+}
+
+.compact-study-session-info strong,
+.completed-session-header strong,
+.topic-session-history h4 {
+    color: var(--text-color);
+}
+
+.calendar-day.has-sessions {
+    background: #e0f2f1;
+    color: #115e59;
+}
+
+.calendar-day.calendar-selected {
+    background: #0f766e;
+    color: white;
+}
+
+.topic-study-summary {
+    border-color: var(--border-color);
+}
+
+.active-study-card,
+.study-focus-card,
+.topic-card,
+.scheduled-session-card {
+    box-shadow: var(--shadow);
+}
+
+.delete-session-button {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+.session-notice {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+</style>
+
+</head>
+
+<body>
+
+    <div class="dashboard">
+
+        <!-- Sidebar -->
+    
+  <aside class="sidebar">
+
+    <div class="logo">
+        AI Study Planner
+    </div>
+
+    <nav>
+        {% if request.session.get("user_role") == "admin" %}
+            <a href="/admin/users">Admin Dashboard</a>
+        {% endif %}
+
+        <a href="/dashboard">Dashboard</a>
+        <a href="/subjects">My Subjects</a>
+
+        <a href="/study-plan" class="sidebar-link active">
+            Study Plan
+        </a>
+
+        <a href="/study-progress">Study Progress</a>
+        <a href="/exams">Exams</a>
+
+        <a href="/notes" class="sidebar-link">
+            <span class="sidebar-icon">📝</span>
+            Notes
+        </a>
+
+        <a href="/resources" class="sidebar-link">
+            <span class="sidebar-icon">📚</span>
+            Learning Resources
+        </a>
+    </nav>
+
+    <div class="sidebar-bottom">
+        <button type="button" id="logoutButton" onclick="logout()">
+            Logout
+        </button>
+    </div>
+
+</aside>
+
+        <!-- Main content -->
+        <main class="main-content">
+
+            <header class="topbar">
+
+                <div>
+                    <h1>Study Plan</h1>
+                    <p>Add topics and organize the time needed to prepare.</p>
+                </div>
+
+                <div class="profile">
+
+                    <div class="avatar" id="profileAvatar">{{ request.session.get("user_name", "Student")[0]|upper }}</div>
+
+                    <div>
+                        <div class="profile-name" id="profileName">
+                            {{ request.session.get("user_name", "Student") }}
+                        </div>
+
+                        <div class="profile-label">{{ user_role|capitalize }}</div>
+                    </div>
+
+                </div>
+
+            </header>
+
+            <!-- Banner -->
+            <section class="study-banner">
+
+                <span class="banner-label">PLAN YOUR PREPARATION</span>
+
+                <h2>Turn your subjects into small study goals.</h2>
+
+                <p>
+                    Add topics, estimate your study time, and keep track
+                    of what you need to prepare.
+                </p>
+
+            </section>
+
+{% if request.session.get("schedule_message") %}
+
+    <div class="schedule-message">
+        {{ request.session.get("schedule_message") }}
+    </div>
+
+    {% set _ = request.session.pop("schedule_message", None) %}
+
+{% endif %}
+
+<section class="timetable-generator">
+
+    <div class="timetable-generator-header">
+        <div class="timetable-generator-icon">📅</div>
+
+        <div>
+            <h2>Generate Personalized Timetable</h2>
+            <p>
+                Plan your study time and focus on your highest-priority topics.
+                Choose a date, start time, and how long you can study.
+            </p>
+        </div>
+    </div>
+
+    <form
+        action="/study/generate-timetable"
+        method="post"
+        class="timetable-generator-form"
+    >
+
+        <div class="form-group">
+            <label for="timetable-date">Study Date</label>
+            <input
+                type="date"
+                id="timetable-date"
+                name="planned_date"
+                required
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="timetable-start">Start Time</label>
+            <input
+                type="time"
+                id="timetable-start"
+                name="start_time"
+                value="10:00"
+                required
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="available-minutes">
+                Available Study Time (minutes)
+            </label>
+            <input
+                type="number"
+                id="available-minutes"
+                name="available_minutes"
+                value="120"
+                min="15"
+                max="600"
+                required
+            >
+        </div>
+
+        <div class="timetable-generator-submit">
+            <button type="submit">
+                Generate Timetable →
+            </button>
+        </div>
+
+    </form>
+
+</section>
+
+<section class="scheduled-timetable">
+
+    <div class="scheduled-timetable-header">
+        <h2>Your Scheduled Study Sessions</h2>
+        <p>Keep track of your upcoming study sessions.</p>
+    </div>
+     
+    <!-- Study plan view selector -->
+<div class="study-view-tabs">
+    <button type="button"
+            class="study-view-button active"
+            onclick="showStudyView('daily', this)">
+        Daily
+    </button>
+
+    <button type="button"
+            class="study-view-button"
+            onclick="showStudyView('weekly', this)">
+        Weekly
+    </button>
+
+    <button type="button"
+            class="study-view-button"
+            onclick="showStudyView('monthly', this)">
+        Monthly
+    </button>
+</div>
+
+{% if planned_sessions %}
+
+    <!-- Daily view: your original session cards -->
+    <div id="dailyStudyView">
+        <div class="scheduled-session-grid">
+
+            {% for session in planned_sessions %}
+
+                <article class="scheduled-session-card"
+                         data-date="{{ session.planned_date.strftime('%Y-%m-%d') }}"
+                         data-time="{{ session.planned_time }}"
+                         data-minutes="{{ session.planned_minutes }}"
+                         data-subject="{{ session.subject_name }}"
+                         data-topic="{{ session.topic_name }}">
+
+                    <form
+                        action="/study/delete-session"
+                        method="POST"
+                        class="delete-session-form"
+                        onsubmit="return confirm('Delete this scheduled study session?');"
+                    >
+                        <input type="hidden"
+                               name="planned_session_id"
+                               value="{{ session.id }}">
+
+                        <button type="submit" class="delete-session-button">
+                            Delete Session
+                        </button>
+                    </form>
+
+                    <span class="scheduled-session-subject">
+                        {{ session.subject_name }}
+                    </span>
+
+                    <h3>{{ session.topic_name }}</h3>
+
+                    <div class="scheduled-session-details">
+                        <div class="scheduled-session-detail">
+                            <span>📅</span>
+                            <strong>{{ session.planned_date }}</strong>
+                        </div>
+
+                        <div class="scheduled-session-detail">
+                            <span>🕒</span>
+                            <strong>{{ session.planned_time }}</strong>
+                        </div>
+
+                        <div class="scheduled-session-detail">
+                            <span>⏱</span>
+                            <strong>{{ session.planned_minutes }} min</strong>
+                        </div>
+                    </div>
+
+                </article>
+
+            {% endfor %}
+
+        </div>
+    </div>
+
+    <!-- Weekly view: compact day summaries -->
+    <div id="weeklyStudyView" style="display:none;">
+
+        <div class="timetable-navigation">
+            <button type="button" onclick="changeWeek(-1)">‹ Previous</button>
+            <h3 id="weekTitle"></h3>
+            <button type="button" onclick="changeWeek(1)">Next ›</button>
+        </div>
+
+        <div id="weeklyDayList" class="weekly-day-list"></div>
+
+    </div>
+
+    <!-- Monthly view: calendar -->
+    <div id="monthlyStudyView" style="display:none;">
+
+        <div class="timetable-navigation">
+            <button type="button" onclick="changeMonth(-1)">‹ Previous</button>
+            <h3 id="monthTitle"></h3>
+            <button type="button" onclick="changeMonth(1)">Next ›</button>
+        </div>
+
+        <div class="monthly-calendar">
+
+            <div class="calendar-weekday">Mon</div>
+            <div class="calendar-weekday">Tue</div>
+            <div class="calendar-weekday">Wed</div>
+            <div class="calendar-weekday">Thu</div>
+            <div class="calendar-weekday">Fri</div>
+            <div class="calendar-weekday">Sat</div>
+            <div class="calendar-weekday">Sun</div>
+
+            <div id="monthlyCalendarDays" class="monthly-calendar-days"></div>
+
+        </div>
+
+        <div id="monthlySelectedSessions"></div>
+
+    </div>
+
+    <div class="scheduled-empty-state"
+         id="studyViewEmpty"
+         style="display:none;">
+        No study sessions found for this period.
+    </div>
+
+{% else %}
+
+    <div class="scheduled-empty-state">
+        No study sessions scheduled yet. Generate a timetable to get started.
+    </div>
+
+{% endif %}
+    
+</section>
+
+<script>
+    let currentStudyView = "daily";
+    let weekOffset = 0;
+    let monthOffset = 0;
+    let selectedMonthDate = null;
+
+    function getSessionCards() {
+        return Array.from(
+            document.querySelectorAll("#dailyStudyView .scheduled-session-card")
+        );
+    }
+
+    function parseLocalDate(dateString) {
+        const parts = dateString.split("-").map(Number);
+
+        return new Date(
+            parts[0],
+            parts[1] - 1,
+            parts[2]
+        );
+    }
+
+    function formatDate(date) {
+        return date.toLocaleDateString("en-IN", {
+            day: "numeric",
+            month: "short",
+            year: "numeric"
+        });
+    }
+
+    function formatTime(timeString) {
+        const parts = timeString.split(":").map(Number);
+
+        const date = new Date();
+        date.setHours(parts[0], parts[1], 0, 0);
+
+        return date.toLocaleTimeString("en-IN", {
+            hour: "numeric",
+            minute: "2-digit",
+            hour12: true
+        });
+    }
+
+    function getDayStart(date) {
+        const result = new Date(date);
+        result.setHours(0, 0, 0, 0);
+        return result;
+    }
+
+    function getWeekStart(date) {
+        const result = getDayStart(date);
+
+        const day = result.getDay();
+        const difference = day === 0 ? -6 : 1 - day;
+
+        result.setDate(result.getDate() + difference);
+
+        return result;
+    }
+
+    function getCardsForDate(dateString) {
+        return getSessionCards().filter(card => {
+            return card.dataset.date === dateString;
+        });
+    }
+
+    function getDateKey(date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+
+        return `${year}-${month}-${day}`;
+    }
+
+    function getTotalMinutes(cards) {
+        return cards.reduce((total, card) => {
+            return total + Number(card.dataset.minutes || 0);
+        }, 0);
+    }
+
+    function formatDuration(minutes) {
+        const hours = Math.floor(minutes / 60);
+        const remainingMinutes = minutes % 60;
+
+        if (hours && remainingMinutes) {
+            return `${hours} hr ${remainingMinutes} min`;
+        }
+
+        if (hours) {
+            return `${hours} hr`;
+        }
+
+        return `${remainingMinutes} min`;
+    }
+
+    function showStudyView(view, button) {
+        currentStudyView = view;
+
+        document.querySelectorAll(".study-view-button").forEach(btn => {
+            btn.classList.remove("active");
+        });
+
+        if (button) {
+            button.classList.add("active");
+        }
+
+        document.getElementById("dailyStudyView").style.display =
+            view === "daily" ? "block" : "none";
+
+        document.getElementById("weeklyStudyView").style.display =
+            view === "weekly" ? "block" : "none";
+
+        document.getElementById("monthlyStudyView").style.display =
+            view === "monthly" ? "block" : "none";
+
+        if (view === "daily") {
+            showDailySessions();
+        }
+
+        if (view === "weekly") {
+            renderWeeklyView();
+        }
+
+        if (view === "monthly") {
+            renderMonthlyView();
+        }
+    }
+
+    function showDailySessions() {
+        const today = getDateKey(new Date());
+        const cards = getSessionCards();
+
+        let visibleCount = 0;
+
+        cards.forEach(card => {
+            const show = card.dataset.date === today;
+
+            card.style.display = show ? "" : "none";
+
+            if (show) {
+                visibleCount++;
+            }
+        });
+
+        showEmptyMessage(visibleCount === 0);
+    }
+
+    function changeWeek(direction) {
+        weekOffset += direction;
+        renderWeeklyView();
+    }
+
+    function renderWeeklyView() {
+        const today = new Date();
+
+        const weekStart = getWeekStart(today);
+        weekStart.setDate(weekStart.getDate() + weekOffset * 7);
+
+        const weekEnd = new Date(weekStart);
+        weekEnd.setDate(weekStart.getDate() + 6);
+
+        document.getElementById("weekTitle").textContent =
+            `${formatDate(weekStart)} – ${formatDate(weekEnd)}`;
+
+        const weeklyDayList = document.getElementById("weeklyDayList");
+        weeklyDayList.innerHTML = "";
+
+        let totalWeekSessions = 0;
+
+        for (let i = 0; i < 7; i++) {
+            const date = new Date(weekStart);
+            date.setDate(weekStart.getDate() + i);
+
+            const dateKey = getDateKey(date);
+            const cards = getCardsForDate(dateKey);
+
+            totalWeekSessions += cards.length;
+
+            const dayRow = document.createElement("div");
+            dayRow.className = "weekly-day-row";
+
+            const header = document.createElement("button");
+            header.type = "button";
+            header.className = "weekly-day-header";
+
+            const dayInfo = document.createElement("div");
+            dayInfo.className = "weekly-day-info";
+
+            const dayName = document.createElement("strong");
+            dayName.textContent = date.toLocaleDateString("en-IN", {
+                weekday: "long",
+                day: "numeric",
+                month: "short"
+            });
+
+            const summary = document.createElement("span");
+            summary.textContent =
+                `${cards.length} ${cards.length === 1 ? "session" : "sessions"} · ` +
+                formatDuration(getTotalMinutes(cards));
+
+            dayInfo.appendChild(dayName);
+            dayInfo.appendChild(summary);
+
+            const arrow = document.createElement("span");
+            arrow.className = "weekly-day-arrow";
+            arrow.textContent = "⌄";
+
+            header.appendChild(dayInfo);
+            header.appendChild(arrow);
+
+            const sessionList = document.createElement("div");
+            sessionList.className = "weekly-session-list";
+            sessionList.style.display = "none";
+
+            cards.forEach(card => {
+                sessionList.appendChild(createCompactSession(card));
+            });
+
+            header.addEventListener("click", () => {
+                const isOpen = sessionList.style.display !== "none";
+
+                sessionList.style.display = isOpen ? "none" : "block";
+                arrow.textContent = isOpen ? "⌄" : "⌃";
+            });
+
+            dayRow.appendChild(header);
+            dayRow.appendChild(sessionList);
+
+            weeklyDayList.appendChild(dayRow);
+        }
+
+        showEmptyMessage(totalWeekSessions === 0);
+    }
+
+    function createCompactSession(card) {
+        const item = document.createElement("div");
+        item.className = "compact-study-session";
+
+        const details = document.createElement("div");
+        details.className = "compact-study-session-info";
+
+        const time = document.createElement("strong");
+        time.textContent = formatTime(card.dataset.time);
+
+        const topic = document.createElement("span");
+        topic.textContent = card.dataset.topic;
+
+        const subject = document.createElement("small");
+        subject.textContent =
+            `${card.dataset.subject} · ${card.dataset.minutes} min`;
+
+        details.appendChild(time);
+        details.appendChild(topic);
+        details.appendChild(subject);
+
+        item.appendChild(details);
+
+        // Clone the original Delete form into the expanded session.
+        const deleteForm = card.querySelector(".delete-session-form");
+
+        if (deleteForm) {
+            item.appendChild(deleteForm.cloneNode(true));
+        }
+
+        return item;
+    }
+
+    function changeMonth(direction) {
+        monthOffset += direction;
+        renderMonthlyView();
+    }
+
+    function renderMonthlyView() {
+        const today = new Date();
+
+        const monthDate = new Date(
+            today.getFullYear(),
+            today.getMonth() + monthOffset,
+            1
+        );
+
+        const year = monthDate.getFullYear();
+        const month = monthDate.getMonth();
+
+        document.getElementById("monthTitle").textContent =
+            monthDate.toLocaleDateString("en-IN", {
+                month: "long",
+                year: "numeric"
+            });
+
+        const calendar = document.getElementById("monthlyCalendarDays");
+        calendar.innerHTML = "";
+
+        const firstDay = new Date(year, month, 1);
+        const startingDay = (firstDay.getDay() + 6) % 7;
+
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+        // Empty spaces before the first day of the month.
+        for (let i = 0; i < startingDay; i++) {
+            const blank = document.createElement("div");
+            blank.className = "calendar-day calendar-day-empty";
+            calendar.appendChild(blank);
+        }
+
+        let monthHasSessions = false;
+
+        for (let day = 1; day <= daysInMonth; day++) {
+            const date = new Date(year, month, day);
+            const dateKey = getDateKey(date);
+
+            const cards = getCardsForDate(dateKey);
+
+            if (cards.length) {
+                monthHasSessions = true;
+            }
+
+            const dayButton = document.createElement("button");
+            dayButton.type = "button";
+            dayButton.className = "calendar-day";
+
+            if (cards.length) {
+                dayButton.classList.add("has-sessions");
+            }
+
+            if (dateKey === getDateKey(today)) {
+                dayButton.classList.add("calendar-today");
+            }
+
+            dayButton.textContent = day;
+
+            if (cards.length) {
+                const dot = document.createElement("span");
+                dot.className = "calendar-session-dot";
+                dayButton.appendChild(dot);
+            }
+
+            dayButton.addEventListener("click", () => {
+                document.querySelectorAll(".calendar-day").forEach(button => {
+                    button.classList.remove("calendar-selected");
+                });
+
+                dayButton.classList.add("calendar-selected");
+
+                selectedMonthDate = dateKey;
+
+                renderMonthlySelectedSessions(dateKey);
+            });
+
+            calendar.appendChild(dayButton);
+        }
+
+        showEmptyMessage(!monthHasSessions);
+
+        // Select today's date when viewing the current month.
+        if (monthOffset === 0) {
+            selectedMonthDate = getDateKey(today);
+            renderMonthlySelectedSessions(selectedMonthDate);
+
+            const todayButton = Array.from(
+                calendar.querySelectorAll(".calendar-day")
+            ).find(button => {
+                return button.textContent.trim() === String(today.getDate());
+            });
+
+            if (todayButton) {
+                todayButton.classList.add("calendar-selected");
+            }
+        } else {
+            document.getElementById("monthlySelectedSessions").innerHTML = "";
+        }
+    }
+
+    function renderMonthlySelectedSessions(dateKey) {
+        const container = document.getElementById("monthlySelectedSessions");
+        container.innerHTML = "";
+
+        const cards = getCardsForDate(dateKey);
+
+        const heading = document.createElement("h3");
+        heading.textContent = `Study sessions · ${formatDate(parseLocalDate(dateKey))}`;
+
+        container.appendChild(heading);
+
+        if (!cards.length) {
+            const empty = document.createElement("p");
+            empty.className = "monthly-no-sessions";
+            empty.textContent = "No study sessions planned for this day.";
+
+            container.appendChild(empty);
+            return;
+        }
+
+        const list = document.createElement("div");
+        list.className = "weekly-session-list";
+
+        cards.forEach(card => {
+            list.appendChild(createCompactSession(card));
+        });
+
+        container.appendChild(list);
+    }
+
+    function showEmptyMessage(show) {
+        const emptyMessage = document.getElementById("studyViewEmpty");
+
+        if (emptyMessage) {
+            emptyMessage.style.display = show ? "block" : "none";
+        }
+    }
+
+    // Open Daily view by default.
+    document.addEventListener("DOMContentLoaded", () => {
+        const dailyButton = document.querySelector(
+            ".study-view-button"
+        );
+
+        if (dailyButton) {
+            showStudyView("daily", dailyButton);
+        }
+    });
+</script>
+
+            <!-- Generate topics from syllabus -->
+            <section class="topic-form-card">
+
+                <h2>Generate Topics from Syllabus</h2>
+ 
+                
+<form action="/syllabus/upload"
+      method="POST"
+      enctype="multipart/form-data"
+      class="syllabus-upload-form">
+
+    <div class="syllabus-upload-field">
+        <label for="upload-subject">Select Subject</label>
+
+        <select name="subject_id" id="upload-subject" required>
+            <option value="">Choose a subject</option>
+
+            {% for subject in subjects %}
+                <option value="{{ subject.id }}">
+                    {{ subject.subject_name }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    
+<div class="syllabus-upload-field">
+    <label for="syllabus-file">Choose Syllabus PDF</label>
+
+    <div class="pdf-upload-box">
+        <input type="file"
+               name="syllabus_file"
+               id="syllabus-file"
+               accept=".pdf,application/pdf"
+               required>
+
+        <label for="syllabus-file" class="pdf-upload-label">
+            <span class="pdf-upload-icon">↑</span>
+
+            <span class="pdf-upload-text">
+                <strong>Choose a PDF file</strong>
+                <small id="selected-file-name">
+                    PDF syllabus from your computer
+                </small>
+            </span>
+        </label>
+    </div>
+</div>
+
+
+    <button type="submit" class="syllabus-upload-button">
+        Upload Syllabus
+    </button>
+
+</form>
+
+
+                <p class="description">
+                    Select an uploaded syllabus and let Gemini suggest
+                    study topics based on its contents.
+                </p>
+
+                {% if syllabi %}
+
+                    <form action="/ai/generate-topics" method="POST" class="topic-form">
+
+                        <div class="form-group">
+
+                            <label for="syllabus_id">Uploaded Syllabus</label>
+
+                            <select id="syllabus_id" name="syllabus_id" required>
+
+                                <option value="">Select a syllabus</option>
+
+                                {% for syllabus in syllabi %}
+
+                                    <option value="{{ syllabus.id }}">
+                                        {{ syllabus.subject_name }} -
+                                        {{ syllabus.file_name }}
+                                    </option>
+
+                                {% endfor %}
+
+                            </select>
+
+                        </div>
+
+                        <div class="form-group submit-group">
+
+                            <button type="submit" class="add-button">
+                                Generate Study Topics
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                {% else %}
+
+                    <div class="no-subjects">
+                        No uploaded syllabi found.
+                        Please upload a syllabus from the My Subjects page first.
+                    </div>
+
+                {% endif %}
+
+            </section>
+
+            <!-- Active study session -->
+            {% if active_session %}
+
+                <section class="active-study-card">
+
+                    <div class="active-study-header">
+
+                        <div class="active-study-icon">◷</div>
+
+                        <div>
+                            <span class="active-study-label">CURRENT STUDY SESSION</span>
+                            <h2>{{ active_session.topic_name }}</h2>
+                            <p>{{ active_session.subject_name }}</p>
+                        </div>
+
+                        <span class="studying-status">
+                            <span class="status-dot"></span>
+                            Studying
+                        </span>
+
+                    </div>
+
+                    <div
+                        class="study-timer"
+                        id="studyTimer"
+                        data-started-at="{{ active_session.started_at }}">
+                        00:00:00
+                    </div>
+
+                    <p class="timer-caption">Elapsed study time</p>
+
+                    <div class="active-study-footer">
+
+                        <div>
+                            <span class="started-label">Started at</span>
+                            <strong id="studyStartedAt">
+                                {{ active_session.started_at }}
+                            </strong>
+                        </div>
+
+                        <form action="/study/stop" method="POST">
+                            <button type="submit" class="stop-study-button">
+                                Stop Study
+                            </button>
+                        </form>
+
+                    </div>
+
+                </section>
+
+            {% endif %}
+
+            <!-- Add topic form -->
+            <section class="topic-form-card">
+
+                <h2>Add a Study Topic</h2>
+
+                <p class="description">
+                    Choose a subject and enter the details of a topic you want to study.
+                </p>
+
+                {% if subjects %}
+
+                    <form action="/study-plan/add-topic" method="POST" class="topic-form">
+
+                        <div class="form-group">
+
+                            <label for="subject_id">Subject</label>
+
+                            <select id="subject_id" name="subject_id" required>
+
+                                <option value="">Select a subject</option>
+
+                                {% for subject in subjects %}
+
+                                    <option value="{{ subject.id }}">
+                                        {{ subject.subject_name }}
+                                    </option>
+
+                                {% endfor %}
+
+                            </select>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="topic_name">Topic Name</label>
+
+                            <input
+                                type="text"
+                                id="topic_name"
+                                name="topic_name"
+                                placeholder="For example, Normalization"
+                                maxlength="150"
+                                required
+                            >
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="difficulty">Difficulty</label>
+
+                            <select id="difficulty" name="difficulty" required>
+                                <option value="1">1 - Very Easy</option>
+                                <option value="2">2 - Easy</option>
+                                <option value="3" selected>3 - Medium</option>
+                                <option value="4">4 - Difficult</option>
+                                <option value="5">5 - Very Difficult</option>
+                            </select>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="importance">Importance</label>
+
+                            <select id="importance" name="importance" required>
+                                <option value="1">1 - Low</option>
+                                <option value="2">2 - Somewhat Low</option>
+                                <option value="3" selected>3 - Medium</option>
+                                <option value="4">4 - High</option>
+                                <option value="5">5 - Very High</option>
+                            </select>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="estimated_hours">Estimated Study Hours</label>
+
+                            <input
+                                type="number"
+                                id="estimated_hours"
+                                name="estimated_hours"
+                                min="0.5"
+                                max="100"
+                                step="0.5"
+                                value="2"
+                                required
+                            >
+
+                            <span class="form-help">
+                                Estimate how many hours you need for this topic.
+                            </span>
+
+                        </div>
+
+                        <div class="form-group submit-group">
+
+                            <button type="submit" class="add-button">
+                                + Add Topic
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                {% else %}
+
+                    <div class="no-subjects">
+                        You haven't added any subjects yet.
+                        Go to <a href="/subjects">My Subjects</a> and add a subject
+                        before creating study topics.
+                    </div>
+
+                {% endif %}
+
+            </section>
+
+            <!-- Saved topics -->
+            <section class="missed-sessions-section">
+
+    <div class="missed-sessions-heading">
+        <div class="missed-sessions-icon">!</div>
+        <h2>Missed Study Sessions</h2>
+    </div>
+
+    <p class="missed-sessions-description">
+        These study sessions were missed. Reschedule them to get back on track with your preparation.
+    </p>
+
+    {% if missed_sessions %}
+
+        {% for session in missed_sessions %}
+
+        <div class="missed-session-card">
+
+            <!-- Card heading -->
+            <div class="missed-session-top">
+
+                <div>
+                    <h3 class="missed-session-topic">
+                        {{ session.topic_name }}
+                    </h3>
+
+                    <div class="missed-session-subject">
+                        {{ session.subject_name }}
+                    </div>
+                </div>
+
+                <span class="missed-session-badge">
+                    Missed
+                </span>
+
+            </div>
+
+            <!-- Original session details -->
+            <div class="missed-session-details">
+
+                <div class="missed-session-detail">
+                    <span>Originally scheduled</span>
+                    <strong>
+                        {{ session.planned_date.strftime('%d %b %Y') }}
+                    </strong>
+                </div>
+
+                <div class="missed-session-detail">
+                    <span>Scheduled time</span>
+                    <strong>{{ session.planned_time }}</strong>
+                </div>
+
+                <div class="missed-session-detail">
+                    <span>Planned duration</span>
+                    <strong>{{ session.planned_minutes }} minutes</strong>
+                </div>
+
+            </div>
+
+            <!-- Reschedule form -->
+            <form
+                action="/study/reschedule"
+                method="POST"
+                class="reschedule-form"
+            >
+
+                <h3>Reschedule this session</h3>
+
+                <input
+                    type="hidden"
+                    name="planned_session_id"
+                    value="{{ session.id }}"
+                >
+
+                <div class="reschedule-fields">
+
+                    <div class="reschedule-field">
+                        <label>New study date</label>
+                        <input
+                            type="date"
+                            name="planned_date"
+                            required
+                        >
+                    </div>
+
+                    <div class="reschedule-field">
+                        <label>New study time</label>
+                        <input
+                            type="time"
+                            name="planned_time"
+                            required
+                        >
+                    </div>
+
+                    <div class="reschedule-field">
+                        <label>Study duration (minutes)</label>
+                        <input
+                            type="number"
+                            name="planned_minutes"
+                            min="15"
+                            max="600"
+                            value="{{ session.planned_minutes }}"
+                            required
+                        >
+                    </div>
+
+                </div>
+
+                <button type="submit" class="reschedule-button">
+                    Reschedule Session
+                </button>
+
+            </form>
+
+            <!-- Separate delete form -->
+            <form
+                action="/study/delete-session"
+                method="POST"
+                class="delete-session-form"
+                onsubmit="return confirm('Delete this missed study session?');"
+            >
+
+                <input
+                    type="hidden"
+                    name="planned_session_id"
+                    value="{{ session.id }}"
+                >
+
+                <button type="submit" class="delete-session-button">
+                    Delete
+                </button>
+
+            </form>
+
+        </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <div class="no-missed-sessions">
+            You are all caught up! There are no missed study sessions.
+        </div>
+
+    {% endif %}
+
+</section>
+<!-- Study Focus -->
+<section class="study-focus-section">
+
+    <div class="study-focus-header">
+        <div>
+            <h2>Study Focus</h2>
+            <p>Start with topics that need your attention.</p>
+        </div>
+    </div>
+
+    {% if topics %}
+
+        <div class="study-focus-grid">
+
+            {% for topic in focus_topics %}
+
+                <article class="study-focus-card">
+
+                    <span class="study-focus-subject">
+                        {{ topic.subject_name }}
+                    </span>
+
+                    <h3>{{ topic.topic_name }}</h3>
+
+                    {% if topic.quiz_percentage is none %}
+                        <p>Take a quiz to check your understanding.</p>
+                    {% elif topic.quiz_percentage < 60 %}
+                        <p>Your quiz score suggests more practice is needed.</p>
+                    {% elif topic.quiz_percentage < 80 %}
+                        <p>Review this topic to strengthen your understanding.</p>
+                    {% else %}
+                        <p>Good understanding. Keep revising to retain it.</p>
+                    {% endif %}
+
+                    <div class="study-focus-details">
+                        <span>Difficulty {{ topic.difficulty }}/5</span>
+                        <span>Importance {{ topic.importance }}/5</span>
+                    </div>
+
+                </article>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <p>Add topics to see your study focus.</p>
+
+    {% endif %}
+
+</section>
+
+                <div class="topics-header">
+
+                    <h2>My Study Topics</h2>
+
+                    <span class="topic-count">
+                        {{ total_topics }} Topics
+                    </span>
+
+                </div>
+
+                <!-- Topic Pagination -->
+{% if total_pages > 1 %}
+
+    <div class="topic-pagination">
+
+        <span class="pagination-info">
+            Showing {{ (page - 1) * 6 + 1 }} -
+            {{ (page * 6, total_topics)|min }}
+            of {{ total_topics }} topics
+        </span>
+
+        <div class="pagination-buttons">
+
+            {% if page > 1 %}
+                <a href="/study-plan?page={{ page - 1 }}"
+                   class="pagination-button">
+                    &laquo; Previous
+                </a>
+            {% endif %}
+
+            {% for page_number in range(1, total_pages + 1) %}
+
+                <a href="/study-plan?page={{ page_number }}"
+                   class="pagination-button
+                   {% if page_number == page %}active{% endif %}">
+                    {{ page_number }}
+                </a>
+
+            {% endfor %}
+
+            {% if page < total_pages %}
+                <a href="/study-plan?page={{ page + 1 }}"
+                   class="pagination-button">
+                    Next &raquo;
+                </a>
+            {% endif %}
+
+        </div>
+
+    </div>
+
+{% endif %}
+                
+                {% if topics %}
+
+                    <div class="topics-grid">
+
+                        {% for topic in topics %}
+
+                            <div class="topic-card">
+
+                                
+<div class="topic-card-labels">
+
+    <span class="topic-subject">
+        {{ topic.subject_name }}
+    </span>
+
+    {% if topic.priority_score >= 16 %}
+
+        <span class="priority-badge priority-high">
+            High Priority
+            <span class="priority-score">
+                {{ topic.priority_score }}/25
+            </span>
+        </span>
+
+    {% elif topic.priority_score >= 8 %}
+
+        <span class="priority-badge priority-medium">
+            Medium Priority
+            <span class="priority-score">
+                {{ topic.priority_score }}/25
+            </span>
+        </span>
+
+    {% else %}
+
+        <span class="priority-badge priority-low">
+            Low Priority
+            <span class="priority-score">
+                {{ topic.priority_score }}/25
+            </span>
+        </span>
+
+    {% endif %}
+
+</div>
+
+<h3>{{ topic.topic_name }}</h3>
+
+
+                                <div class="topic-details">
+
+                                    <span class="detail">
+                                        Difficulty: {{ topic.difficulty }}/5
+                                    </span>
+
+                                    <span class="detail">
+                                        Importance: {{ topic.importance }}/5
+                                    </span>
+
+                                    <span class="detail">
+                                        {{ topic.estimated_hours }} hours
+                                    </span>
+
+                                </div>
+
+                                <!-- Start or stop study session -->
+                                <div class="study-session-actions">
+
+                                    {% if active_session and active_session.topic_id == topic.id %}
+
+                                        <form action="/study/stop" method="POST">
+                                            <button type="submit" class="add-button">
+                                                Stop Study
+                                            </button>
+                                        </form>
+
+                                    {% elif active_session %}
+
+                                        <p class="session-notice">
+                                            Finish your current study session first.
+                                        </p>
+
+                                    {% else %}
+
+                                        <form action="/study/start" method="POST">
+
+                                            <input
+                                                type="hidden"
+                                                name="topic_id"
+                                                value="{{ topic.id }}"
+                                            >
+
+                                            <button type="submit" class="add-button">
+                                                Start Study
+                                            </button>
+
+                                        </form>
+
+                                    {% endif %}
+
+                                </div>
+
+                                <!-- Completed study sessions for this topic -->
+                                {% set topic_sessions = completed_sessions
+    | selectattr("topic_id", "equalto", topic.id)
+    | list %}
+
+    <form action="/study/schedule" method="POST" class="schedule-form">
+
+    <input
+        type="hidden"
+        name="topic_id"
+        value="{{ topic.id }}"
+    >
+
+    <label>Plan Date</label>
+    <input
+        type="date"
+        name="planned_date"
+        required
+    >
+    <label>Study Time</label>
+<input
+    type="time"
+    name="planned_time"
+    required
+>
+
+    <label>Study Duration (minutes)</label>
+    <input
+        type="number"
+        name="planned_minutes"
+        value="60"
+        min="15"
+        max="600"
+        required
+    >
+
+    <button type="submit">
+        Schedule Study
+    </button>
+
+</form>
+
+<div class="topic-study-summary">
+    <span>Total studied:</span>
+    <strong>
+        {% set total_minutes = topic.total_study_minutes or 0 %}
+
+{% if total_minutes >= 60 %}
+    {{ total_minutes // 60 }} hr
+    {% if total_minutes % 60 > 0 %}
+        {{ total_minutes % 60 }} min
+    {% endif %}
+{% else %}
+    {{ total_minutes }} min
+{% endif %}
+    </strong>
+
+    <button type="button"
+            class="history-button"
+            aria-expanded="false">
+        View History
+    </button>
+</div>
+
+<div class="topic-session-history" hidden>
+    <h4>Study History</h4>
+
+    {% if topic_sessions %}
+        {% for session in topic_sessions %}
+            <div class="completed-session">
+                <div class="completed-session-header">
+                    <span class="completed-badge">Completed</span>
+                    <strong>{{ session.duration_minutes or 0 }} min</strong>
+                </div>
+
+                <div class="completed-session-times">
+                    <div>
+                        <span>Started</span>
+                        <strong>{{ session.started_at }}</strong>
+                    </div>
+
+                    <div>
+                        <span>Ended</span>
+                        <strong>{{ session.ended_at }}</strong>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No study history yet.</p>
+    {% endif %}
+</div>
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                {% else %}
+
+                    <div class="empty-state">
+
+                        <div class="empty-icon">+</div>
+
+                        <h3>No study topics added yet</h3>
+
+                        <p>
+                            Add your first topic using the form above.
+                            Your saved topics will appear here.
+                        </p>
+
+                    </div>
+
+                {% endif %}
+
+            </section>
+
+        </main>
+
+    </div>
+
+    <script>
+        // Update the profile avatar using the student's name.
+        const profileName = document.getElementById("profileName");
+        const userName = profileName.textContent.trim();
+
+        const profileAvatar = document.getElementById("profileAvatar");
+        profileAvatar.textContent = userName.charAt(0).toUpperCase();
+
+        // Log out the current student.
+        const logoutButton = document.getElementById("logoutButton");
+
+        logoutButton.addEventListener("click", async function () {
+
+            try {
+                const response = await fetch("/users/logout", {
+                    method: "POST"
+                });
+
+                if (response.ok) {
+                    window.location.href = "/login";
+                } else {
+                    alert("Unable to log out. Please try again.");
+                }
+
+            } catch (error) {
+                alert("Could not connect to the server.");
+            }
+
+        });
+
+        // Run the timer for the active study session.
+        const studyTimer = document.getElementById("studyTimer");
+
+        if (studyTimer) {
+
+            const startedAt = new Date(
+                studyTimer.dataset.startedAt
+            ).getTime();
+
+            function updateStudyTimer() {
+
+                const currentTime = Date.now();
+
+                const elapsedSeconds = Math.max(
+                    0,
+                    Math.floor((currentTime - startedAt) / 1000)
+                );
+
+                const hours = Math.floor(elapsedSeconds / 3600);
+                const minutes = Math.floor((elapsedSeconds % 3600) / 60);
+                const seconds = elapsedSeconds % 60;
+
+                studyTimer.textContent =
+                    String(hours).padStart(2, "0") + ":" +
+                    String(minutes).padStart(2, "0") + ":" +
+                    String(seconds).padStart(2, "0");
+            }
+
+            updateStudyTimer();
+
+            setInterval(updateStudyTimer, 1000);
+        }
+
+        document.querySelectorAll(".history-button").forEach(function (button) {
+    button.addEventListener("click", function () {
+        const topicCard = button.closest(".topic-card");
+        const history = topicCard.querySelector(".topic-session-history");
+
+        const shouldShow = history.hidden;
+
+        history.hidden = !shouldShow;
+        button.textContent = shouldShow ? "Hide History" : "View History";
+        button.setAttribute("aria-expanded", String(shouldShow));
+    });
+});
+
+
+const syllabusFileInput = document.getElementById("syllabus-file");
+const selectedFileName = document.getElementById("selected-file-name");
+
+if (syllabusFileInput && selectedFileName) {
+    syllabusFileInput.addEventListener("change", function () {
+        if (syllabusFileInput.files.length > 0) {
+            selectedFileName.textContent =
+                syllabusFileInput.files[0].name;
+        } else {
+            selectedFileName.textContent =
+                "PDF syllabus from your computer";
+        }
+    });
+}
+
+    </script>
+<script src="/static/js/theme.js"></script>
+</body>
+</html>

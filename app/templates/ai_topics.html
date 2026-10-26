@@ -1,0 +1,411 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AI Suggested Topics</title>
+    <script>
+    (function () {
+        const savedTheme = localStorage.getItem("studyPlannerTheme");
+
+        if (savedTheme === "dark") {
+            document.documentElement.classList.add("dark-theme");
+        }
+    })();
+</script>
+
+    <style>
+        body.dark-theme {
+    background-color: #121212;
+    color: #f1f1f1;
+}
+
+body.dark-theme .card {
+    background-color: #1e1e1e;
+    color: #f1f1f1;
+    border-color: #333333;
+}
+
+body.dark-theme input,
+body.dark-theme select,
+body.dark-theme textarea {
+    background-color: #252525;
+    color: #f1f1f1;
+    border-color: #444444;
+}
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #1e293b;
+            margin: 0;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .page-header {
+            margin-bottom: 25px;
+        }
+
+        .page-header h1 {
+            margin-bottom: 8px;
+            color: #172b4d;
+        }
+
+        .page-header p {
+            color: #64748b;
+        }
+
+        .topics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-top: 30px;
+        }
+
+        .topic-card {
+            position: relative;
+            overflow: hidden;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            padding: 26px;
+            box-shadow: 0 6px 20px rgba(30, 41, 59, 0.06);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .topic-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #0f766e, #38bdf8);
+        }
+
+        .topic-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 28px rgba(30, 41, 59, 0.12);
+        }
+
+        .card-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 22px;
+        }
+
+        .topic-number {
+            color: #0f766e;
+            background: #e6f5f2;
+            padding: 7px 11px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.6px;
+        }
+
+        .difficulty-badge {
+            padding: 7px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .difficulty-1,
+        .difficulty-2 {
+            color: #166534;
+            background: #dcfce7;
+        }
+
+        .difficulty-3 {
+            color: #92400e;
+            background: #fef3c7;
+        }
+
+        .difficulty-4,
+        .difficulty-5 {
+            color: #b91c1c;
+            background: #fee2e2;
+        }
+
+        .topic-card h3 {
+            color: #172b4d;
+            font-size: 20px;
+            line-height: 1.4;
+            margin: 0 0 14px;
+        }
+
+        .topic-description {
+            color: #64748b;
+            font-size: 14px;
+            line-height: 1.8;
+            min-height: 75px;
+            margin: 0;
+        }
+
+        .card-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            border-top: 1px solid #e8edf4;
+            margin-top: 24px;
+            padding-top: 18px;
+        }
+
+        .importance,
+        .study-time {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .detail-label {
+            color: #94a3b8;
+            font-size: 12px;
+        }
+
+        .importance-value {
+            color: #0f766e;
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .study-time strong {
+            color: #172b4d;
+            font-size: 17px;
+        }
+
+        .error-message {
+            background: #fff1f2;
+            color: #be123c;
+            border: 1px solid #fecdd3;
+            border-radius: 12px;
+            padding: 15px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #0f766e;
+            text-decoration: none;
+        }
+
+        .quiz-form {
+            margin-top: 22px;
+        }
+
+        .quiz-button {
+            width: 100%;
+            padding: 13px 18px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #0f766e, #0891b2);
+            color: white;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .quiz-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(15, 118, 110, 0.2);
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 20px;
+            }
+
+            .topics-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .topic-description {
+                min-height: auto;
+            }
+        }
+        body.dark-theme {
+    background-color: #121212;
+    color: #f1f5f9;
+}
+
+body.dark-theme .quiz-container,
+body.dark-theme .quiz-card,
+body.dark-theme .topic-card,
+body.dark-theme .card {
+    background-color: #1e1e1e;
+    color: #f1f5f9;
+    border-color: #333333;
+}
+
+body.dark-theme h1,
+body.dark-theme h2,
+body.dark-theme h3,
+body.dark-theme h4,
+body.dark-theme p,
+body.dark-theme label {
+    color: #f1f5f9;
+}
+
+body.dark-theme .question,
+body.dark-theme .question-text {
+    color: #f1f5f9;
+}
+
+body.dark-theme .option,
+body.dark-theme .answer-option {
+    background-color: #252525;
+    color: #f1f5f9;
+    border-color: #444444;
+}
+
+body.dark-theme .option:hover,
+body.dark-theme .answer-option:hover {
+    background-color: #303030;
+}
+
+body.dark-theme input,
+body.dark-theme select,
+body.dark-theme textarea {
+    background-color: #252525;
+    color: #f1f5f9;
+    border-color: #444444;
+}
+    </style>
+</head>
+
+<body>
+    <div class="container">
+
+        <a href="/study-plan" class="back-link">
+            &larr; Back to Study Plan
+        </a>
+
+        <div class="page-header">
+            <h1>AI Suggested Topics</h1>
+
+            {% if subject_name %}
+                <p>Subject: {{ subject_name }}</p>
+            {% else %}
+                <p>Topics generated from your uploaded syllabus.</p>
+            {% endif %}
+        </div>
+
+        {% if error %}
+
+            <div class="error-message">
+                {{ error }}
+            </div>
+
+        {% elif topics %}
+
+            <div class="topics-grid">
+
+                {% for topic in topics %}
+
+                    <div class="topic-card">
+
+                        <div class="card-top">
+
+                            <span class="topic-number">
+                                TOPIC {{ "%02d"|format(loop.index) }}
+                            </span>
+
+                            <span class="difficulty-badge difficulty-{{ topic.difficulty }}">
+
+                                {% if topic.difficulty <= 2 %}
+                                    Easy
+                                {% elif topic.difficulty == 3 %}
+                                    Medium
+                                {% else %}
+                                    Hard
+                                {% endif %}
+
+                            </span>
+
+                        </div>
+
+                        <h3>{{ topic.topic_name }}</h3>
+
+                        <p class="topic-description">
+                            {{ topic.content_covered | default(topic.topic_name, true) }}
+                        </p>
+
+                        <div class="card-bottom">
+
+                            <div class="importance">
+                                <span class="detail-label">Importance</span>
+
+                                <span class="importance-value">
+                                    {{ topic.importance }}/5
+                                </span>
+                            </div>
+
+                            <div class="study-time">
+                                <span class="detail-label">Study time</span>
+                                <strong>{{ topic.estimated_hours }} hrs</strong>
+                            </div>
+
+                        </div>
+
+                        <form action="/ai/generate-quiz" method="POST" class="quiz-form">
+
+                            <input
+                                type="hidden"
+                                name="syllabus_id"
+                                value="{{ syllabus_id }}"
+                            >
+
+                            <input
+                                type="hidden"
+                                name="topic_id"
+                                value="{{ topic.id }}"
+                            >
+
+                            <input
+                                type="hidden"
+                                name="topic_name"
+                                value="{{ topic.topic_name }}"
+                            >
+
+                            <input
+                                type="hidden"
+                                name="content_covered"
+                                value="{{ topic.content_covered | default(topic.topic_name, true) }}"
+                            >
+
+                            <button type="submit" class="quiz-button">
+                                <span>🎯</span>
+                                Generate Quiz
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <div class="error-message">
+                No topics were generated. Please try generating topics again.
+            </div>
+
+        {% endif %}
+
+    </div>
+    <script src="/static/js/theme.js"></script>
+</body>
+</html>

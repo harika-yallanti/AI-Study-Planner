@@ -1,0 +1,652 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Exam Preparation | AI Study Planner</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #1e293b;
+        }
+
+        .main-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 35px 25px;
+        }
+
+        /* Back navigation */
+        .back-link {
+            display: inline-block;
+            color: #0f766e;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Page heading */
+        .page-header {
+            margin-bottom: 25px;
+        }
+
+        .page-header h1 {
+            font-size: 30px;
+            margin-bottom: 10px;
+            color: #172b4d;
+        }
+
+        .page-header p {
+            color: #64748b;
+            line-height: 1.6;
+        }
+
+        /* Exam overview */
+        .exam-card {
+            background: linear-gradient(135deg, #172b4d, #24517a);
+            color: white;
+            padding: 28px;
+            border-radius: 18px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 25px rgba(23, 43, 77, 0.12);
+        }
+
+        .exam-label {
+            font-size: 12px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: #bfdbfe;
+            margin-bottom: 12px;
+        }
+
+        .exam-card h2 {
+            font-size: 26px;
+            margin-bottom: 12px;
+            overflow-wrap: anywhere;
+        }
+
+        .exam-details {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .exam-detail {
+            background: rgba(255, 255, 255, 0.12);
+            padding: 10px 14px;
+            border-radius: 9px;
+            font-size: 14px;
+        }
+
+        /* Deadline countdown */
+        .deadline-countdown {
+            display: inline-block;
+            margin-top: 18px;
+            padding: 9px 14px;
+            border-radius: 9px;
+            background: #ccfbf1;
+            color: #115e59;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .deadline-today {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .deadline-past {
+            background: #e2e8f0;
+            color: #334155;
+        }
+
+        /* Content sections */
+        .content-section {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 18px rgba(23, 43, 77, 0.04);
+        }
+
+        .section-header {
+            margin-bottom: 22px;
+        }
+
+        .section-header h2 {
+            font-size: 21px;
+            margin-bottom: 8px;
+            color: #172b4d;
+        }
+
+        .section-header p {
+            color: #64748b;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* Topics */
+        .topic-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .topic-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            padding: 16px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 11px;
+            transition: 0.2s;
+        }
+
+        .topic-item:hover {
+            border-color: #0f766e;
+        }
+
+        .topic-name {
+            font-weight: bold;
+            margin-bottom: 6px;
+            overflow-wrap: anywhere;
+        }
+
+        .topic-meta {
+            font-size: 13px;
+            color: #64748b;
+            line-height: 1.6;
+        }
+
+        .topic-hours {
+            background: #ccfbf1;
+            color: #115e59;
+            padding: 8px 11px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: bold;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        /* Study availability form */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 20px;
+        }
+
+        .form-group {
+            min-width: 0;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 9px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #cbd5e1;
+            border-radius: 9px;
+            font-size: 14px;
+            font-family: inherit;
+            color: #1e293b;
+            background: white;
+            transition: 0.2s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #0f766e;
+            box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1);
+        }
+
+        .form-note {
+            color: #64748b;
+            font-size: 13px;
+            line-height: 1.6;
+            margin-top: 18px;
+        }
+
+        /* Generate study plan button */
+        .primary-button {
+            display: inline-block;
+            width: 100%;
+            padding: 14px;
+            margin-top: 22px;
+            background: #0f766e;
+            color: white;
+            border: none;
+            border-radius: 9px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .primary-button:hover {
+            background: #115e59;
+            transform: translateY(-1px);
+        }
+
+        .primary-button:focus-visible {
+            outline: 3px solid #99f6e4;
+            outline-offset: 3px;
+        }
+
+        /* Empty topic state */
+        .empty-state {
+            padding: 20px;
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+            border-radius: 11px;
+            color: #9a3412;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        /* Responsive layout */
+        @media (max-width: 650px) {
+            .main-content {
+                padding: 22px 15px;
+            }
+
+            .content-section {
+                padding: 20px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .exam-card {
+                padding: 22px;
+            }
+
+            .exam-card h2 {
+                font-size: 23px;
+            }
+
+            .topic-item {
+                align-items: flex-start;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .exam-details {
+                flex-direction: column;
+            }
+
+            .exam-detail {
+                width: 100%;
+            }
+
+            .topic-item {
+                flex-direction: column;
+            }
+
+            .topic-hours {
+                align-self: flex-start;
+            }
+        }
+        .deadline-countdown {
+    display: inline-block;
+    margin-top: 18px;
+    padding: 9px 14px;
+    border-radius: 9px;
+    background: #ccfbf1;
+    color: #115e59;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.deadline-today {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.deadline-past {
+    background: #e2e8f0;
+    color: #334155;
+}
+.exam-countdown {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+
+    margin-top: 24px;
+    padding: 20px 24px;
+
+    background: #eef2ff;
+    border: 1px solid #c7d2fe;
+    border-radius: 16px;
+
+    color: #3730a3;
+}
+
+.countdown-number {
+    min-width: 75px;
+    text-align: center;
+
+    font-size: 32px;
+    font-weight: 700;
+}
+
+.countdown-text strong {
+    display: block;
+    font-size: 16px;
+}
+
+.countdown-text p {
+    margin-top: 5px;
+    font-size: 13px;
+    color: #6366a1;
+}
+
+.countdown-today {
+    background: #fffbeb;
+    border-color: #fde68a;
+    color: #92400e;
+}
+
+.countdown-today .countdown-text p {
+    color: #a16207;
+}
+
+.countdown-past {
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+    color: #475569;
+}
+
+.countdown-past .countdown-text p {
+    color: #64748b;
+}
+    </style>
+</head>
+
+<body>
+
+<main class="main-content">
+
+    <a href="/exams" class="back-link">
+        &larr; Back to Exams
+    </a>
+
+    <header class="page-header">
+        <h1>Prepare for Your Exam</h1>
+
+        <p>
+            Build a personalized study timetable based on your exam
+            and available time.
+        </p>
+    </header>
+
+    <!-- Exam overview -->
+    <section class="exam-card">
+
+        <p class="exam-label">Your Upcoming Exam</p>
+
+        <h2>{{ exam.exam_name }}</h2>
+
+        <div class="exam-details">
+
+            <div class="exam-detail">
+                Subject: {{ exam.subject_name }}
+            </div>
+
+            <div class="exam-detail">
+                Exam Date:
+                {{ exam.exam_date.strftime("%d %B %Y") }}
+            </div>
+
+        </div>
+
+        {% set days_remaining = (exam.exam_date - today).days %}
+
+        <div class="exam-countdown
+            {% if days_remaining == 0 %}
+                countdown-today
+            {% elif days_remaining < 0 %}
+                countdown-past
+            {% endif %}">
+
+            {% if days_remaining > 0 %}
+
+                <div class="countdown-number">
+                    {{ days_remaining }}
+                </div>
+
+                <div class="countdown-text">
+                    <strong>Days remaining</strong>
+                    <p>Your exam is approaching. Keep preparing!</p>
+                </div>
+
+            {% elif days_remaining == 0 %}
+
+                <div class="countdown-number">
+                    Today!
+                </div>
+
+                <div class="countdown-text">
+                    <strong>Your exam is today</strong>
+                    <p>All the best for your exam!</p>
+                </div>
+
+            {% else %}
+
+                <div class="countdown-number">
+                    Completed
+                </div>
+
+                <div class="countdown-text">
+                    <strong>Exam date has passed</strong>
+                    <p>This exam date is in the past.</p>
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </section>
+
+    <!-- Topics to prepare -->
+    <section class="content-section">
+
+        <div class="section-header">
+            <h2>Topics to Prepare</h2>
+
+            <p>
+                These are the topics available for your exam subject.
+            </p>
+        </div>
+
+        {% if topics %}
+
+            <div class="topic-list">
+
+                {% for topic in topics %}
+
+                    <div class="topic-item">
+
+                        <div>
+
+                            <p class="topic-name">
+                                {{ topic.topic_name }}
+                            </p>
+
+                            <p class="topic-meta">
+                                Difficulty:
+                                {{ topic.difficulty or 3 }}/5
+                                &middot;
+                                Importance:
+                                {{ topic.importance or 3 }}/5
+                            </p>
+
+                        </div>
+
+                        <span class="topic-hours">
+                            {{ topic.estimated_hours or 1 }} hrs
+                        </span>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <div class="empty-state">
+                No topics have been added for this subject yet.
+
+                Please add topics in your Study Plan before generating
+                an exam timetable.
+            </div>
+
+        {% endif %}
+
+    </section>
+
+    <!-- Study availability -->
+    {% if topics and days_remaining >= 0 %}
+
+        <section class="content-section">
+
+            <div class="section-header">
+
+                <h2>Your Study Availability</h2>
+
+                <p>
+                    Choose when you want to start preparing and how
+                    much time you can study each day.
+                </p>
+
+            </div>
+
+            <form
+                action="/exams/{{ exam.id }}/prepare/generate"
+                method="POST"
+            >
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+
+                        <label for="study_start_date">
+                            Preparation Start Date
+                        </label>
+
+                        <input
+                            type="date"
+                            id="study_start_date"
+                            name="study_start_date"
+                            min="{{ today.strftime('%Y-%m-%d') }}"
+                            max="{{ exam.exam_date.strftime('%Y-%m-%d') }}"
+                            required
+                        >
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label for="start_time">
+                            Preferred Study Time
+                        </label>
+
+                        <input
+                            type="time"
+                            id="start_time"
+                            name="start_time"
+                            value="18:00"
+                            required
+                        >
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label for="daily_minutes">
+                            Available Study Minutes Per Day
+                        </label>
+
+                        <input
+                            type="number"
+                            id="daily_minutes"
+                            name="daily_minutes"
+                            min="15"
+                            max="600"
+                            value="120"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+                <p class="form-note">
+                    Your timetable will use the available topics,
+                    preparation start date, and exam date to organize
+                    your preparation.
+                </p>
+
+                <button type="submit" class="primary-button">
+                    Generate Exam Study Plan &rarr;
+                </button>
+
+            </form>
+
+        </section>
+
+    {% endif %}
+
+</main>
+
+<script>
+    // Set the preparation date limits.
+    const startDateInput = document.getElementById("study_start_date");
+
+    if (startDateInput) {
+
+        const today = new Date();
+
+        const localDate = new Date(
+            today.getTime() - today.getTimezoneOffset() * 60000
+        ).toISOString().split("T")[0];
+
+        startDateInput.min = localDate;
+
+        // Do not select a preparation date after the exam.
+        const examDate = startDateInput.max;
+
+        if (examDate && localDate <= examDate) {
+            startDateInput.value = localDate;
+        }
+
+    }
+</script>
+
+</body>
+</html>

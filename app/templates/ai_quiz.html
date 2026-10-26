@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Topic Quiz | AI Study Planner</title>
+    <script>
+    (function () {
+        const savedTheme = localStorage.getItem("studyPlannerTheme");
+
+        if (savedTheme === "dark") {
+            document.documentElement.classList.add("dark-theme");
+        }
+    })();
+</script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #172b4d;
+            min-height: 100vh;
+            padding: 30px 20px;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+        }
+
+        .back-link {
+            display: inline-block;
+            color: #0f766e;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 25px;
+        }
+
+        .quiz-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 24px;
+            padding: 35px;
+            box-shadow: 0 8px 30px rgba(30, 41, 59, 0.06);
+        }
+
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .quiz-label {
+            color: #0f766e;
+            background: #e6f5f2;
+            padding: 8px 13px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .score-label {
+            color: #64748b;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .progress-track {
+            width: 100%;
+            height: 9px;
+            background: #e2e8f0;
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #0f766e, #38bdf8);
+            border-radius: 20px;
+            transition: width 0.3s ease;
+        }
+
+        .question-count {
+            color: #64748b;
+            font-size: 13px;
+            margin-bottom: 25px;
+        }
+
+        .question-title {
+            font-size: 25px;
+            line-height: 1.5;
+            margin-bottom: 25px;
+        }
+
+        .options-grid {
+            display: grid;
+            gap: 13px;
+        }
+
+        .option-button {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            width: 100%;
+            text-align: left;
+            padding: 17px;
+            background: #ffffff;
+            border: 2px solid #e2e8f0;
+            border-radius: 15px;
+            color: #334155;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .option-button:hover:not(:disabled) {
+            border-color: #0f766e;
+            background: #f0fdfa;
+            transform: translateY(-2px);
+        }
+
+        .option-letter {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            width: 34px;
+            height: 34px;
+            background: #f1f5f9;
+            border-radius: 10px;
+            font-weight: 700;
+        }
+
+        .option-button.selected {
+            border-color: #0f766e;
+            background: #e6f5f2;
+        }
+
+        .option-button.correct {
+            border-color: #16a34a;
+            background: #f0fdf4;
+        }
+
+        .option-button.wrong {
+            border-color: #dc2626;
+            background: #fff1f2;
+        }
+
+        .option-button:disabled {
+            cursor: default;
+        }
+
+        .feedback {
+            margin-top: 20px;
+            padding: 17px;
+            border-radius: 14px;
+            line-height: 1.6;
+            display: none;
+        }
+
+        .feedback.correct-feedback {
+            display: block;
+            background: #f0fdf4;
+            color: #166534;
+        }
+
+        .feedback.wrong-feedback {
+            display: block;
+            background: #fff1f2;
+            color: #9f1239;
+        }
+
+        .quiz-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .main-button {
+            border: none;
+            border-radius: 12px;
+            padding: 14px 25px;
+            background: linear-gradient(135deg, #0f766e, #0891b2);
+            color: white;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .main-button:disabled {
+            background: #cbd5e1;
+            cursor: not-allowed;
+        }
+
+        .secondary-button {
+            background: white;
+            color: #0f766e;
+            border: 1px solid #0f766e;
+        }
+
+        .results {
+            display: none;
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .result-emoji {
+            font-size: 65px;
+            margin-bottom: 15px;
+        }
+
+        .result-title {
+            font-size: 30px;
+            margin-bottom: 12px;
+        }
+
+        .result-score {
+            color: #0f766e;
+            font-size: 45px;
+            font-weight: 800;
+            margin: 20px 0;
+        }
+
+        .result-message {
+            color: #64748b;
+            line-height: 1.7;
+            margin-bottom: 25px;
+        }
+
+        .error-message {
+            background: #fff1f2;
+            color: #be123c;
+            border: 1px solid #fecdd3;
+            border-radius: 12px;
+            padding: 18px;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 18px 12px;
+            }
+
+            .quiz-card {
+                padding: 22px;
+            }
+
+            .question-title {
+                font-size: 21px;
+            }
+
+            .quiz-footer {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .main-button {
+                width: 100%;
+            }
+        }
+        body.dark-theme {
+    background-color: #121212;
+    color: #f1f1f1;
+}
+
+body.dark-theme .card {
+    background-color: #1e1e1e;
+    color: #f1f1f1;
+    border-color: #333333;
+}
+
+body.dark-theme input,
+body.dark-theme select,
+body.dark-theme textarea {
+    background-color: #252525;
+    color: #f1f1f1;
+    border-color: #444444;
+}
+body.dark-theme {
+    background-color: #121212;
+    color: #f1f5f9;
+}
+
+body.dark-theme .quiz-container,
+body.dark-theme .quiz-card,
+body.dark-theme .topic-card,
+body.dark-theme .card {
+    background-color: #1e1e1e;
+    color: #f1f5f9;
+    border-color: #333333;
+}
+
+body.dark-theme h1,
+body.dark-theme h2,
+body.dark-theme h3,
+body.dark-theme h4,
+body.dark-theme p,
+body.dark-theme label {
+    color: #f1f5f9;
+}
+
+body.dark-theme .question,
+body.dark-theme .question-text {
+    color: #f1f5f9;
+}
+
+body.dark-theme .option,
+body.dark-theme .answer-option {
+    background-color: #252525;
+    color: #f1f5f9;
+    border-color: #444444;
+}
+
+body.dark-theme .option:hover,
+body.dark-theme .answer-option:hover {
+    background-color: #303030;
+}
+
+body.dark-theme input,
+body.dark-theme select,
+body.dark-theme textarea {
+    background-color: #252525;
+    color: #f1f5f9;
+    border-color: #444444;
+}
+    </style>
+</head>
+
+<body>
+    <div class="container">
+
+        <a href="/study-plan" class="back-link">
+            &larr; Back to Study Plan
+        </a>
+
+        {% if error %}
+
+            <div class="error-message">
+                {{ error }}
+            </div>
+
+        {% else %}
+
+            <div class="quiz-card">
+
+                <!-- Topic ID is required when saving the quiz result -->
+                <input
+                    type="hidden"
+                    id="quiz-topic-id"
+                    value="{{ topic_id }}"
+                >
+
+                <div id="quiz-screen">
+
+                    <div class="quiz-header">
+                        <span class="quiz-label">🎯 Topic Challenge</span>
+
+                        <span class="score-label">
+                            Score: <span id="score">0</span>
+                        </span>
+                    </div>
+
+                    <h1 id="topic-title" style="margin-bottom: 10px;">
+                        {{ topic_name }}
+                    </h1>
+
+                    <div class="progress-track">
+                        <div class="progress-fill" id="progress-fill"></div>
+                    </div>
+
+                    <p class="question-count" id="question-count"></p>
+
+                    <h2 class="question-title" id="question-text"></h2>
+
+                    <div class="options-grid" id="options-container"></div>
+
+                    <div class="feedback" id="feedback"></div>
+
+                    <div class="quiz-footer">
+                        <button
+                            type="button"
+                            class="main-button secondary-button"
+                            onclick="window.location.href='/study-plan'"
+                        >
+                            Exit Quiz
+                        </button>
+
+                        <button
+                            type="button"
+                            class="main-button"
+                            id="next-button"
+            disabled
+                        >
+                            Next Question →
+                        </button>
+                    </div>
+
+                </div>
+
+                <div class="results" id="results-screen">
+
+                    <div class="result-emoji" id="result-emoji"></div>
+
+                    <h2 class="result-title" id="result-title"></h2>
+
+                    <p class="result-message" id="result-message"></p>
+
+                    <div class="result-score" id="result-score"></div>
+
+                    <button
+                        type="button"
+                        class="main-button"
+                        onclick="window.location.href='/study-plan'"
+                    >
+                        Back to Study Plan
+                    </button>
+
+                </div>
+
+            </div>
+
+            <script id="quiz-data" type="application/json">
+                {{ questions | tojson }}
+            </script>
+
+            <script>
+                // Read the quiz questions generated by the backend.
+                const questions = JSON.parse(
+                    document.getElementById("quiz-data").textContent
+                );
+
+                const topicId = document.getElementById("quiz-topic-id").value;
+
+                let currentQuestion = 0;
+                let score = 0;
+                let answered = false;
+                let quizFinished = false;
+
+                const questionText = document.getElementById("question-text");
+                const optionsContainer = document.getElementById("options-container");
+                const nextButton = document.getElementById("next-button");
+                const feedback = document.getElementById("feedback");
+
+                // Display the current question and its options.
+                function loadQuestion() {
+                    answered = false;
+
+                    const question = questions[currentQuestion];
+
+                    document.getElementById("question-count").textContent =
+                        `Question ${currentQuestion + 1} of ${questions.length}`;
+
+                    document.getElementById("progress-fill").style.width =
+                        `${(currentQuestion / questions.length) * 100}%`;
+
+                    questionText.textContent = question.question;
+
+                    optionsContainer.innerHTML = "";
+
+                    feedback.className = "feedback";
+                    feedback.textContent = "";
+
+                    nextButton.disabled = true;
+
+                    Object.entries(question.options).forEach(([letter, answer]) => {
+                        const button = document.createElement("button");
+
+                        button.type = "button";
+                        button.className = "option-button";
+
+                        const letterSpan = document.createElement("span");
+                        letterSpan.className = "option-letter";
+                        letterSpan.textContent = letter;
+
+                        const answerSpan = document.createElement("span");
+                        answerSpan.textContent = answer;
+
+                        button.appendChild(letterSpan);
+                        button.appendChild(answerSpan);
+
+                        button.addEventListener("click", () => {
+                            selectAnswer(letter, button);
+                        });
+
+                        optionsContainer.appendChild(button);
+                    });
+                }
+
+                // Check the selected answer and show feedback.
+                function selectAnswer(selectedLetter, selectedButton) {
+                    if (answered || quizFinished) {
+                        return;
+                    }
+
+                    answered = true;
+
+                    const question = questions[currentQuestion];
+
+                    const isCorrect =
+                        selectedLetter === question.correct_answer;
+
+                    document.querySelectorAll(".option-button").forEach(button => {
+                        button.disabled = true;
+                    });
+
+                    if (isCorrect) {
+                        score++;
+
+                        selectedButton.classList.add("correct");
+
+                        feedback.className = "feedback correct-feedback";
+
+                        feedback.textContent =
+                            "🎉 Correct! " + question.explanation;
+
+                    } else {
+                        selectedButton.classList.add("wrong");
+
+                        feedback.className = "feedback wrong-feedback";
+
+                        feedback.textContent =
+                            "Not quite! The correct answer is " +
+                            question.correct_answer + ". " +
+                            question.options[question.correct_answer] +
+                            ". " + question.explanation;
+
+                        // Highlight the correct option.
+                        document.querySelectorAll(".option-button").forEach(button => {
+                            const letter =
+                                button.querySelector(".option-letter").textContent;
+
+                            if (letter === question.correct_answer) {
+                                button.classList.add("correct");
+                            }
+                        });
+                    }
+
+                    document.getElementById("score").textContent = score;
+
+                    nextButton.disabled = false;
+                }
+
+                // Move to the next question or show the final result.
+                nextButton.addEventListener("click", () => {
+                    if (!answered || quizFinished) {
+                        return;
+                    }
+
+                    currentQuestion++;
+
+                    if (currentQuestion < questions.length) {
+                        loadQuestion();
+                    } else {
+                        showResults();
+                    }
+                });
+
+                // Display the result and save the score to MySQL.
+                async function showResults() {
+                    if (quizFinished) {
+                        return;
+                    }
+
+                    quizFinished = true;
+
+                    document.getElementById("quiz-screen").style.display = "none";
+
+                    const resultsScreen =
+                        document.getElementById("results-screen");
+
+                    resultsScreen.style.display = "block";
+
+                    const percentage = Math.round(
+                        (score / questions.length) * 100
+                    );
+
+                    document.getElementById("progress-fill").style.width = "100%";
+
+                    document.getElementById("result-score").textContent =
+                        `${score} / ${questions.length} (${percentage}%)`;
+
+                    const resultMessage =
+                        document.getElementById("result-message");
+
+                    if (percentage >= 80) {
+                        document.getElementById("result-emoji").textContent = "🏆";
+
+                        document.getElementById("result-title").textContent =
+                            "Excellent Work!";
+
+                        resultMessage.textContent =
+                            "You have a strong understanding of this topic. " +
+                            "Keep up the great work!";
+
+                    } else if (percentage >= 60) {
+                        document.getElementById("result-emoji").textContent = "🌟";
+
+                        document.getElementById("result-title").textContent =
+                            "Good Job!";
+
+                        resultMessage.textContent =
+                            "You're making progress. Review the questions " +
+                            "you missed and try again!";
+
+                    } else {
+                        document.getElementById("result-emoji").textContent = "💪";
+
+                        document.getElementById("result-title").textContent =
+                            "Keep Practicing!";
+
+                        resultMessage.textContent =
+                            "Every attempt helps you learn. Review this " +
+                            "topic and give it another try!";
+                    }
+
+                    // Check that the topic ID is available.
+                    if (!topicId) {
+                        resultMessage.textContent +=
+                            " Your result could not be saved because the topic ID is missing.";
+                        return;
+                    }
+
+                    // Save the quiz score to the backend.
+                    try {
+                        const response = await fetch("/ai/save-quiz-score", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type":
+                                    "application/x-www-form-urlencoded"
+                            },
+                            body: new URLSearchParams({
+                                topic_id: topicId,
+                                score: score,
+                                total_questions: questions.length
+                            })
+                        });
+
+                        // Check whether the backend returned an error.
+                        if (!response.ok) {
+                            throw new Error("Score saving request failed.");
+                        }
+
+                        // Ensure the backend returned JSON.
+                        const contentType =
+                            response.headers.get("content-type") || "";
+
+                        if (!contentType.includes("application/json")) {
+                            throw new Error("Unexpected response from server.");
+                        }
+
+                        const result = await response.json();
+
+                        if (result.success) {
+                            resultMessage.textContent +=
+                                " Your quiz result has been saved!";
+                        } else {
+                            resultMessage.textContent +=
+                                " Your quiz result could not be saved. Please try again.";
+                        }
+
+                    } catch (error) {
+                        console.error("Quiz score saving error:", error);
+
+                        resultMessage.textContent +=
+                            " Your quiz result could not be saved because of a connection error.";
+                    }
+                }
+
+                // Handle a quiz that has no questions.
+                if (questions.length > 0) {
+                    loadQuestion();
+                } else {
+                    document.getElementById("quiz-screen").style.display = "none";
+
+                    document.getElementById("results-screen").style.display = "block";
+
+                    document.getElementById("result-emoji").textContent = "📘";
+
+                    document.getElementById("result-title").textContent =
+                        "No Questions Available";
+
+                    document.getElementById("result-message").textContent =
+                        "Please return to the study plan and generate the quiz again.";
+
+                    document.getElementById("result-score").textContent = "";
+                }
+            </script>
+
+        {% endif %}
+
+    </div>
+    <script src="/static/js/theme.js"></script>
+</body>
+</html>

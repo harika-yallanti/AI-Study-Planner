@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Study Planner | Login</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #f1f5f9;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 25px;
+        }
+
+        .auth-container {
+            width: 100%;
+            max-width: 1050px;
+            min-height: 650px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background: #ffffff;
+            border-radius: 22px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(15, 23, 42, 0.12);
+        }
+
+        /* Left introduction section */
+
+        .intro-section {
+            background: linear-gradient(145deg, #0f766e, #134e4a);
+            color: #ffffff;
+            padding: 65px 55px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 65px;
+        }
+
+        .brand-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 25px;
+        }
+
+        .brand h2 {
+            font-size: 23px;
+            font-weight: 700;
+        }
+
+        .intro-section h1 {
+            font-size: 38px;
+            line-height: 1.3;
+            margin-bottom: 20px;
+        }
+
+        .intro-section h1 span {
+            color: #99f6e4;
+        }
+
+        .intro-description {
+            color: #d1fae5;
+            font-size: 16px;
+            line-height: 1.8;
+            margin-bottom: 35px;
+        }
+
+        .feature-list {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .feature {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            font-size: 15px;
+            color: #ecfdf5;
+        }
+
+        .feature-icon {
+            width: 30px;
+            height: 30px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .intro-footer {
+            margin-top: 65px;
+            color: #a7f3d0;
+            font-size: 13px;
+        }
+
+        /* Right authentication section */
+
+        .form-section {
+            padding: 55px 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .form-heading {
+            margin-bottom: 30px;
+        }
+
+        .form-heading h2 {
+            font-size: 29px;
+            margin-bottom: 9px;
+            color: #0f172a;
+        }
+
+        .form-heading p {
+            font-size: 14px;
+            color: #64748b;
+            line-height: 1.6;
+        }
+
+        /* Login and register tabs */
+
+        .auth-tabs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background: #f1f5f9;
+            padding: 5px;
+            border-radius: 12px;
+            margin-bottom: 28px;
+        }
+
+        .auth-tab {
+            border: none;
+            background: transparent;
+            padding: 12px;
+            border-radius: 9px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #64748b;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .auth-tab.active {
+            background: #ffffff;
+            color: #0f766e;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+        }
+
+        .auth-form {
+            display: none;
+        }
+
+        .auth-form.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #334155;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .form-group input {
+            width: 100%;
+            height: 48px;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            padding: 0 14px;
+            font-size: 14px;
+            color: #1e293b;
+            background: #ffffff;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        .form-group input:focus {
+            border-color: #0f766e;
+            box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1);
+        }
+
+        .password-input {
+            padding-right: 48px !important;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 13px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: none;
+            background: transparent;
+            color: #64748b;
+            cursor: pointer;
+            font-size: 18px;
+            padding: 5px;
+        }
+
+        .password-toggle:hover {
+            color: #0f766e;
+        }
+
+        .form-options {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin: 5px 0 24px;
+            font-size: 13px;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            color: #64748b;
+        }
+
+        .remember-me input {
+            accent-color: #0f766e;
+            cursor: pointer;
+        }
+
+        .text-link {
+            color: #0f766e;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .text-link:hover {
+            text-decoration: underline;
+        }
+
+        .submit-button {
+            width: 100%;
+            height: 49px;
+            border: none;
+            border-radius: 10px;
+            background: #0f766e;
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .submit-button:hover {
+            background: #115e59;
+        }
+
+        .submit-button:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+        }
+
+        .message {
+            display: none;
+            padding: 12px 14px;
+            border-radius: 9px;
+            font-size: 13px;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .message.success {
+            display: block;
+            color: #166534;
+            background: #dcfce7;
+            border: 1px solid #bbf7d0;
+        }
+
+        .message.error {
+            display: block;
+            color: #991b1b;
+            background: #fee2e2;
+            border: 1px solid #fecaca;
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 14px;
+            color: #64748b;
+        }
+        
+        
+.google-button {
+    width: 100%;
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 18px;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    background: #ffffff;
+    color: #334155;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, box-shadow 0.2s;
+}
+
+.google-button:hover {
+    background: #f8fafc;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+}
+
+.google-button:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+.google-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 22px;
+    color: #94a3b8;
+    font-size: 12px;
+}
+
+.google-divider::before,
+.google-divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: #e2e8f0;
+}
+
+        /* Responsive layout */
+
+        @media (max-width: 850px) {
+            .auth-container {
+                max-width: 550px;
+                grid-template-columns: 1fr;
+            }
+
+            .intro-section {
+                padding: 35px;
+            }
+
+            .brand {
+                margin-bottom: 30px;
+            }
+
+            .intro-section h1 {
+                font-size: 30px;
+            }
+
+            .intro-footer {
+                margin-top: 30px;
+            }
+
+            .form-section {
+                padding: 40px 35px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 12px;
+            }
+
+            .auth-container {
+                border-radius: 15px;
+            }
+
+            .intro-section {
+                padding: 28px 25px;
+            }
+
+            .intro-section h1 {
+                font-size: 27px;
+            }
+
+            .intro-description {
+                font-size: 14px;
+            }
+
+            .form-section {
+                padding: 32px 24px;
+            }
+
+            .form-heading h2 {
+                font-size: 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="auth-container">
+
+        <!-- Left introduction section -->
+
+        <section class="intro-section">
+
+            <div class="brand">
+                <div class="brand-icon">📚</div>
+                <h2>AI Study Planner</h2>
+            </div>
+
+            <h1>
+                Plan your studies.<br>
+                <span>Achieve your goals.</span>
+            </h1>
+
+            <p class="intro-description">
+                Organize your subjects, manage your topics, and prepare
+                for exams with a study plan that helps you stay focused
+                and make better use of your time.
+            </p>
+
+            <div class="feature-list">
+
+                <div class="feature">
+                    <div class="feature-icon">✓</div>
+                    <span>Organize subjects and topics</span>
+                </div>
+
+                <div class="feature">
+                    <div class="feature-icon">✓</div>
+                    <span>Keep track of upcoming exams</span>
+                </div>
+
+                <div class="feature">
+                    <div class="feature-icon">✓</div>
+                    <span>Manage your daily study schedule</span>
+                </div>
+
+            </div>
+
+            <div class="intro-footer">
+                Your personal space for better study planning.
+            </div>
+
+        </section>
+
+        <!-- Right login and registration section -->
+
+        <section class="form-section">
+
+            <div class="form-heading">
+                <h2 id="headingTitle">Welcome back</h2>
+                <p id="headingDescription">
+                    Enter your details to access your study planner.
+                </p>
+            </div>
+
+            <!-- Login and register tabs -->
+
+            <div class="auth-tabs">
+
+                <button
+                    type="button"
+                    class="auth-tab active"
+                    id="loginTab"
+                >
+                    Login
+                </button>
+
+                <button
+                    type="button"
+                    class="auth-tab"
+                    id="registerTab"
+                >
+                    Register
+                </button>
+
+            </div>
+
+            <!-- Message area -->
+
+            <div id="message" class="message" role="alert"></div>
+            <!-- Continue with Google -->
+<button type="button" id="googleLoginButton" class="google-button">
+    <img
+        src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+        alt=""
+        width="20"
+        height="20"
+    >
+    <span>Continue with Google</span>
+</button>
+
+<div class="google-divider">
+    <span>or continue with email</span>
+</div>
+
+            <!-- Login form -->
+
+            <form id="loginForm" class="auth-form active">
+
+                <div class="form-group">
+                    <label for="email">Email address</label>
+
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="Enter your email address"
+                        autocomplete="email"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+
+                    <label for="password">Password</label>
+
+                    <div class="input-wrapper">
+
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            class="password-input"
+                            placeholder="Enter your password"
+                            autocomplete="current-password"
+                            required
+                        >
+
+                        <button
+    type="button"
+    class="password-toggle"
+    data-password="password"
+    aria-label="Show password"
+>
+    <svg
+        class="eye-icon"
+        xmlns="http://www.w3.org/2000/svg"
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+    >
+        <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/>
+        <circle cx="12" cy="12" r="3"/>
+    </svg>
+</button>
+
+                    </div>
+
+                </div>
+
+                <div class="form-options">
+
+                    <label class="remember-me">
+                        <input type="checkbox" id="rememberMe">
+                        Remember me
+                    </label>
+
+                    <a href="#" class="text-link" id="forgotPassword">
+                        Forgot password?
+                    </a>
+
+                </div>
+
+                <button
+                    type="submit"
+                    class="submit-button"
+                    id="loginButton"
+                >
+                    Login to your account
+                </button>
+
+            </form>
+
+            <!-- Registration form -->
+
+            <form id="registerForm" class="auth-form">
+
+                <div class="form-group">
+
+                    <label for="registerName">Full name</label>
+
+                    <input
+                        type="text"
+                        id="registerName"
+                        name="name"
+                        placeholder="Enter your full name"
+                        autocomplete="name"
+                        minlength="2"
+                        required
+                    >
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="registerEmail">Email address</label>
+
+                    <input
+                        type="email"
+                        id="registerEmail"
+                        name="email"
+                        placeholder="Enter your email address"
+                        autocomplete="email"
+                        required
+                    >
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="registerPassword">Password</label>
+
+                    <div class="input-wrapper">
+
+                        <input
+                            type="password"
+                            id="registerPassword"
+                            name="password"
+                            class="password-input"
+                            placeholder="Create a password"
+                            autocomplete="new-password"
+                            minlength="8"
+                            required
+                        >
+
+                        <button
+                            type="button"
+                            class="password-toggle"
+                            data-password="registerPassword"
+                            aria-label="Show password"
+                        >
+                            👁
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="confirmPassword">Confirm password</label>
+
+                    <div class="input-wrapper">
+
+                        <input
+                            type="password"
+                            id="confirmPassword"
+                            name="confirmPassword"
+                            class="password-input"
+                            placeholder="Enter your password again"
+                            autocomplete="new-password"
+                            minlength="8"
+                            required
+                        >
+
+                        <button
+                            type="button"
+                            class="password-toggle"
+                            data-password="confirmPassword"
+                            aria-label="Show password"
+                        >
+                            👁
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <button
+                    type="submit"
+                    class="submit-button"
+                    id="registerButton"
+                >
+                    Create account
+                </button>
+
+            </form>
+
+            <div class="auth-footer" id="authFooter">
+
+                Don't have an account?
+
+                <a href="#" class="text-link" id="switchAuth">
+                    Register
+                </a>
+
+            </div>
+
+        </section>
+
+    </div>
+
+    <script>
+        // Get the elements used in the authentication page.
+
+        const loginTab = document.getElementById("loginTab");
+        const registerTab = document.getElementById("registerTab");
+
+        const loginForm = document.getElementById("loginForm");
+        const registerForm = document.getElementById("registerForm");
+
+        const headingTitle = document.getElementById("headingTitle");
+        const headingDescription = document.getElementById("headingDescription");
+
+        const message = document.getElementById("message");
+        const authFooter = document.getElementById("authFooter");
+
+        const switchAuth = document.getElementById("switchAuth");
+
+        const loginButton = document.getElementById("loginButton");
+        const registerButton = document.getElementById("registerButton");
+
+
+        // Show either the login form or the registration form.
+
+        function showForm(formType, clearMessage = true) {
+
+            const isLogin = formType === "login";
+
+            loginForm.classList.toggle("active", isLogin);
+            registerForm.classList.toggle("active", !isLogin);
+
+            loginTab.classList.toggle("active", isLogin);
+            registerTab.classList.toggle("active", !isLogin);
+
+            headingTitle.textContent = isLogin
+                ? "Welcome back"
+                : "Create your account";
+
+            headingDescription.textContent = isLogin
+                ? "Enter your details to access your study planner."
+                : "Register to start organizing your studies.";
+
+            authFooter.innerHTML = isLogin
+                ? 'Don\'t have an account? <a href="#" class="text-link" id="switchAuth">Register</a>'
+                : 'Already have an account? <a href="#" class="text-link" id="switchAuth">Login</a>';
+
+            if (clearMessage) {
+                hideMessage();
+            }
+        }
+
+
+        // Display success or error messages.
+
+        function showMessage(text, type) {
+
+            message.textContent = text;
+            message.className = "message " + type;
+        }
+
+
+        function hideMessage() {
+
+            message.textContent = "";
+            message.className = "message";
+        }
+
+
+        // Switch forms when the tabs are clicked.
+
+        loginTab.addEventListener("click", function () {
+            showForm("login");
+        });
+
+        registerTab.addEventListener("click", function () {
+            showForm("register");
+        });
+
+
+        // Handle the link below the form.
+
+        authFooter.addEventListener("click", function (event) {
+
+            if (event.target.id !== "switchAuth") {
+                return;
+            }
+
+            event.preventDefault();
+
+            const isLoginVisible = loginForm.classList.contains("active");
+
+            showForm(isLoginVisible ? "register" : "login");
+        });
+
+
+        // Show or hide passwords using the eye buttons.
+        document.querySelectorAll(".password-toggle").forEach(function (button) {
+
+        button.addEventListener("click", function () {
+
+        const inputId = button.dataset.password;
+        const passwordInput = document.getElementById(inputId);
+
+        const isHidden = passwordInput.type === "password";
+
+        passwordInput.type = isHidden ? "text" : "password";
+
+        button.innerHTML = isHidden
+            ? `
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     width="20" height="20"
+                     viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="1.8"
+                     stroke-linecap="round"
+                     stroke-linejoin="round">
+                    <path d="M3 3l18 18"/>
+                    <path d="M10.6 10.6a2 2 0 0 0 2.8 2.8"/>
+                    <path d="M9.9 5.2A10.5 10.5 0 0 1 12 5
+                             c6.5 0 10 7 10 7
+                             a12.5 12.5 0 0 1-3.1 4.2"/>
+                    <path d="M6.2 6.2C3.5 7.5 2 10 2 12
+                             s3.5 7 10 7
+                             a10.5 10.5 0 0 0 4.1-.8"/>
+                </svg>
+            `
+            : `
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     width="20" height="20"
+                     viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="1.8"
+                     stroke-linecap="round"
+                     stroke-linejoin="round">
+                    <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                </svg>
+            `;
+
+        button.setAttribute(
+            "aria-label",
+            isHidden ? "Hide password" : "Show password"
+        );
+
+    });
+
+});
+
+        // Register a new user.
+
+        registerForm.addEventListener("submit", async function (event) {
+
+            event.preventDefault();
+            hideMessage();
+
+            const name = document.getElementById("registerName").value.trim();
+            const email = document.getElementById("registerEmail").value.trim();
+            const password = document.getElementById("registerPassword").value;
+            const confirmPassword = document.getElementById("confirmPassword").value;
+
+            // Check that both passwords match.
+
+            if (password !== confirmPassword) {
+
+                showMessage("Passwords do not match. Please check them.", "error");
+                return;
+            }
+
+            if (password.length < 8) {
+
+                showMessage("Password must contain at least 8 characters.", "error");
+                return;
+            }
+
+            registerButton.disabled = true;
+            registerButton.textContent = "Creating account...";
+
+            try {
+
+                const response = await fetch("/users/register", {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        name: name,
+                        email: email,
+                        password: password
+                    })
+
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+
+                    const errorText = typeof data.detail === "string"
+                        ? data.detail
+                        : "Unable to create account. Please try again.";
+
+                    throw new Error(errorText);
+                }
+
+                // Keep the success message when switching to login.
+
+                showForm("login", false);
+
+                document.getElementById("email").value = email;
+                document.getElementById("password").value = "";
+
+                showMessage(
+                    "Account created successfully! You can now log in.",
+                    "success"
+                );
+
+            } catch (error) {
+
+                showMessage(
+                    error.message || "Something went wrong. Please try again.",
+                    "error"
+                );
+
+            } finally {
+
+                registerButton.disabled = false;
+                registerButton.textContent = "Create account";
+            }
+
+        });
+
+
+        // Log in an existing user.
+
+        loginForm.addEventListener("submit", async function (event) {
+
+            event.preventDefault();
+            hideMessage();
+
+            const email = document.getElementById("email").value.trim();
+            const password = document.getElementById("password").value;
+
+            loginButton.disabled = true;
+            loginButton.textContent = "Logging in...";
+
+            try {
+
+                const response = await fetch("/users/login", {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        email: email,
+                        password: password
+                    })
+
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+
+                    const errorText = typeof data.detail === "string"
+                        ? data.detail
+                        : "Invalid email or password.";
+
+                    throw new Error(errorText);
+                }
+
+                // Open the dashboard after successful login.
+
+                window.location.href = "/dashboard";
+
+            } catch (error) {
+
+                showMessage(
+                    error.message || "Unable to log in. Please try again.",
+                    "error"
+                );
+
+            } finally {
+
+                loginButton.disabled = false;
+                loginButton.textContent = "Login to your account";
+            }
+
+        });
+
+
+        // The backend must provide a password-reset route before
+        // the forgot-password feature can actually send a reset link.
+
+        document.getElementById("forgotPassword").addEventListener("click", function (event) {
+            event.preventDefault();
+            window.location.href = "/forgot-password";
+        });
+
+    </script>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+    import {
+        getAuth,
+        GoogleAuthProvider,
+        signInWithPopup
+    } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyC3ePZJ1ppzex5awOjmaibwh02yo_VfKCQ",
+        authDomain: "ai-study-planner-5a3df.firebaseapp.com",
+        projectId: "ai-study-planner-5a3df",
+        appId: "1:143698426788:web:491ffce5a5c3912342df31"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
+
+    const googleButton = document.getElementById("googleLoginButton");
+    const messageBox = document.getElementById("message");
+
+    function showGoogleMessage(text, type) {
+        messageBox.textContent = text;
+        messageBox.className = "message " + type;
+    }
+
+    googleButton.addEventListener("click", async function () {
+        googleButton.disabled = true;
+        googleButton.querySelector("span").textContent = "Connecting to Google...";
+        messageBox.className = "message";
+
+        try {
+            const result = await signInWithPopup(auth, provider);
+            const idToken = await result.user.getIdToken();
+
+            const response = await fetch("/users/google-login", {
+                method: "POST",
+                credentials: "same-origin",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    id_token: idToken
+                })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(
+                    typeof data.detail === "string"
+                        ? data.detail
+                        : "Google login failed. Please try again."
+                );
+            }
+
+            window.location.href = "/dashboard";
+
+        } catch (error) {
+            console.error("Google sign-in error:", error);
+
+            let errorMessage = error.message ||
+                "Unable to sign in with Google. Please try again.";
+
+            if (error.code === "auth/unauthorized-domain") {
+                errorMessage =
+                    "This domain is not authorized in Firebase Authentication.";
+            }
+
+            showGoogleMessage(errorMessage, "error");
+
+        } finally {
+            googleButton.disabled = false;
+            googleButton.querySelector("span").textContent =
+                "Continue with Google";
+        }
+    });
+</script>
+
+</body>
+</html>
