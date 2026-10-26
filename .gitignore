@@ -30,3 +30,13 @@ Thumbs.db
 # Backup files
 app/routes/ai_backup.py
 app/templates/subjects_backup.html
+
+# Backup and temporary test files
+requirements_backup.txt
+test_gemini.py
+test_groq.py
+
+# Backup files
+app/routes/ai_backup.py
+app/templates/subjects_backup.html
+
