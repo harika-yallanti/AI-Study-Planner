@@ -144,7 +144,6 @@ def forgot_password(
             )
 
         # Google-only accounts should continue using Google sign-in.
-        # Keep this condition if your User model has an auth-provider field.
         base_url = os.getenv(
             "APP_BASE_URL",
             str(request.base_url).rstrip("/")
