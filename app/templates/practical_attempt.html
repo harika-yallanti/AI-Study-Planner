@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practical Assessment | AI Study Planner</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #172b4d;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 35px auto;
+            padding: 0 20px;
+        }
+
+        .header, .question-card {
+            background: white;
+            border-radius: 14px;
+            padding: 25px;
+            margin-bottom: 22px;
+            box-shadow: 0 4px 15px rgba(23, 43, 77, 0.07);
+        }
+
+        .header h1 {
+            margin-bottom: 12px;
+        }
+
+        .meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 18px;
+            margin-top: 18px;
+            color: #52627a;
+        }
+
+        .question-card h2 {
+            font-size: 19px;
+            margin-bottom: 15px;
+        }
+
+        .question-text {
+            line-height: 1.7;
+            white-space: pre-wrap;
+            margin-bottom: 18px;
+        }
+
+        .code-editor {
+            width: 100%;
+            min-height: 260px;
+            padding: 16px;
+            border: 1px solid #cbd5e1;
+            border-radius: 9px;
+            background: #101827;
+            color: #e2e8f0;
+            font-family: Consolas, monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            resize: vertical;
+        }
+
+        .marks {
+            color: #0f766e;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .notice {
+            background: #ecfdf5;
+            color: #166534;
+            padding: 15px;
+            border-radius: 9px;
+            margin-bottom: 22px;
+            line-height: 1.6;
+        }
+
+        .submit-button {
+            border: none;
+            border-radius: 9px;
+            background: #0f766e;
+            color: white;
+            padding: 14px 24px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .submit-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .coming-soon {
+            color: #64748b;
+            margin-top: 12px;
+            font-size: 13px;
+        }
+
+        .question-status {
+    display: inline-block;
+    margin-bottom: 14px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.question-status.answered {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.question-status.unanswered {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.question-card.unanswered-card {
+    border: 1px solid #fca5a5;
+}
+
+.question-card.answered-card {
+    border: 1px solid #86efac;
+}
+
+.answer-summary {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 22px;
+    box-shadow: 0 4px 15px rgba(23, 43, 77, 0.07);
+}
+
+.summary-counts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-top: 12px;
+}
+
+.summary-counts span {
+    font-weight: bold;
+}
+
+.answered-count {
+    color: #15803d;
+}
+
+.unanswered-count {
+    color: #dc2626;
+}
+
+.summary-warning {
+    color: #b45309;
+    margin-top: 12px;
+    font-size: 14px;
+}
+
+        @media (max-width: 600px) {
+            .container {
+                margin: 18px auto;
+                padding: 0 12px;
+            }
+
+            .header, .question-card {
+                padding: 18px;
+            }
+
+            .meta {
+                flex-direction: column;
+                gap: 8px;
+            }
+        }
+        .save-area {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 14px;
+}
+
+.save-button {
+    background: #0f766e;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.save-button:hover {
+    background: #115e59;
+}
+
+.timer-container {
+    margin-top: 22px;
+    padding: 16px 20px;
+    background: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+.timer-container strong {
+    color: #0f766e;
+    font-size: 24px;
+    font-family: Consolas, monospace;
+}
+
+.timer-container.warning {
+    background: #fff7ed;
+    border-color: #fed7aa;
+}
+
+.timer-container.warning strong {
+    color: #c2410c;
+}
+
+.timer-container.expired {
+    background: #fef2f2;
+    border-color: #fecaca;
+}
+
+.timer-container.expired strong {
+    color: #dc2626;
+}
+.run-button {
+    background: #172b4d;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.run-button:hover {
+    background: #263f68;
+}
+
+.run-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.execution-result {
+    display: none;
+    margin-top: 18px;
+    padding: 18px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+}
+
+.execution-result.visible {
+    display: block;
+}
+
+.execution-result h3 {
+    margin-bottom: 12px;
+}
+
+.test-case {
+    padding: 12px;
+    margin-top: 10px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    background: white;
+}
+
+.test-case.passed {
+    border-left: 4px solid #16a34a;
+}
+
+.test-case.failed {
+    border-left: 4px solid #dc2626;
+}
+
+.test-case pre {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    margin-top: 6px;
+    font-family: Consolas, monospace;
+    font-size: 13px;
+}
+
+.result-placeholder {
+    color: #64748b;
+}
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <h1>{{ attempt.exam_title }}</h1>
+
+        <p>{{ attempt.subject_name }}{% if attempt.topic_name %} · {{ attempt.topic_name }}{% endif %}</p>
+
+        <div class="meta">
+            <span>⏱ {{ attempt.duration_minutes }} minutes</span>
+            <span>📝 {{ questions|length }} questions</span>
+            <span>🏆 {{ attempt.total_marks }} marks</span>
+            <span>🐍 Python</span>
+        </div>
+        <div class="timer-container">
+    <span>Time Remaining</span>
+    <strong
+    id="countdown"
+    data-remaining-seconds="{{ attempt.remaining_seconds }}"
+>Loading...</strong>
+</div>
+    </div>
+
+    <div class="notice">
+        <strong>Assessment instructions</strong><br>
+        Write your Python solution in the editor below each question.
+        Your code will be evaluated against test cases when submission is enabled.
+        Hidden test cases and expected outputs will not be displayed.
+    </div>
+    <div class="answer-summary">
+    <h3>Assessment Progress</h3>
+
+    <div class="summary-counts">
+        <span>Total Questions: <span id="totalQuestions">0</span></span>
+
+        <span class="answered-count">
+            Answered: <span id="answeredQuestions">0</span>
+        </span>
+
+        <span class="unanswered-count">
+            Unanswered: <span id="unansweredQuestions">0</span>
+        </span>
+    </div>
+
+    <p class="summary-warning" id="summaryWarning">
+        Start writing your solutions to update your progress.
+    </p>
+</div>
+
+    {% for question in questions %}
+
+    <div class="question-card unanswered-card"
+     id="question_card_{{ question.id }}">
+
+    <h2>Question {{ loop.index }}</h2>
+
+    <span class="question-status unanswered"
+          id="question_status_{{ question.id }}">
+        Not Answered
+    </span>
+
+        <div class="marks">{{ question.marks }} marks</div>
+
+        <div class="question-text">
+            {{ question.question_text }}
+        </div>
+
+        <textarea
+    class="code-editor"
+    id="answer_{{ question.id }}"
+    data-question-id="{{ question.id }}"
+    spellcheck="false"
+    placeholder="# Write your Python solution here..."
+>{{ saved_answers.get(question.id, question.starter_code or '') }}</textarea>
+
+<div class="save-area">
+    <button
+        type="button"
+        class="save-button"
+        data-question-id="{{ question.id }}"
+    >
+        Save Code
+    </button>
+
+    <button
+        type="button"
+        class="run-button"
+        data-question-id="{{ question.id }}"
+    >
+        ▶ Run Code
+    </button>
+
+    <span id="save_status_{{ question.id }}"></span>
+</div>
+
+<div
+    class="execution-result"
+    id="run_result_{{ question.id }}"
+    aria-live="polite"
+>
+    <p class="result-placeholder">
+        Run your code to see the test-case results here.
+    </p>
+</div>
+
+    </div>
+
+    {% else %}
+
+    <div class="question-card">
+        No programming questions are available for this assessment.
+    </div>
+
+    {% endfor %}
+
+    <form
+    method="POST"
+    action="/assessments/practical/submit/{{ attempt.attempt_id }}"
+    id="submitAssessmentForm"
+>
+    <button type="submit" class="submit-button" id="submitAssessmentButton">
+        Submit Assessment
+    </button>
+</form>
+
+<p class="coming-soon">
+    Make sure you have saved your code before submitting.
+    Your answers will be evaluated automatically.
+</p>
+
+</div>
+<script>
+let isSubmittingAssessment = false;
+
+async function saveCode(questionId) {
+
+    const editor = document.getElementById(`answer_${questionId}`);
+    const status = document.getElementById(`save_status_${questionId}`);
+
+    status.textContent = "Saving...";
+
+    const formData = new FormData();
+    formData.append("question_id", questionId);
+    formData.append("answer_text", editor.value);
+
+    try {
+        const response = await fetch(
+            `/assessments/practical/save-answer/{{ attempt.attempt_id }}`,
+            {
+                method: "POST",
+                body: formData
+            }
+        );
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            throw new Error(result.message || "Unable to save code.");
+        }
+
+        status.textContent = result.message;
+        status.style.color = "#15803d";
+
+        return true;
+
+    } catch (error) {
+        status.textContent = error.message;
+        status.style.color = "#dc2626";
+
+        return false;
+    }
+}
+
+document.querySelectorAll(".save-button").forEach(button => {
+    button.addEventListener("click", async () => {
+        const questionId = button.dataset.questionId;
+        await saveCode(questionId);
+    });
+});
+</script>
+<script>
+function updateAssessmentProgress() {
+
+    const editors = document.querySelectorAll(".code-editor");
+
+    let answered = 0;
+    let unanswered = 0;
+
+    editors.forEach(editor => {
+
+        const questionId = editor.dataset.questionId;
+
+        const card = document.getElementById(
+            `question_card_${questionId}`
+        );
+
+        const status = document.getElementById(
+            `question_status_${questionId}`
+        );
+
+        // Ignore starter-code comments and whitespace.
+        const code = editor.value
+            .split("\n")
+            .filter(line => !line.trim().startsWith("#"))
+            .join("\n")
+            .trim();
+
+        const hasAnswer = code.length > 0;
+
+        if (hasAnswer) {
+            answered++;
+
+            card.classList.remove("unanswered-card");
+            card.classList.add("answered-card");
+
+            status.textContent = "Answered";
+            status.className = "question-status answered";
+
+        } else {
+            unanswered++;
+
+            card.classList.remove("answered-card");
+            card.classList.add("unanswered-card");
+
+            status.textContent = "Not Answered";
+            status.className = "question-status unanswered";
+        }
+    });
+
+    document.getElementById("totalQuestions").textContent =
+        editors.length;
+
+    document.getElementById("answeredQuestions").textContent =
+        answered;
+
+    document.getElementById("unansweredQuestions").textContent =
+        unanswered;
+
+    const warning = document.getElementById("summaryWarning");
+
+    if (unanswered === 0 && editors.length > 0) {
+        warning.textContent =
+            "Great! All questions have code entered.";
+
+        warning.style.color = "#15803d";
+
+    } else {
+        warning.textContent =
+            `${unanswered} question(s) still need an answer.`;
+
+        warning.style.color = "#b45309";
+    }
+}
+
+document.querySelectorAll(".code-editor").forEach(editor => {
+    editor.addEventListener("input", updateAssessmentProgress);
+});
+
+updateAssessmentProgress();
+</script>
+<script>
+async function runCode(questionId) {
+    const editor = document.getElementById(`answer_${questionId}`);
+    const resultBox = document.getElementById(`run_result_${questionId}`);
+    const runButton = document.querySelector(
+        `.run-button[data-question-id="${questionId}"]`
+    );
+
+    const sourceCode = editor.value;
+
+    if (!sourceCode.trim()) {
+        resultBox.classList.add("visible");
+        resultBox.textContent = "Please write your Python code first.";
+        return;
+    }
+
+    runButton.disabled = true;
+    runButton.textContent = "Running...";
+
+    resultBox.classList.add("visible");
+    resultBox.textContent = "Executing your code against the test cases...";
+
+    const formData = new FormData();
+    formData.append("question_id", questionId);
+    formData.append("answer_text", sourceCode);
+
+    try {
+        const response = await fetch(
+            `/assessments/practical/run/{{ attempt.attempt_id }}`,
+            {
+                method: "POST",
+                body: formData
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || "Code execution failed.");
+        }
+
+        resultBox.replaceChildren();
+
+        const heading = document.createElement("h3");
+        heading.textContent =
+            `Test Results: ${data.passed}/${data.total} Passed`;
+
+        resultBox.appendChild(heading);
+
+        const summary = document.createElement("p");
+        summary.textContent = data.message;
+        resultBox.appendChild(summary);
+
+        data.results.forEach(test => {
+            const card = document.createElement("div");
+            card.className = `test-case ${test.passed ? "passed" : "failed"}`;
+
+            const title = document.createElement("strong");
+            title.textContent =
+                `Test Case ${test.test_case}: ${test.passed ? "PASSED" : "FAILED"}`;
+
+            card.appendChild(title);
+
+            const expectedLabel = document.createElement("p");
+            expectedLabel.textContent = "Expected Output:";
+            card.appendChild(expectedLabel);
+
+            const expected = document.createElement("pre");
+            expected.textContent = test.expected_output || "(No output)";
+            card.appendChild(expected);
+
+            const actualLabel = document.createElement("p");
+            actualLabel.textContent = "Your Output:";
+            card.appendChild(actualLabel);
+
+            const actual = document.createElement("pre");
+            actual.textContent = test.actual_output || "(No output)";
+            card.appendChild(actual);
+
+            if (test.error) {
+                const errorLabel = document.createElement("p");
+                errorLabel.textContent = "Execution Error:";
+                card.appendChild(errorLabel);
+
+                const error = document.createElement("pre");
+                error.textContent = test.error;
+                card.appendChild(error);
+            }
+
+            resultBox.appendChild(card);
+        });
+
+    } catch (error) {
+        resultBox.replaceChildren();
+
+        const errorMessage = document.createElement("p");
+        errorMessage.textContent = error.message;
+        resultBox.appendChild(errorMessage);
+
+    } finally {
+        runButton.disabled = false;
+        runButton.textContent = "▶ Run Code";
+    }
+}
+
+document.querySelectorAll(".run-button").forEach(button => {
+    button.addEventListener("click", () => {
+        runCode(button.dataset.questionId);
+    });
+});
+</script>
+<script>
+const countdownElement = document.getElementById("countdown");
+const timerContainer = document.querySelector(".timer-container");
+
+let remainingSeconds = Number(
+    countdownElement.dataset.remainingSeconds
+);
+
+let expiryRedirectStarted = false;
+let countdownInterval = null;
+
+function updateCountdown() {
+    if (remainingSeconds <= 0) {
+        remainingSeconds = 0;
+
+        countdownElement.textContent = "00:00:00";
+        timerContainer.classList.remove("warning");
+        timerContainer.classList.add("expired");
+
+        document.querySelectorAll(
+            ".code-editor, .save-button"
+        ).forEach(element => {
+            element.disabled = true;
+        });
+
+        document.querySelectorAll(".save-button").forEach(button => {
+            button.textContent = "Time Expired";
+        });
+
+        if (!expiryRedirectStarted) {
+            expiryRedirectStarted = true;
+
+            if (countdownInterval !== null) {
+                clearInterval(countdownInterval);
+            }
+
+            window.location.replace(window.location.href);
+        }
+
+        return;
+    }
+
+    const hours = Math.floor(remainingSeconds / 3600);
+    const minutes = Math.floor((remainingSeconds % 3600) / 60);
+    const seconds = remainingSeconds % 60;
+
+    countdownElement.textContent =
+        String(hours).padStart(2, "0") + ":" +
+        String(minutes).padStart(2, "0") + ":" +
+        String(seconds).padStart(2, "0");
+
+    if (remainingSeconds <= 300) {
+        timerContainer.classList.add("warning");
+    }
+
+    remainingSeconds--;
+}
+
+updateCountdown();
+
+countdownInterval = setInterval(updateCountdown, 1000);
+</script>
+<script>
+const submitForm = document.getElementById("submitAssessmentForm");
+
+submitForm.addEventListener("submit", async function(event) {
+
+    event.preventDefault();
+
+    if (isSubmittingAssessment) {
+        return;
+    }
+
+    const editors = document.querySelectorAll(".code-editor");
+
+    const unanswered = [];
+
+    editors.forEach((editor, index) => {
+
+        const code = editor.value
+            .split("\n")
+            .filter(line => !line.trim().startsWith("#"))
+            .join("\n")
+            .trim();
+
+        if (!code) {
+            unanswered.push(index + 1);
+        }
+    });
+
+    let confirmationMessage;
+
+    if (unanswered.length > 0) {
+
+        confirmationMessage =
+            `You have ${unanswered.length} unanswered question(s): ` +
+            `${unanswered.join(", ")}.\n\n` +
+            "Do you still want to submit your assessment?";
+
+    } else {
+
+        confirmationMessage =
+            "You have entered code for all questions.\n\n" +
+            "Are you sure you want to submit? You cannot change your answers afterward.";
+    }
+
+    if (!confirm(confirmationMessage)) {
+        return;
+    }
+
+    const button = document.getElementById("submitAssessmentButton");
+
+    isSubmittingAssessment = true;
+
+    button.disabled = true;
+    button.textContent = "Saving and Evaluating...";
+
+    // Save every non-empty answer before final submission.
+    for (const editor of editors) {
+
+        const code = editor.value
+            .split("\n")
+            .filter(line => !line.trim().startsWith("#"))
+            .join("\n")
+            .trim();
+
+        if (code) {
+
+            const questionId = editor.dataset.questionId;
+
+            const saved = await saveCode(questionId);
+
+            if (!saved) {
+
+                isSubmittingAssessment = false;
+
+                button.disabled = false;
+                button.textContent = "Submit Assessment";
+
+                alert(
+                    "Some answers could not be saved. Please check your connection and try again."
+                );
+
+                return;
+            }
+        }
+    }
+
+    // Submit only after all non-empty answers are saved.
+    HTMLFormElement.prototype.submit.call(submitForm);
+
+});
+</script>
+</body>
+</html>

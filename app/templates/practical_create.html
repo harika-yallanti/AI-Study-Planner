@@ -1,0 +1,604 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Practical Assessment | AI Study Planner</title>
+
+    <link rel="stylesheet" href="/static/css/style.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #1e293b;
+        }
+
+        .dashboard {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: #172b4d;
+            color: white;
+            padding: 25px 18px;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 40px;
+        }
+
+        .sidebar nav {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .sidebar nav a {
+            color: #dbeafe;
+            text-decoration: none;
+            padding: 13px 15px;
+            border-radius: 8px;
+        }
+
+        .sidebar nav a:hover,
+        .sidebar nav a.active {
+            background: #0f766e;
+            color: white;
+        }
+
+        .sidebar-bottom {
+            margin-top: auto;
+            padding-top: 30px;
+        }
+
+        #logoutButton {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: #dc2626;
+            color: white;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        .main-content {
+            flex: 1;
+            min-width: 0;
+            padding: 30px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .topbar h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+            color: var(--text-color);
+        }
+
+        .topbar p,
+        .profile-label {
+            color: var(--muted-color);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .theme-button {
+            padding: 10px 13px;
+            border: 1px solid #dbe3ef;
+            border-radius: 9px;
+            background: white;
+            color: #172b4d;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: white;
+            padding: 10px 16px;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(23, 43, 77, 0.05);
+        }
+
+        .avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: #0f766e;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+        }
+
+        .profile-name {
+            font-weight: bold;
+            color: var(--text-color);
+        }
+
+        .profile-label {
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .back-link {
+            display: inline-block;
+            color: #0f766e;
+            text-decoration: none;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .form-card {
+            max-width: 850px;
+            background: white;
+            padding: 32px;
+            border-radius: 17px;
+            border: 1px solid #e7edf5;
+            box-shadow: 0 5px 20px rgba(23, 43, 77, 0.06);
+        }
+
+        .form-card h2 {
+            color: var(--text-color);
+            font-size: 22px;
+            margin-bottom: 9px;
+        }
+
+        .description {
+            color: var(--muted-color);
+            line-height: 1.7;
+            font-size: 14px;
+            margin-bottom: 27px;
+        }
+
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        .form-group label {
+            display: block;
+            color: var(--text-color);
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 9px;
+        }
+
+        .form-group select {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #cbd5e1;
+            border-radius: 9px;
+            background: white;
+            color: #172b4d;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .form-group select:focus {
+            border-color: #0f766e;
+            box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1);
+        }
+
+        .mode-heading {
+            margin: 30px 0 15px;
+            color: var(--text-color);
+            font-size: 18px;
+        }
+
+        .mode-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 17px;
+        }
+
+        .mode-card {
+            border: 2px solid #e2e8f0;
+            border-radius: 13px;
+            padding: 22px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .mode-card:hover {
+            border-color: #0f766e;
+            transform: translateY(-2px);
+        }
+
+        .mode-card.selected {
+            border-color: #0f766e;
+            background: #f0fdfa;
+        }
+
+        .mode-card input {
+            margin-right: 7px;
+            accent-color: #0f766e;
+        }
+
+        .mode-card h3 {
+            color: var(--text-color);
+            font-size: 17px;
+            margin: 13px 0 9px;
+        }
+
+        .mode-card p {
+            color: var(--muted-color);
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .mode-icon {
+            font-size: 27px;
+        }
+
+        .continue-button {
+            width: 100%;
+            padding: 14px;
+            margin-top: 27px;
+            border: none;
+            border-radius: 9px;
+            background: #0f766e;
+            color: white;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .continue-button:hover {
+            background: #115e59;
+        }
+
+        .continue-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        #message {
+            margin-top: 14px;
+            color: #dc2626;
+            font-size: 13px;
+        }
+
+        body.dark-theme {
+            background: #0f172a;
+            color: #e2e8f0;
+        }
+
+        body.dark-theme .form-card,
+        body.dark-theme .profile {
+            background: #1e293b;
+            border-color: #334155;
+        }
+
+        body.dark-theme .topbar h1,
+        body.dark-theme .form-card h2,
+        body.dark-theme .form-group label,
+        body.dark-theme .profile-name,
+        body.dark-theme .mode-card h3 {
+            color: #f1f5f9;
+        }
+
+        body.dark-theme .topbar p,
+        body.dark-theme .description,
+        body.dark-theme .profile-label,
+        body.dark-theme .mode-card p {
+            color: #cbd5e1;
+        }
+
+        body.dark-theme .theme-button {
+            background: #1e293b;
+            color: #e2e8f0;
+            border-color: #475569;
+        }
+
+        body.dark-theme .form-group select {
+            background: #0f172a;
+            color: #e2e8f0;
+            border-color: #475569;
+        }
+
+        body.dark-theme .mode-card {
+            border-color: #475569;
+        }
+
+        body.dark-theme .mode-card.selected {
+            background: #134e4a;
+            border-color: #2dd4bf;
+        }
+
+        @media (max-width: 700px) {
+            .dashboard {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                padding: 18px;
+            }
+
+            .logo {
+                margin-bottom: 18px;
+            }
+
+            .sidebar nav {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+
+            .sidebar-bottom {
+                margin-top: 18px;
+                padding-top: 0;
+            }
+
+            .main-content {
+                padding: 20px;
+            }
+
+            .topbar {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .header-actions {
+                width: 100%;
+                justify-content: space-between;
+                flex-wrap: wrap;
+            }
+
+            .form-card {
+                padding: 22px;
+            }
+
+            .mode-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="dashboard">
+
+    <aside class="sidebar">
+        <div class="logo">AI Study Planner</div>
+
+        <nav>
+            {% if user_role == "admin" %}
+                <a href="/admin/users">Admin Dashboard</a>
+            {% endif %}
+            <a href="/dashboard">Dashboard</a>
+            <a href="/subjects">My Subjects</a>
+            <a href="/study-plan">Study Plan</a>
+            <a href="/study-progress">Study Progress</a>
+            <a href="/exams">Exams</a>
+            <a href="/assessments" class="active">Assessments</a>
+            <a href="/assessments/history">Assessment History</a>
+            <a href="/notes">📝 Notes</a>
+            <a href="/resources">📚 Learning Resources</a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <button id="logoutButton" type="button">Logout</button>
+        </div>
+    </aside>
+
+    <main class="main-content">
+
+        <header class="topbar">
+            <div>
+                <h1>Create Practical Assessment</h1>
+                <p>Select a subject and topic to generate your AI-powered Python assessment.</p>
+            </div>
+
+            <div class="header-actions">
+                <button type="button" class="theme-button" id="themeButton" hidden>
+                    🌙 Dark Mode
+                </button>
+
+                <div class="profile">
+                    <div class="avatar" id="profileAvatar">
+                        {{ user_name[0]|upper }}
+                    </div>
+                    <div>
+                        <div class="profile-name" id="profileName">
+                            {{ user_name }}
+                        </div>
+                        <div class="profile-label">
+                            {{ user_role|capitalize }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <a href="/assessments/practical" class="back-link">
+            ← Back to Practical Assessments
+        </a>
+
+        <section class="form-card">
+            <h2>Assessment Setup</h2>
+            <p class="description">
+                 Choose the subject and topic for your Python programming assessment.
+    AI will generate coding problems and configure their test cases automatically.
+            </p>
+
+            <div class="form-group">
+                <label for="subjectSelect">Subject</label>
+                <select id="subjectSelect">
+                    <option value="">Select a subject</option>
+                    {% for subject in subjects %}
+                        <option value="{{ subject.id }}">
+                            {{ subject.subject_name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="topicSelect">Topic</label>
+                <select id="topicSelect" disabled>
+                    <option value="">Select a subject first</option>
+                </select>
+            </div>
+
+            <div class="mode-card selected" style="cursor: default;">
+    <div class="mode-icon">✦</div>
+    <h3>AI-Generated Assessment</h3>
+    <p>
+        AI will prepare Python programming questions and
+        configure test cases based on your selected topic.
+    </p>
+</div>
+
+            <button
+                type="button"
+                class="continue-button"
+                id="continueButton"
+                disabled
+            >
+                Continue →
+            </button>
+
+            <p id="message"></p>
+        </section>
+
+    </main>
+</div>
+
+<script>
+    const subjectSelect = document.getElementById("subjectSelect");
+    const topicSelect = document.getElementById("topicSelect");
+    const continueButton = document.getElementById("continueButton");
+    const message = document.getElementById("message");
+
+    subjectSelect.addEventListener("change", async function () {
+
+        const subjectId = this.value;
+
+        topicSelect.innerHTML =
+            '<option value="">Loading topics...</option>';
+
+        topicSelect.disabled = true;
+        continueButton.disabled = true;
+
+        if (!subjectId) {
+            topicSelect.innerHTML =
+                '<option value="">Select a subject first</option>';
+            return;
+        }
+
+        try {
+            const response = await fetch(
+                `/assessments/practical/topics/${subjectId}`
+            );
+
+            const result = await response.json();
+
+            if (!response.ok || !result.success) {
+                throw new Error(
+                    result.message || "Unable to load topics."
+                );
+            }
+
+            topicSelect.innerHTML =
+                '<option value="">Select a topic</option>';
+
+            result.topics.forEach(topic => {
+                const option = document.createElement("option");
+                option.value = topic.id;
+                option.textContent = topic.topic_name;
+                topicSelect.appendChild(option);
+            });
+
+            if (result.topics.length === 0) {
+                topicSelect.innerHTML =
+                    '<option value="">No topics available</option>';
+            }
+
+            topicSelect.disabled = result.topics.length === 0;
+
+        } catch (error) {
+            topicSelect.innerHTML =
+                '<option value="">Unable to load topics</option>';
+
+            message.textContent = error.message;
+        }
+    });
+
+    function updateContinueButton() {
+    continueButton.disabled = !(
+        subjectSelect.value &&
+        topicSelect.value
+    );
+}
+
+topicSelect.addEventListener("change", updateContinueButton);
+
+continueButton.addEventListener("click", function () {
+    const subjectId = subjectSelect.value;
+    const topicId = topicSelect.value;
+
+    if (!subjectId || !topicId) {
+        message.textContent =
+            "Please select both a subject and a topic.";
+        return;
+    }
+
+    window.location.href =
+        `/assessments/practical/configure?subject_id=${encodeURIComponent(subjectId)}&topic_id=${encodeURIComponent(topicId)}&mode=ai`;
+});
+    const profileName = document.getElementById("profileName");
+    const userName = profileName.textContent.trim();
+
+    document.getElementById("profileAvatar").textContent =
+        userName.charAt(0).toUpperCase();
+
+    document.getElementById("logoutButton").addEventListener("click", async function () {
+        try {
+            const response = await fetch("/users/logout", {
+                method: "POST"
+            });
+
+            if (response.ok) {
+                window.location.href = "/login";
+            } else {
+                alert("Unable to log out. Please try again.");
+            }
+        } catch (error) {
+            alert("Could not connect to the server.");
+        }
+    });
+</script>
+
+<script src="/static/js/theme.js"></script>
+</body>
+</html>

@@ -1,0 +1,252 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Practical Question Setup | AI Study Planner</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #1e293b;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: 45px auto;
+            padding: 20px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #0f766e;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .card {
+            background: white;
+            padding: 32px;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 5px 20px rgba(23, 43, 77, 0.06);
+        }
+
+        h1 {
+            color: #172b4d;
+            font-size: 25px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #64748b;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .summary {
+            background: #f0fdfa;
+            border: 1px solid #ccfbf1;
+            border-radius: 11px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .summary h2 {
+            color: #0f766e;
+            font-size: 17px;
+            margin-bottom: 14px;
+        }
+
+        .summary p {
+            margin: 10px 0;
+            color: #334155;
+        }
+
+        .summary strong {
+            color: #172b4d;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .detail-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 11px;
+            padding: 18px;
+        }
+
+        .detail-card span {
+            display: block;
+            color: #64748b;
+            font-size: 13px;
+            margin-bottom: 9px;
+        }
+
+        .detail-card strong {
+            color: #172b4d;
+            font-size: 22px;
+        }
+
+        .notice {
+            padding: 15px;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 10px;
+            color: #1e40af;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 22px;
+        }
+
+        .next-button {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 9px;
+            background: #0f766e;
+            color: white;
+            font-size: 15px;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .next-button:hover {
+            background: #115e59;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                margin: 15px auto;
+            }
+
+            .card {
+                padding: 22px;
+            }
+
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <a href="/assessments/practical/create" class="back-link">
+        ← Back to assessment selection
+    </a>
+
+    <section class="card">
+
+        <h1>Practical Assessment Setup</h1>
+
+        <p class="subtitle">
+            Review your assessment details before proceeding to Python
+            programming question creation.
+        </p>
+
+        <div class="summary">
+            <h2>Selected Assessment</h2>
+
+            <p>
+                <strong>Title:</strong> {{ title }}
+            </p>
+
+            <p>
+                <strong>Subject:</strong> {{ selected.subject_name }}
+            </p>
+
+            <p>
+                <strong>Topic:</strong> {{ selected.topic_name }}
+            </p>
+
+            <p>
+                <strong>Creation Mode:</strong>
+                {{ "AI-Generated" if mode == "ai" else "Manual Creation" }}
+            </p>
+
+            <p>
+                <strong>Programming Language:</strong> Python
+            </p>
+        </div>
+
+        <div class="details-grid">
+
+            <div class="detail-card">
+                <span>Duration</span>
+                <strong>{{ duration }} min</strong>
+            </div>
+
+            <div class="detail-card">
+                <span>Programming Questions</span>
+                <strong>{{ question_count }}</strong>
+            </div>
+
+            <div class="detail-card">
+                <span>Marks Per Question</span>
+                <strong>{{ marks_per_question }}</strong>
+            </div>
+
+            <div class="detail-card">
+                <span>Total Marks</span>
+                <strong>{{ total_marks }}</strong>
+            </div>
+
+        </div>
+
+        <div class="notice">
+            Your configuration has been validated. The next stage will
+            prepare your Python programming questions and their test cases.
+        </div>
+
+        <form action="/assessments/practical/save" method="POST">
+
+    <input type="hidden" name="subject_id"
+           value="{{ selected.subject_id }}">
+
+    <input type="hidden" name="topic_id"
+           value="{{ selected.topic_id }}">
+
+    <input type="hidden" name="mode" value="{{ mode }}">
+
+    <input type="hidden" name="title" value="{{ title }}">
+
+    <input type="hidden" name="duration" value="{{ duration }}">
+
+    <input type="hidden" name="question_count"
+           value="{{ question_count }}">
+
+    <input type="hidden" name="marks_per_question"
+           value="{{ marks_per_question }}">
+
+    <button type="submit" class="next-button">
+        Save and Continue to AI Questions →
+    </button>
+
+</form>
+
+    </section>
+</div>
+
+</body>
+</html>

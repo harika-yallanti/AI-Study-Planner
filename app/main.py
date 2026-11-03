@@ -1,5 +1,8 @@
 import os
 
+from dotenv import load_dotenv
+load_dotenv()
+
 from datetime import date, timedelta
 
 from fastapi import FastAPI, Request, Form
@@ -11,6 +14,7 @@ from starlette.middleware.sessions import SessionMiddleware
 
 from app.database import SessionLocal
 
+from app.routes.assessments import assessments_router
 from app.routes.subjects import router as subjects_router
 from app.routes.users import router as users_router
 from app.routes.topics import topics_router
@@ -67,6 +71,7 @@ app.include_router(ai_router)
 app.include_router(study_sessions_router)
 app.include_router(notes_router)
 app.include_router(resources_router)
+app.include_router(assessments_router)
 
 @app.get("/")
 def home(request: Request):

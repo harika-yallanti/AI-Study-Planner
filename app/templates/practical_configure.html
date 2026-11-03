@@ -1,0 +1,264 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Configure Practical Assessment</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #1e293b;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: 45px auto;
+            padding: 20px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #0f766e;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .card {
+            background: white;
+            padding: 32px;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 5px 20px rgba(23, 43, 77, 0.06);
+        }
+
+        h1 {
+            color: #172b4d;
+            font-size: 25px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #64748b;
+            line-height: 1.6;
+            margin-bottom: 28px;
+        }
+
+        .selection {
+            background: #f0fdfa;
+            border: 1px solid #ccfbf1;
+            border-radius: 11px;
+            padding: 18px;
+            margin-bottom: 26px;
+        }
+
+        .selection p {
+            margin: 8px 0;
+            color: #334155;
+        }
+
+        .selection strong {
+            color: #0f766e;
+        }
+
+        .form-group {
+            margin-bottom: 21px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 9px;
+            color: #172b4d;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #cbd5e1;
+            border-radius: 9px;
+            font-size: 14px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #0f766e;
+        }
+
+        .mode-label {
+            display: inline-block;
+            padding: 7px 12px;
+            border-radius: 20px;
+            background: #ccfbf1;
+            color: #115e59;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 23px;
+        }
+
+        .continue-button {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 9px;
+            background: #0f766e;
+            color: white;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .continue-button:hover {
+            background: #115e59;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                margin: 15px auto;
+            }
+
+            .card {
+                padding: 22px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+
+    <a href="/assessments/practical/create" class="back-link">
+        ← Back to selection
+    </a>
+
+    <section class="card">
+
+        <h1>Configure Practical Assessment</h1>
+
+        <p class="subtitle">
+            Set up your Python programming assessment before creating
+            the questions.
+        </p>
+
+        <div class="selection">
+            <p>
+                <strong>Subject:</strong>
+                {{ selected.subject_name }}
+            </p>
+
+            <p>
+                <strong>Topic:</strong>
+                {{ selected.topic_name }}
+            </p>
+
+            <p>
+                <strong>Creation Mode:</strong>
+                {{ "AI-Generated" if mode == "ai" else "Manual Creation" }}
+            </p>
+        </div>
+
+        <span class="mode-label">Python Programming Assessment</span>
+
+        <form id="configureForm">
+
+            <div class="form-group">
+                <label for="examTitle">Assessment Title</label>
+                <input
+                    type="text"
+                    id="examTitle"
+                    maxlength="150"
+                    placeholder="Example: Python Functions Practice"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="duration">Duration (minutes)</label>
+                <input
+                    type="number"
+                    id="duration"
+                    min="5"
+                    max="300"
+                    value="60"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="questionCount">Number of Programming Questions</label>
+                <input
+                    type="number"
+                    id="questionCount"
+                    min="1"
+                    max="20"
+                    value="5"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="marks">Marks Per Question</label>
+                <input
+                    type="number"
+                    id="marks"
+                    min="1"
+                    max="100"
+                    value="10"
+                    required
+                >
+            </div>
+
+            <button type="submit" class="continue-button">
+                Continue to Question Creation →
+            </button>
+
+        </form>
+
+    </section>
+</div>
+
+<script>
+    document.getElementById("configureForm").addEventListener(
+        "submit",
+        function(event) {
+            event.preventDefault();
+
+            const title = document.getElementById("examTitle").value.trim();
+            const duration = Number(document.getElementById("duration").value);
+            const count = Number(document.getElementById("questionCount").value);
+            const marks = Number(document.getElementById("marks").value);
+
+            if (!title || duration < 5 || duration > 300 ||
+                count < 1 || count > 20 || marks < 1 || marks > 100) {
+                alert("Please enter valid assessment details.");
+                return;
+            }
+
+            const params = new URLSearchParams({
+                subject_id: "{{ selected.subject_id }}",
+                topic_id: "{{ selected.topic_id }}",
+                mode: "{{ mode }}",
+                title: title,
+                duration: duration,
+                question_count: count,
+                marks_per_question: marks
+            });
+
+            window.location.href =
+                "/assessments/practical/questions/setup?" + params.toString();
+        }
+    );
+</script>
+
+</body>
+</html>

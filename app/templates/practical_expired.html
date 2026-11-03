@@ -1,0 +1,113 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assessment Expired | AI Study Planner</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .expired-card {
+            width: 100%;
+            max-width: 520px;
+            background: white;
+            padding: 45px 35px;
+            border-radius: 18px;
+            text-align: center;
+            box-shadow: 0 8px 30px rgba(23, 43, 77, 0.10);
+        }
+
+        .expired-icon {
+            width: 85px;
+            height: 85px;
+            margin: 0 auto 22px;
+            border-radius: 50%;
+            background: #fee2e2;
+            color: #dc2626;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 42px;
+        }
+
+        h1 {
+            color: #172b4d;
+            font-size: 27px;
+            margin-bottom: 14px;
+        }
+
+        .message {
+            color: #64748b;
+            line-height: 1.7;
+            font-size: 15px;
+            margin-bottom: 25px;
+        }
+
+        .status {
+            background: #fef2f2;
+            color: #b91c1c;
+            padding: 12px;
+            border-radius: 9px;
+            font-weight: bold;
+            margin-bottom: 25px;
+        }
+
+        .back-button {
+            display: inline-block;
+            background: #0f766e;
+            color: white;
+            text-decoration: none;
+            padding: 13px 25px;
+            border-radius: 9px;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+
+        .back-button:hover {
+            background: #115e59;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="expired-card">
+
+        <div class="expired-icon">!</div>
+
+        <h1>Assessment Time Expired</h1>
+
+        <p class="message">
+            The allotted time for this practical assessment has ended.
+            Your attempt has been closed, and you can no longer edit
+            or submit code for this attempt.
+        </p>
+
+        <div class="status">
+            Attempt Status: Expired
+        </div>
+
+        <a href="/assessments/practical/available" class="back-button">
+            Back to Practical Assessments
+        </a>
+
+    </div>
+
+</body>
+</html>

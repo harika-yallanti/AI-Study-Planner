@@ -1,0 +1,469 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review Assessment | AI Study Planner</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #172b4d;
+            min-height: 100vh;
+        }
+
+        .page {
+            max-width: 1100px;
+            margin: 35px auto;
+            padding: 0 24px 50px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 22px;
+            color: #0f766e;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+        }
+
+        .page-header h1 {
+            font-size: 28px;
+            margin-bottom: 9px;
+        }
+
+        .page-header p {
+            color: #64748b;
+            line-height: 1.6;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 8px 13px;
+            border-radius: 20px;
+            background: #fff7ed;
+            color: #c2410c;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .summary-card {
+            background: white;
+            border: 1px solid #e5eaf1;
+            border-radius: 13px;
+            padding: 18px;
+            box-shadow: 0 4px 15px rgba(23, 43, 77, 0.04);
+        }
+
+        .summary-card span {
+            display: block;
+            color: #64748b;
+            font-size: 12px;
+            margin-bottom: 8px;
+        }
+
+        .summary-card strong {
+            font-size: 19px;
+        }
+
+        .section-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin: 30px 0 17px;
+        }
+
+        .section-heading h2 {
+            font-size: 21px;
+        }
+
+        .question-card {
+            background: white;
+            border: 1px solid #e5eaf1;
+            border-radius: 15px;
+            padding: 23px;
+            margin-bottom: 17px;
+            box-shadow: 0 4px 16px rgba(23, 43, 77, 0.04);
+        }
+
+        .question-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 17px;
+        }
+
+        .question-number {
+            font-weight: 700;
+            font-size: 15px;
+        }
+
+        .question-type {
+            padding: 6px 10px;
+            border-radius: 20px;
+            background: #e6f4f1;
+            color: #0f766e;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .marks {
+            color: #64748b;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .question-text {
+            font-size: 16px;
+            line-height: 1.7;
+            margin-bottom: 18px;
+            overflow-wrap: anywhere;
+        }
+
+        .options {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 11px;
+        }
+
+        .option {
+            padding: 13px 15px;
+            border: 1px solid #e2e8f0;
+            border-radius: 9px;
+            line-height: 1.5;
+            overflow-wrap: anywhere;
+        }
+
+        .option.correct {
+            border-color: #86cbb7;
+            background: #ecfdf5;
+            color: #065f46;
+        }
+
+        .answer-label {
+            display: block;
+            font-size: 11px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .answer-box {
+            margin-top: 17px;
+            padding: 16px;
+            border-radius: 10px;
+            background: #f0fdfa;
+            border: 1px solid #b7e4d9;
+            line-height: 1.7;
+            overflow-wrap: anywhere;
+        }
+
+        .answer-box strong {
+            display: block;
+            margin-bottom: 7px;
+            color: #0f766e;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        .explanation {
+            margin-top: 13px;
+            color: #64748b;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .empty-state {
+            background: white;
+            border: 1px solid #e5eaf1;
+            border-radius: 14px;
+            padding: 35px;
+            text-align: center;
+            color: #64748b;
+        }
+
+        .bottom-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 28px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            border-radius: 9px;
+            padding: 13px 19px;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .btn-secondary {
+            background: #e8edf4;
+            color: #334155;
+        }
+
+        .btn-primary {
+            background: #0f766e;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #115e59;
+        }
+
+        .notice {
+            margin-top: 20px;
+            padding: 14px 16px;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 10px;
+            color: #1e40af;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 750px) {
+            .summary {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 550px) {
+            .page {
+                margin-top: 22px;
+                padding: 0 15px 35px;
+            }
+
+            .summary,
+            .options {
+                grid-template-columns: 1fr;
+            }
+
+            .question-card {
+                padding: 18px;
+            }
+
+            .bottom-actions .btn {
+                width: 100%;
+            }
+        }
+
+        body.dark {
+            background: #101827;
+            color: #e5edf7;
+        }
+
+        body.dark .summary-card,
+        body.dark .question-card,
+        body.dark .empty-state {
+            background: #182438;
+            border-color: #29384e;
+        }
+
+        body.dark .page-header p,
+        body.dark .summary-card span,
+        body.dark .marks,
+        body.dark .explanation {
+            color: #aab8ca;
+        }
+
+        body.dark .option {
+            border-color: #3a4a60;
+            background: #202f45;
+            color: #e5edf7;
+        }
+
+        body.dark .option.correct,
+        body.dark .answer-box {
+            background: #123b36;
+            border-color: #28695c;
+            color: #d1fae5;
+        }
+
+        body.dark .answer-box strong {
+            color: #7dd3c7;
+        }
+
+        body.dark .btn-secondary {
+            background: #334155;
+            color: #e5edf7;
+        }
+
+        body.dark .notice {
+            background: #1e3452;
+            border-color: #35577f;
+            color: #bfdbfe;
+        }
+    </style>
+</head>
+
+<body>
+    <main class="page">
+
+        <a href="/assessments" class="back-link">← Back to Assessments</a>
+
+        <header class="page-header">
+            <div>
+                <h1>{{ exam.exam_title }}</h1>
+                <p>
+                    {{ exam.subject_name }} · {{ exam.topic_name }}
+                </p>
+            </div>
+
+            <span class="status">{{ exam.status }}</span>
+        </header>
+
+        <section class="summary">
+            <div class="summary-card">
+                <span>Total Questions</span>
+                <strong>{{ questions | length }}</strong>
+            </div>
+
+            <div class="summary-card">
+                <span>Total Marks</span>
+                <strong>{{ exam.total_marks }}</strong>
+            </div>
+
+            <div class="summary-card">
+                <span>Duration</span>
+                <strong>{{ exam.duration_minutes }} min</strong>
+            </div>
+
+            <div class="summary-card">
+                <span>Question Status</span>
+                <strong>Generated</strong>
+            </div>
+        </section>
+
+        <div class="section-heading">
+            <h2>Generated Questions</h2>
+            <span class="marks">Review before publishing</span>
+        </div>
+
+        {% if questions %}
+            {% for question in questions %}
+                <article class="question-card">
+
+                    <div class="question-top">
+                        <span class="question-number">
+                            Question {{ loop.index }}
+                        </span>
+
+                        <span class="question-type">
+                            {{ question.question_type }}
+                        </span>
+
+                        <span class="marks">
+                            {{ question.marks }} marks
+                        </span>
+                    </div>
+
+                    <p class="question-text">
+                        {{ question.question_text }}
+                    </p>
+
+                    {% if question.question_type == "mcq" and question.options %}
+                        <div class="options">
+                            {% for option in question.options %}
+                                <div class="option {% if option == question.correct_answer %}correct{% endif %}">
+                                    {% if option == question.correct_answer %}
+                                        <span class="answer-label">Correct answer</span>
+                                    {% endif %}
+                                    {{ option }}
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                    {% elif question.question_type == "descriptive" %}
+                        <div class="answer-box">
+                            <strong>Reference Answer</strong>
+                            {{ question.expected_answer }}
+                        </div>
+                    {% endif %}
+
+                    {% if question.explanation %}
+                        <p class="explanation">
+                            <strong>Explanation:</strong>
+                            {{ question.explanation }}
+                        </p>
+                    {% endif %}
+
+                </article>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                No questions have been generated for this assessment yet.
+            </div>
+        {% endif %}
+
+        <div class="notice">
+            This is the assessment creator's review page. Correct answers and
+            reference answers are visible here. They must remain hidden from
+            students during the actual assessment.
+        </div>
+
+        <div class="bottom-actions">
+            <a href="/assessments" class="btn btn-secondary">
+                Back to Assessments
+            </a>
+            {% if exam.status == "draft" and questions|length == exam.question_count %}
+    <form
+        method="POST"
+        action="/assessments/theory/publish/{{ exam.id }}"
+        onsubmit="return confirm('Publish this assessment? You can then start your attempt.');"
+    >
+        <button type="submit" class="btn btn-primary">
+            Publish Assessment
+        </button>
+    </form>
+    {% endif %}
+
+    {% if exam.status == "published" %}
+    <a
+        href="/assessments/theory/attempt/{{ exam.id }}"
+        class="btn btn-primary"
+    >
+        Start Assessment
+    </a>
+    {% endif %}
+        </div>
+
+    </main>
+
+    <script src="/static/js/theme.js"></script>
+</body>
+</html>

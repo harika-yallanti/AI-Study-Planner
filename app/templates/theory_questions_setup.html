@@ -1,0 +1,289 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate Questions | AI Study Planner</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #172b4d;
+            min-height: 100vh;
+        }
+
+        .page {
+            max-width: 1050px;
+            margin: 45px auto;
+            padding: 0 24px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 22px;
+            color: #0f766e;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .header { margin-bottom: 26px; }
+
+        .header h1 {
+            font-size: 29px;
+            margin-bottom: 9px;
+        }
+
+        .header p { color: #64748b; line-height: 1.6; }
+
+        .card {
+            background: white;
+            border: 1px solid #e5eaf1;
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 22px;
+            box-shadow: 0 5px 20px rgba(23, 43, 77, 0.05);
+        }
+
+        .card h2 { font-size: 19px; margin-bottom: 20px; }
+
+        .details {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .detail {
+            background: #f8fafc;
+            border: 1px solid #e8edf3;
+            border-radius: 11px;
+            padding: 15px;
+        }
+
+        .detail span {
+            display: block;
+            color: #64748b;
+            font-size: 12px;
+            margin-bottom: 7px;
+        }
+
+        .detail strong {
+            font-size: 15px;
+            overflow-wrap: anywhere;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        button, .secondary-btn {
+            border: none;
+            border-radius: 9px;
+            padding: 13px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .primary-btn {
+            background: #0f766e;
+            color: white;
+        }
+
+        .primary-btn:hover { background: #115e59; }
+
+        .primary-btn:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+        }
+
+        .secondary-btn {
+            background: #eef2f7;
+            color: #334155;
+        }
+
+        .message {
+            display: none;
+            padding: 14px;
+            margin-top: 18px;
+            border-radius: 9px;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+
+        .message.error {
+            display: block;
+            background: #fef2f2;
+            color: #b91c1c;
+        }
+
+        .message.success {
+            display: block;
+            background: #ecfdf5;
+            color: #047857;
+        }
+
+        .note {
+            color: #64748b;
+            font-size: 13px;
+            line-height: 1.6;
+            margin-top: 18px;
+        }
+
+        @media (max-width: 600px) {
+            .page { margin: 25px auto; padding: 0 15px; }
+            .details { grid-template-columns: 1fr; }
+            .card { padding: 20px; }
+            .actions button, .actions a { width: 100%; }
+        }
+
+        body.dark {
+            background: #101827;
+            color: #e5edf7;
+        }
+
+        body.dark .card {
+            background: #182438;
+            border-color: #29384e;
+        }
+
+        body.dark .detail {
+            background: #202f45;
+            border-color: #34445a;
+        }
+
+        body.dark .detail span,
+        body.dark .header p,
+        body.dark .note {
+            color: #aab8ca;
+        }
+
+        body.dark .secondary-btn {
+            background: #334155;
+            color: #e5edf7;
+        }
+    </style>
+</head>
+<body>
+    <main class="page">
+        <a href="/assessments" class="back-link">← Back to Assessments</a>
+
+        <header class="header">
+            <h1>Prepare Your Assessment</h1>
+            <p>Review your configuration and generate questions using AI.</p>
+        </header>
+
+        <section class="card">
+            <h2>Assessment Configuration</h2>
+
+            <div class="details">
+                <div class="detail">
+                    <span>Assessment Title</span>
+                    <strong>{{ exam.exam_title }}</strong>
+                </div>
+
+                <div class="detail">
+                    <span>Subject</span>
+                    <strong>{{ exam.subject_name }}</strong>
+                </div>
+
+                <div class="detail">
+                    <span>Topic</span>
+                    <strong>{{ exam.topic_name }}</strong>
+                </div>
+
+                <div class="detail">
+                    <span>Duration</span>
+                    <strong>{{ exam.duration_minutes }} minutes</strong>
+                </div>
+
+                <div class="detail">
+                    <span>Number of Questions</span>
+                    <strong>{{ exam.question_count }}</strong>
+                </div>
+
+                <div class="detail">
+                    <span>Total Marks</span>
+                    <strong>{{ exam.total_marks }}</strong>
+                </div>
+
+                <div class="detail">
+                    <span>Marks per Question</span>
+                    <strong>{{ exam.marks_per_question }}</strong>
+                </div>
+
+                <div class="detail">
+                    <span>Creation Mode</span>
+                    <strong>{{ exam.creation_mode | title }}</strong>
+                </div>
+            </div>
+
+            <div class="actions">
+                <button
+                    type="button"
+                    class="primary-btn"
+                    id="generateBtn"
+                    data-exam-id="{{ exam.id }}"
+                >
+                    Generate AI Questions
+                </button>
+
+                <a href="/assessments" class="secondary-btn">Cancel</a>
+            </div>
+
+            <div id="message" class="message"></div>
+
+            <p class="note">
+                AI-generated questions will be saved as a draft. You can review
+                and edit them before publishing the assessment.
+            </p>
+        </section>
+    </main>
+
+    <script>
+        const generateBtn = document.getElementById("generateBtn");
+        const message = document.getElementById("message");
+
+        generateBtn.addEventListener("click", async function () {
+            const examId = generateBtn.dataset.examId;
+
+            generateBtn.disabled = true;
+            generateBtn.textContent = "Generating questions...";
+            message.className = "message";
+            message.textContent = "";
+
+            try {
+                const response = await fetch(
+                    `/assessments/theory/generate/${examId}`,
+                    { method: "POST" }
+                );
+
+                const result = await response.json();
+
+                if (!response.ok || !result.success) {
+                    throw new Error(result.message || "Question generation failed.");
+                }
+
+                window.location.href =`/assessments/theory/review/${examId}`;
+
+            } catch (error) {
+                message.className = "message error";
+                message.textContent = error.message;
+                generateBtn.disabled = false;
+                generateBtn.textContent = "Try Again";
+            }
+        });
+    </script>
+
+    <script src="/static/js/theme.js"></script>
+</body>
+</html>

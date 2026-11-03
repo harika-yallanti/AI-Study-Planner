@@ -1,0 +1,198 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assessment Questions | AI Study Planner</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #172b4d;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: 30px auto;
+        }
+
+        .card {
+            background: white;
+            padding: 32px;
+            border-radius: 16px;
+            box-shadow: 0 5px 22px rgba(23, 43, 77, 0.08);
+        }
+
+        .back {
+            display: inline-block;
+            margin-bottom: 22px;
+            color: #0f766e;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        h1 {
+            font-size: 26px;
+            margin-bottom: 12px;
+        }
+
+        .subtitle {
+            color: #64748b;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .details {
+            background: #f1f5f9;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .details p {
+            margin: 9px 0;
+        }
+
+        .action {
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            padding: 22px;
+            border-radius: 12px;
+        }
+
+        .action h2 {
+            font-size: 19px;
+            margin-bottom: 10px;
+        }
+
+        .action p {
+            color: #475569;
+            line-height: 1.6;
+            margin-bottom: 18px;
+        }
+
+        button {
+            background: #0f766e;
+            color: white;
+            border: none;
+            padding: 13px 22px;
+            border-radius: 9px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        #message {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #475569;
+        }
+
+        .count {
+            margin-top: 18px;
+            color: #64748b;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <a href="/assessments" class="back">← Back to Assessments</a>
+
+        <div class="card">
+            <h1>Prepare Assessment Questions</h1>
+            <p class="subtitle">
+                Your assessment has been created. You can now generate
+                questions for it using AI.
+            </p>
+
+            <div class="details">
+                <p><strong>Assessment:</strong> {{ exam.exam_title }}</p>
+                <p><strong>Subject:</strong> {{ exam.subject_name }}</p>
+                <p><strong>Topic:</strong> {{ exam.topic_name or "All topics" }}</p>
+                <p><strong>Duration:</strong> {{ exam.duration_minutes }} minutes</p>
+                <p><strong>Question count:</strong> {{ exam.question_count }}</p>
+                <p><strong>Total marks:</strong> {{ exam.total_marks }}</p>
+                <p><strong>Creation mode:</strong> {{ exam.creation_mode | title }}</p>
+            </div>
+
+            {% if exam.creation_mode == "ai" %}
+            <div class="action">
+                <h2>Generate Questions with AI</h2>
+                <p>
+                    AI will prepare questions based on your selected subject,
+                    topic, question types and assessment settings.
+                </p>
+
+                <button id="generateBtn" onclick="generateQuestions()">
+                    Generate Questions
+                </button>
+
+                <p id="message"></p>
+            </div>
+            {% else %}
+            <div class="action">
+                <h2>Manual Question Creation</h2>
+                <p>
+                    Manual question entry will be connected here.
+                    We will implement the question editor next.
+                </p>
+            </div>
+            {% endif %}
+
+            <p class="count">
+                Questions currently added: {{ question_count }}
+            </p>
+        </div>
+    </div>
+
+    <script>
+        async function generateQuestions() {
+            const button = document.getElementById("generateBtn");
+            const message = document.getElementById("message");
+
+            button.disabled = true;
+            button.textContent = "Generating...";
+            message.textContent = "Please wait while AI prepares your questions.";
+
+            try {
+                const response = await fetch(
+                    "/assessments/theory/generate/{{ exam.id }}",
+                    { method: "POST" }
+                );
+
+                const result = await response.json();
+
+                if (!response.ok || result.success === false) {
+                    throw new Error(result.detail || result.message || "Question generation failed.");
+                }
+
+                message.textContent = "Questions generated successfully. Opening review page...";
+
+                window.location.href =
+                    "/assessments/theory/review/{{ exam.id }}";
+
+            } catch (error) {
+                message.textContent = error.message;
+                button.disabled = false;
+                button.textContent = "Try Again";
+            }
+        }
+    </script>
+</body>
+</html>

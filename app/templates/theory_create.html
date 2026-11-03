@@ -1,0 +1,649 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Theory Assessment | AI Study Planner</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #1e293b;
+        }
+
+        .page-container {
+            max-width: 1100px;
+            margin: auto;
+            padding: 32px;
+        }
+
+        .back-link {
+            display: inline-block;
+            color: #0f766e;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 25px;
+        }
+
+        .page-header {
+            margin-bottom: 27px;
+        }
+
+        .eyebrow {
+            color: #0f766e;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 1.3px;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+
+        .page-header h1 {
+            color: #172b4d;
+            font-size: 29px;
+            margin-bottom: 9px;
+        }
+
+        .page-header p {
+            color: #64748b;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .mode-banner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            padding: 22px 25px;
+            margin-bottom: 25px;
+            border-radius: 14px;
+            background: linear-gradient(110deg, #172b4d, #0f766e);
+            color: white;
+        }
+
+        .mode-banner h2 {
+            color: white;
+            font-size: 19px;
+            margin-bottom: 7px;
+        }
+
+        .mode-banner p {
+            color: #dbeafe;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .mode-badge {
+            padding: 9px 13px;
+            border-radius: 30px;
+            background: rgba(255,255,255,0.17);
+            color: white;
+            font-size: 12px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.5fr) minmax(250px, 0.8fr);
+            gap: 23px;
+            align-items: start;
+        }
+
+        .form-card,
+        .details-card {
+            background: white;
+            border: 1px solid #e5eaf1;
+            border-radius: 16px;
+            padding: 27px;
+            box-shadow: 0 5px 18px rgba(23,43,77,0.045);
+        }
+
+        .card-heading {
+            margin-bottom: 24px;
+        }
+
+        .card-heading h2 {
+            color: #172b4d;
+            font-size: 19px;
+            margin-bottom: 7px;
+        }
+
+        .card-heading p {
+            color: #64748b;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .form-group {
+            margin-bottom: 21px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #334155;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 9px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 13px 14px;
+            border: 1px solid #d8e0eb;
+            border-radius: 9px;
+            background: white;
+            color: #334155;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: #0f766e;
+            box-shadow: 0 0 0 3px rgba(15,118,110,0.10);
+        }
+
+        .form-hint {
+            color: #94a3b8;
+            font-size: 11px;
+            margin-top: 7px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .question-type-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 13px;
+        }
+
+        .question-type {
+            display: flex;
+            align-items: flex-start;
+            gap: 11px;
+            padding: 15px;
+            border: 1px solid #dbe3ed;
+            border-radius: 11px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .question-type:has(input:checked) {
+            border-color: #0f766e;
+            background: #f0fdfa;
+        }
+
+        .question-type input {
+            width: 16px;
+            height: 16px;
+            margin-top: 2px;
+            accent-color: #0f766e;
+        }
+
+        .question-type strong {
+            display: block;
+            color: #334155;
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+
+        .question-type span {
+            color: #64748b;
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        .primary-button {
+            width: 100%;
+            border: none;
+            border-radius: 10px;
+            padding: 15px;
+            background: #0f766e;
+            color: white;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: 0.2s;
+        }
+
+        .primary-button:hover {
+            background: #115e59;
+        }
+
+        .details-card h3 {
+            color: #172b4d;
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        .details-card > p {
+            color: #64748b;
+            font-size: 12px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .detail-item {
+            padding: 14px 0;
+            border-bottom: 1px solid #edf1f5;
+        }
+
+        .detail-item:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            color: #94a3b8;
+            font-size: 11px;
+            font-weight: 700;
+            margin-bottom: 7px;
+            text-transform: uppercase;
+        }
+
+        .detail-value {
+            color: #334155;
+            font-size: 13px;
+            font-weight: 600;
+            overflow-wrap: anywhere;
+        }
+
+        .notice {
+            background: #eff6ff;
+            border: 1px solid #dbeafe;
+            border-radius: 10px;
+            padding: 14px;
+            margin-top: 18px;
+            color: #475569;
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        body.dark-theme {
+            background: #0f172a;
+            color: #e2e8f0;
+        }
+
+        body.dark-theme .page-header h1,
+        body.dark-theme .card-heading h2,
+        body.dark-theme .details-card h3 {
+            color: #f1f5f9;
+        }
+
+        body.dark-theme .page-header p,
+        body.dark-theme .card-heading p,
+        body.dark-theme .details-card > p {
+            color: #cbd5e1;
+        }
+
+        body.dark-theme .form-card,
+        body.dark-theme .details-card {
+            background: #1e293b;
+            border-color: #334155;
+        }
+
+        body.dark-theme .form-group label,
+        body.dark-theme .detail-value,
+        body.dark-theme .question-type strong {
+            color: #e2e8f0;
+        }
+
+        body.dark-theme .form-group input,
+        body.dark-theme .form-group select {
+            background: #0f172a;
+            border-color: #475569;
+            color: #f1f5f9;
+        }
+
+        body.dark-theme .question-type {
+            border-color: #475569;
+        }
+
+        body.dark-theme .question-type:has(input:checked) {
+            background: #134e4a;
+            border-color: #0f766e;
+        }
+
+        body.dark-theme .question-type span {
+            color: #cbd5e1;
+        }
+
+        body.dark-theme .detail-item {
+            border-color: #334155;
+        }
+
+        body.dark-theme .notice {
+            background: #172554;
+            border-color: #1e40af;
+            color: #cbd5e1;
+        }
+
+        @media (max-width: 800px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .page-container {
+                padding: 20px 15px;
+            }
+
+            .page-header h1 {
+                font-size: 24px;
+            }
+
+            .mode-banner {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .form-card,
+            .details-card {
+                padding: 21px;
+            }
+
+            .form-row,
+            .question-type-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<main class="page-container">
+
+    <a href="/assessments/theory" class="back-link">
+        ← Back to Theory Assessments
+    </a>
+
+    <header class="page-header">
+        <span class="eyebrow">EXAM CONFIGURATION</span>
+        <h1>Create Your Theory Exam</h1>
+        <p>Configure your examination details before adding questions.</p>
+    </header>
+
+    <section class="mode-banner">
+    <div>
+        <h2>Create an AI-Powered Assessment</h2>
+        <p>
+            AI will prepare MCQ and descriptive questions
+            based on your selected topic.
+        </p>
+    </div>
+
+    <span class="mode-badge">✦ AI MODE</span>
+</section>
+
+    <section class="content-grid">
+
+        <div class="form-card">
+
+            <div class="card-heading">
+                <h2>Assessment Details</h2>
+                <p>Enter the examination information and question preferences.</p>
+            </div>
+
+            <form
+                id="assessmentForm"
+                data-subject-id="{{ subject.subject_id }}"
+                data-topic-id="{{ subject.topic_id }}"
+                data-mode="ai"
+            >
+
+                <div class="form-group">
+                    <label for="examTitle">Assessment Title</label>
+                    <input
+                        type="text"
+                        id="examTitle"
+                        maxlength="200"
+                        placeholder="Example: Computer Networks - Unit 1 Assessment"
+                        required
+                    >
+                </div>
+
+                <div class="form-row">
+
+                    <div class="form-group">
+                        <label for="duration">Duration (minutes)</label>
+                        <input
+                            type="number"
+                            id="duration"
+                            min="5"
+                            max="300"
+                            value="30"
+                            required
+                        >
+                        <p class="form-hint">Between 5 and 300 minutes.</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="questionCount">Number of Questions</label>
+                        <input
+                            type="number"
+                            id="questionCount"
+                            min="1"
+                            max="30"
+                            value="5"
+                            required
+                        >
+                        <p class="form-hint">Between 1 and 30 questions.</p>
+                    </div>
+
+                </div>
+
+                <div class="form-group">
+                    <label for="questionMarks">Marks Per Question</label>
+                    <input
+                        type="number"
+                        id="questionMarks"
+                        min="1"
+                        max="20"
+                        value="2"
+                        required
+                    >
+                    <p class="form-hint">Total marks will be calculated automatically.</p>
+                </div>
+
+                <div class="form-group">
+                    <label>Question Types</label>
+
+                    <div class="question-type-grid">
+
+                        <label class="question-type">
+                            <input
+                                type="checkbox"
+                                name="questionTypes"
+                                value="mcq"
+                                checked
+                            >
+                            <span>
+                                <strong>Multiple Choice</strong>
+                                MCQ questions with four options.
+                            </span>
+                        </label>
+
+                        <label class="question-type">
+                            <input
+                                type="checkbox"
+                                name="questionTypes"
+                                value="descriptive"
+                                checked
+                            >
+                            <span>
+                                <strong>Descriptive</strong>
+                                Short and long written answers.
+                            </span>
+                        </label>
+
+                    </div>
+                </div>
+
+                <button type="submit" class="primary-button">
+                    Continue to Questions →
+                </button>
+
+            </form>
+
+        </div>
+
+        <aside class="details-card">
+
+            <h3>Assessment Overview</h3>
+            <p>Review the selected learning area and your exam configuration.</p>
+
+            <div class="detail-item">
+                <div class="detail-label">Subject</div>
+                <div class="detail-value">AI Generated</div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">Topic</div>
+                <div class="detail-value">{{ subject.topic_name }}</div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">Creation Mode</div>
+                <div class="detail-value">
+                    {% if mode == "ai" %}AI Generated{% else %}Manual{% endif %}
+                </div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">Total Marks</div>
+                <div class="detail-value" id="totalMarks">10 Marks</div>
+            </div>
+
+            <div class="notice">
+                💡 MCQ answers will be evaluated automatically. Descriptive answers will be assessed against a marking rubric, with AI-assisted feedback.
+            </div>
+
+        </aside>
+
+    </section>
+
+</main>
+
+<script>
+    const form = document.getElementById("assessmentForm");
+
+    const durationInput = document.getElementById("duration");
+    const countInput = document.getElementById("questionCount");
+    const marksInput = document.getElementById("questionMarks");
+    const totalMarks = document.getElementById("totalMarks");
+    const submitButton = form.querySelector('button[type="submit"]');
+
+    function updateTotalMarks() {
+        const count = Number(countInput.value) || 0;
+        const marks = Number(marksInput.value) || 0;
+
+        totalMarks.textContent = `${count * marks} Marks`;
+    }
+
+    countInput.addEventListener("input", updateTotalMarks);
+    marksInput.addEventListener("input", updateTotalMarks);
+
+    form.addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        const title = document.getElementById("examTitle").value.trim();
+        const duration = Number(durationInput.value);
+        const count = Number(countInput.value);
+        const marks = Number(marksInput.value);
+
+        const selectedTypes = Array.from(
+            document.querySelectorAll('input[name="questionTypes"]:checked')
+        ).map(input => input.value);
+
+        if (!title) {
+            alert("Please enter an assessment title.");
+            return;
+        }
+
+        if (!Number.isInteger(duration) || duration < 5 || duration > 300) {
+            alert("Duration must be between 5 and 300 minutes.");
+            return;
+        }
+
+        if (!Number.isInteger(count) || count < 1 || count > 30) {
+            alert("Question count must be between 1 and 30.");
+            return;
+        }
+
+        if (!Number.isInteger(marks) || marks < 1 || marks > 20) {
+            alert("Marks per question must be between 1 and 20.");
+            return;
+        }
+
+        if (selectedTypes.length === 0) {
+            alert("Please select at least one question type.");
+            return;
+        }
+
+        const config = {
+            exam_title: title,
+            duration_minutes: duration,
+            question_count: count,
+            marks_per_question: marks,
+            question_types: selectedTypes,
+            subject_id: Number(form.dataset.subjectId),
+            topic_id: Number(form.dataset.topicId),
+            mode: form.dataset.mode
+        };
+
+        submitButton.disabled = true;
+        submitButton.textContent = "Saving Assessment...";
+
+        try {
+            const response = await fetch("/assessments/theory/save", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(config)
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                window.location.href =
+                `/assessments/theory/questions/${result.exam_id}`;
+            } else {
+                throw new Error(result.message || "Unable to save assessment.");
+            }
+
+        } catch (error) {
+            console.error("Assessment save error:", error);
+            alert(error.message || "Unable to save assessment.");
+        } finally {
+            submitButton.disabled = false;
+            submitButton.textContent = "Continue to Questions →";
+        }
+    });
+
+    updateTotalMarks();
+</script>
+
+<script src="/static/js/theme.js"></script>
+
+</body>
+</html>

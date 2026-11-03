@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assessments | AI Study Planner</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #1e293b;
+        }
+
+        .dashboard {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: #172b4d;
+            color: white;
+            padding: 25px 18px;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 40px;
+        }
+
+        .sidebar nav {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .sidebar nav a {
+            color: #dbeafe;
+            text-decoration: none;
+            padding: 13px 15px;
+            border-radius: 8px;
+            transition: 0.2s;
+        }
+
+        .sidebar nav a:hover,
+        .sidebar nav a.active {
+            background: #0f766e;
+            color: white;
+        }
+
+        .sidebar-bottom {
+            margin-top: auto;
+            padding-top: 30px;
+        }
+
+        #logoutButton {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: #dc2626;
+            color: white;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        #logoutButton:hover {
+            background: #b91c1c;
+        }
+
+        .main-content {
+            flex: 1;
+            min-width: 0;
+            padding: 30px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 28px;
+        }
+
+        .topbar h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+            color: var(--text-color);
+        }
+
+        .topbar p {
+            color: var(--muted-color);
+            line-height: 1.5;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .theme-button {
+            padding: 10px 13px;
+            border: 1px solid #dbe3ef;
+            border-radius: 9px;
+            background: white;
+            color: #172b4d;
+            cursor: pointer;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: white;
+            padding: 10px 16px;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(23, 43, 77, 0.05);
+        }
+
+        .avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: #0f766e;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .profile-name {
+            font-weight: bold;
+            color: var(--text-color);
+        }
+
+        .profile-label {
+            font-size: 12px;
+            color: var(--muted-color);
+            margin-top: 4px;
+        }
+
+        .intro-banner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 25px;
+            padding: 32px;
+            margin-bottom: 30px;
+            border-radius: 18px;
+            background: linear-gradient(120deg, #172b4d, #0f766e);
+            color: white;
+            overflow: hidden;
+        }
+
+        .intro-content {
+            max-width: 650px;
+        }
+
+        .intro-label {
+            display: inline-block;
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 1.5px;
+            color: #a7f3d0;
+            margin-bottom: 12px;
+        }
+
+        .intro-banner h2 {
+            font-size: 27px;
+            line-height: 1.3;
+            margin-bottom: 10px;
+            color: #ffffff !important;
+        }
+
+        .intro-banner p {
+            font-size: 14px;
+            color: #e0f2fe;
+            line-height: 1.7;
+        }
+
+        .intro-decoration {
+            font-size: 90px;
+            color: rgba(255, 255, 255, 0.16);
+            flex-shrink: 0;
+        }
+
+        .section-heading {
+            margin-bottom: 18px;
+        }
+
+        .section-heading h2 {
+            font-size: 21px;
+            color: var(--text-color);
+            margin-bottom: 7px;
+        }
+
+        .section-heading p {
+            font-size: 13px;
+            color: var(--muted-color);
+            line-height: 1.6;
+        }
+
+        .assessment-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 22px;
+            margin-bottom: 30px;
+        }
+
+        .assessment-card {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            background: white;
+            border: 1px solid #e7edf5;
+            border-radius: 17px;
+            padding: 25px;
+            box-shadow: 0 4px 14px rgba(23, 43, 77, 0.045);
+            transition: transform 0.2s, box-shadow 0.2s;
+            overflow: hidden;
+        }
+
+        .assessment-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(23, 43, 77, 0.09);
+        }
+
+        .assessment-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+        }
+
+        .theory-card::before {
+            background: #0f766e;
+        }
+
+        .practical-card::before {
+            background: #2563eb;
+        }
+
+        .card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .assessment-icon {
+            width: 55px;
+            height: 55px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 14px;
+            font-size: 25px;
+        }
+
+        .theory-card .assessment-icon {
+            color: #0f766e;
+            background: #e0f2f1;
+        }
+
+        .practical-card .assessment-icon {
+            color: #2563eb;
+            background: #dbeafe;
+        }
+
+        .count-label {
+            padding: 7px 11px;
+            border-radius: 20px;
+            background: #f1f5f9;
+            color: #475569;
+            font-size: 12px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .assessment-card h3 {
+            font-size: 21px;
+            color: var(--text-color);
+            margin-bottom: 10px;
+        }
+
+        .assessment-description {
+            color: var(--muted-color);
+            font-size: 14px;
+            line-height: 1.7;
+            margin-bottom: 20px;
+            min-height: 70px;
+        }
+
+        .feature-list {
+            display: grid;
+            gap: 12px;
+            margin-bottom: 25px;
+            list-style: none;
+        }
+
+        .feature-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            color: var(--text-color);
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .feature-check {
+            color: #0f766e;
+            font-weight: bold;
+        }
+
+        .card-button {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 9px;
+            width: 100%;
+            margin-top: auto;
+            padding: 13px 18px;
+            border-radius: 9px;
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        .theory-card .card-button {
+            background: #0f766e;
+        }
+
+        .theory-card .card-button:hover {
+            background: #115e59;
+        }
+
+        .practical-card .card-button {
+            background: #2563eb;
+        }
+
+        .practical-card .card-button:hover {
+            background: #1d4ed8;
+        }
+
+        .info-panel {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            padding: 20px 22px;
+            background: #eff6ff;
+            border: 1px solid #dbeafe;
+            border-radius: 13px;
+        }
+
+        .info-icon {
+            font-size: 21px;
+        }
+
+        .info-panel h3 {
+            color: #1e40af;
+            font-size: 15px;
+            margin-bottom: 6px;
+        }
+
+        .info-panel p {
+            color: #475569;
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        body.dark-theme {
+            background: #0f172a;
+            color: #e2e8f0;
+        }
+
+        body.dark-theme .profile,
+        body.dark-theme .assessment-card {
+            background: #1e293b;
+            border-color: #334155;
+        }
+
+        body.dark-theme .topbar h1,
+        body.dark-theme .section-heading h2,
+        body.dark-theme .assessment-card h3,
+        body.dark-theme .profile-name,
+        body.dark-theme .feature-list li {
+            color: #f1f5f9;
+        }
+
+        body.dark-theme .topbar p,
+        body.dark-theme .section-heading p,
+        body.dark-theme .profile-label,
+        body.dark-theme .assessment-description {
+            color: #cbd5e1;
+        }
+
+        body.dark-theme .theme-button {
+            background: #1e293b;
+            border-color: #475569;
+            color: #e2e8f0;
+        }
+
+        body.dark-theme .count-label {
+            background: #334155;
+            color: #cbd5e1;
+        }
+
+        body.dark-theme .info-panel {
+            background: #172554;
+            border-color: #1e40af;
+        }
+
+        body.dark-theme .info-panel h3 {
+            color: #bfdbfe;
+        }
+
+        body.dark-theme .info-panel p {
+            color: #cbd5e1;
+        }
+
+        @media (max-width: 1000px) {
+            .assessment-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .assessment-description {
+                min-height: auto;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .dashboard {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                padding: 18px;
+            }
+
+            .logo {
+                margin-bottom: 18px;
+            }
+
+            .sidebar nav {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+
+            .sidebar-bottom {
+                margin-top: 18px;
+                padding-top: 0;
+            }
+
+            .main-content {
+                padding: 20px;
+            }
+
+            .topbar {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .header-actions {
+                width: 100%;
+                justify-content: space-between;
+                flex-wrap: wrap;
+            }
+
+            .intro-banner {
+                padding: 25px;
+            }
+
+            .intro-banner h2 {
+                font-size: 23px;
+            }
+
+            .intro-decoration {
+                display: none;
+            }
+
+            .assessment-card {
+                padding: 21px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="dashboard">
+
+    <aside class="sidebar">
+        <div class="logo">AI Study Planner</div>
+
+        <nav>
+            {% if request.session.get("user_role") == "admin" %}
+                <a href="/admin/users">Admin Dashboard</a>
+            {% endif %}
+            <a href="/dashboard">Dashboard</a>
+            <a href="/subjects">My Subjects</a>
+            <a href="/study-plan">Study Plan</a>
+            <a href="/study-progress">Study Progress</a>
+            <a href="/exams">Exams</a>
+            <a href="/assessments" class="active">Assessments</a>
+            <a href="/assessments/history">Assessment History</a>
+            <a href="/notes">📝 Notes</a>
+            <a href="/resources">📚 Learning Resources</a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <button id="logoutButton" type="button">Logout</button>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="topbar">
+            <div>
+                <h1>Assessments</h1>
+                <p>Test your understanding and evaluate your practical skills.</p>
+            </div>
+
+            <div class="header-actions">
+                <button type="button" class="theme-button" id="themeButton" hidden>
+                    🌙 Dark Mode
+                </button>
+
+                <div class="profile">
+                    <div class="avatar" id="profileAvatar">
+                        {{ user_name[0]|upper }}
+                    </div>
+                    <div>
+                        <div class="profile-name" id="profileName">
+                            {{ user_name }}
+                        </div>
+                        <div class="profile-label">
+                            {{ user_role|capitalize }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <section class="intro-banner">
+            <div class="intro-content">
+                <span class="intro-label">LEARN · PRACTICE · EVALUATE</span>
+                <h2>Prepare. Practice. Perform.</h2>
+                <p>
+                    Create assessments based on your subjects and topics.
+                    Choose AI-generated questions for guided practice or
+                    create your own exams to test what you have learned.
+                </p>
+            </div>
+            <div class="intro-decoration">✦</div>
+        </section>
+
+        <section>
+            <div class="section-heading">
+                <h2>Choose Your Assessment Type</h2>
+                <p>
+                    Select the assessment format that matches the skills
+                    you want to test.
+                </p>
+            </div>
+
+            <div class="assessment-grid">
+
+                <article class="assessment-card theory-card">
+                    <div class="card-top">
+                        <div class="assessment-icon">📖</div>
+                        <span class="count-label">
+                            {{ theory_count }} Created
+                        </span>
+                    </div>
+
+                    <h3>Theory Assessments</h3>
+                    <p class="assessment-description">
+                        Evaluate your subject knowledge through multiple-choice
+                        and descriptive questions. Create your own exam or
+                        let AI generate questions from a selected topic.
+                    </p>
+
+                    <ul class="feature-list">
+                        <li><span class="feature-check">✓</span> Multiple-choice questions</li>
+                        <li><span class="feature-check">✓</span> Descriptive and short-answer questions</li>
+                        <li><span class="feature-check">✓</span> AI-generated or manually created exams</li>
+                        <li><span class="feature-check">✓</span> Marks, results and answer feedback</li>
+                    </ul>
+
+                    <a href="/assessments/theory" class="card-button">
+                        Explore Theory Assessments <span>→</span>
+                    </a>
+                </article>
+
+                <article class="assessment-card practical-card">
+                    <div class="card-top">
+                        <div class="assessment-icon">💻</div>
+                        <span class="count-label">
+                            {{ practical_count }} Created
+                        </span>
+                    </div>
+
+                    <h3>Practical Assessments</h3>
+                    <p class="assessment-description">
+                        Strengthen your programming skills by solving
+                        Python coding problems and submitting your
+                        solutions for evaluation.
+                    </p>
+
+                    <ul class="feature-list">
+                        <li><span class="feature-check">✓</span> Python programming questions</li>
+                        <li><span class="feature-check">✓</span> AI-generated or manually created exams</li>
+                        <li><span class="feature-check">✓</span> Code submission and test-case evaluation</li>
+                        <li><span class="feature-check">✓</span> Marks and execution feedback</li>
+                    </ul>
+
+                    <a href="/assessments/practical" class="card-button">
+                        Explore Practical Assessments <span>→</span>
+                    </a>
+                </article>
+
+            </div>
+        </section>
+
+        <section class="info-panel">
+            <div class="info-icon">💡</div>
+            <div>
+                <h3>How assessments work</h3>
+                <p>
+                    Choose an assessment type, select a subject and topic,
+                    and decide whether to generate questions using AI or
+                    create them manually. Your attempts and results will
+                    be available for review.
+                </p>
+            </div>
+        </section>
+    </main>
+</div>
+
+<script>
+    const profileName = document.getElementById("profileName");
+    const userName = profileName.textContent.trim();
+
+    document.getElementById("profileAvatar").textContent =
+        userName.charAt(0).toUpperCase();
+
+    document.getElementById("logoutButton").addEventListener("click", async function () {
+        try {
+            const response = await fetch("/users/logout", {
+                method: "POST"
+            });
+
+            if (response.ok) {
+                window.location.href = "/login";
+            } else {
+                alert("Unable to log out. Please try again.");
+            }
+        } catch (error) {
+            alert("Could not connect to the server.");
+        }
+    });
+</script>
+
+<script src="/static/js/theme.js"></script>
+</body>
+</html>

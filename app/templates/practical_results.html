@@ -1,0 +1,354 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practical Assessment Results | AI Study Planner</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #172b4d;
+            padding: 30px 16px;
+        }
+
+        .container {
+            max-width: 1050px;
+            margin: auto;
+        }
+
+        .header {
+            margin-bottom: 25px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #64748b;
+            line-height: 1.6;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 14px;
+            margin-bottom: 22px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .exam-title {
+            font-size: 21px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .metadata {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .score-section {
+            text-align: center;
+        }
+
+        .score {
+            font-size: 38px;
+            font-weight: 700;
+            color: #0f766e;
+            margin: 12px 0;
+        }
+
+        .percentage {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .progress-track {
+    height: 12px;
+    background: #e2e8f0;
+    border-radius: 20px;
+    overflow: hidden;
+    margin: 18px auto;
+    max-width: 500px;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 12px;
+    border: none;
+    display: block;
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+.progress-bar::-webkit-progress-bar {
+    background: #e2e8f0;
+    border-radius: 20px;
+}
+
+.progress-bar::-webkit-progress-value {
+    background: #0f766e;
+    border-radius: 20px;
+}
+
+.progress-bar::-moz-progress-bar {
+    background: #0f766e;
+    border-radius: 20px;
+}
+
+        .performance-message {
+            color: #64748b;
+            margin-top: 12px;
+        }
+
+        .section-title {
+            font-size: 21px;
+            margin-bottom: 20px;
+        }
+
+        .question-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 22px;
+            margin-bottom: 18px;
+        }
+
+        .question-heading {
+            font-size: 17px;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .question-text {
+            color: #334155;
+            line-height: 1.7;
+            margin-bottom: 18px;
+            white-space: pre-wrap;
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .marks {
+            font-weight: 700;
+            color: #172b4d;
+        }
+
+        .status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .passed {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .partial {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .failed {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .feedback {
+            background: #f0fdfa;
+            border-left: 4px solid #0f766e;
+            padding: 14px;
+            border-radius: 7px;
+            margin-top: 15px;
+            line-height: 1.6;
+        }
+
+        .code-title {
+            font-weight: 600;
+            margin: 18px 0 8px;
+        }
+
+        pre {
+            background: #172b4d;
+            color: #e2e8f0;
+            padding: 16px;
+            border-radius: 9px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .primary {
+            background: #0f766e;
+            color: white;
+        }
+
+        .secondary {
+            background: #e2e8f0;
+            color: #172b4d;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 18px 12px;
+            }
+
+            .card {
+                padding: 18px;
+            }
+
+            .header h1 {
+                font-size: 23px;
+            }
+
+            .score {
+                font-size: 31px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+
+    <div class="header">
+        <h1>Practical Assessment Results</h1>
+        <p>Your assessment has been evaluated successfully.</p>
+    </div>
+
+    <div class="card">
+        <div class="exam-title">{{ attempt.exam_title }}</div>
+
+        <div class="metadata">
+            <span>Subject: {{ attempt.subject_name }}</span>
+            <span>Topic: {{ attempt.topic_name or "General" }}</span>
+        </div>
+    </div>
+
+    <div class="card score-section">
+        <h2>Your Score</h2>
+
+        <div class="score">
+            {{ "%.2f"|format(attempt.score or 0) }}
+            /
+            {{ "%.2f"|format(attempt.total_marks or 0) }}
+        </div>
+
+        <div class="percentage">
+            {{ "%.2f"|format(attempt.percentage or 0) }}%
+        </div>
+
+        <div class="progress-track">
+    <progress
+        class="progress-bar"
+        value="{{ [0, [attempt.percentage or 0, 100]|min]|max }}"
+        max="100">
+    </progress>
+</div>
+
+        <p class="performance-message">
+            {% if attempt.percentage >= 80 %}
+                Excellent work! Keep up the good performance.
+            {% elif attempt.percentage >= 50 %}
+                Good effort! Review the feedback and improve further.
+            {% else %}
+                Keep practising. Review the feedback and try again.
+            {% endif %}
+        </p>
+    </div>
+
+    <div class="card">
+        <h2 class="section-title">Question-wise Performance</h2>
+
+        {% for response in responses %}
+        <div class="question-card">
+
+            <div class="result-row">
+                <h3 class="question-heading">
+                    Question {{ loop.index }}
+                </h3>
+
+                <span class="marks">
+                    {{ "%.2f"|format(response.awarded_marks or 0) }}
+                    /
+                    {{ "%.2f"|format(response.marks or 0) }} marks
+                </span>
+            </div>
+
+            <div class="question-text">
+                {{ response.question_text }}
+            </div>
+
+            {% if response.is_correct %}
+                <span class="status passed">Passed all test cases</span>
+            {% elif response.awarded_marks > 0 %}
+                <span class="status partial">Partially passed</span>
+            {% else %}
+                <span class="status failed">Not passed</span>
+            {% endif %}
+
+            <div class="feedback">
+                <strong>Feedback:</strong>
+                {{ response.feedback or "No feedback available." }}
+            </div>
+
+            <div class="code-title">Your submitted code</div>
+
+            <pre>{{ response.answer_text or "No code submitted." }}</pre>
+
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="actions">
+        <a href="/assessments" class="btn primary">
+            Return to Assessments
+        </a>
+
+        <a href="/assessments/history" class="btn secondary">
+            View Assessment History
+        </a>
+    </div>
+
+</div>
+</body>
+</html>

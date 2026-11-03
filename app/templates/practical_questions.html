@@ -1,0 +1,282 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Python Question Generation | AI Study Planner</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #1e293b;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #0f766e;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(23, 43, 77, 0.06);
+        }
+
+        h1 {
+            color: #172b4d;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #64748b;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .details {
+            background: #f0fdfa;
+            border: 1px solid #ccfbf1;
+            border-radius: 11px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .details p {
+            margin: 10px 0;
+            color: #334155;
+        }
+
+        .details strong {
+            color: #0f766e;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 7px 12px;
+            border-radius: 20px;
+            background: #fef3c7;
+            color: #92400e;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .question-placeholder {
+            border: 1px dashed #94a3b8;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            background: #f8fafc;
+        }
+
+        .question-placeholder h2 {
+            color: #172b4d;
+            font-size: 19px;
+            margin-bottom: 12px;
+        }
+
+        .question-placeholder p {
+            color: #64748b;
+            line-height: 1.7;
+            font-size: 14px;
+        }
+
+        .question-list {
+            margin-top: 25px;
+        }
+
+        .question-item {
+            padding: 18px;
+            margin-top: 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+        }
+
+        .question-item h3 {
+            color: #172b4d;
+            margin-bottom: 10px;
+        }
+
+        .question-item p {
+            color: #475569;
+            white-space: pre-wrap;
+            line-height: 1.6;
+        }
+        .generate-button {
+    margin-top: 22px;
+    padding: 14px 22px;
+    background: #0f766e;
+    color: white;
+    border: none;
+    border-radius: 9px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.generate-button:hover {
+    background: #115e59;
+}
+
+.generate-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+#generationMessage {
+    margin-top: 15px;
+    font-size: 14px;
+    color: #0f766e;
+}
+.review-button {
+    display: inline-block;
+    margin-top: 22px;
+    padding: 13px 20px;
+    background: #0f766e;
+    color: white;
+    border-radius: 9px;
+    text-decoration: none;
+    font-weight: bold;
+}
+    </style>
+</head>
+
+<body>
+<div class="container">
+
+    <a href="/assessments/practical" class="back-link">
+        ← Back to Practical Assessments
+    </a>
+
+    <section class="card">
+
+        <h1>{{ exam.exam_title }}</h1>
+
+        <p class="subtitle">
+            Your AI-generated Python practical assessment setup.
+        </p>
+
+        <span class="status">
+            {{ exam.status|capitalize }}
+        </span>
+
+        <div class="details">
+            <p><strong>Subject:</strong> {{ exam.subject_name }}</p>
+            <p><strong>Topic:</strong> {{ exam.topic_name or "General" }}</p>
+            <p><strong>Language:</strong> Python</p>
+            <p><strong>Duration:</strong> {{ exam.duration_minutes }} minutes</p>
+            <p><strong>Questions:</strong> {{ exam.question_count }}</p>
+            <p><strong>Marks per question:</strong> {{ exam.marks_per_question }}</p>
+            <p><strong>Total marks:</strong> {{ exam.total_marks }}</p>
+        </div>
+
+        {% if questions %}
+            <div class="question-list">
+                <h2>Generated Questions</h2>
+
+                {% for question in questions %}
+                    <div class="question-item">
+                        <h3>Question {{ loop.index }} · {{ question.marks }} marks</h3>
+                        <p>{{ question.question_text }}</p>
+                    </div>
+                {% endfor %}
+                <a
+    href="/assessments/practical/review/{{ exam.id }}"
+    class="review-button"
+>
+    Review Questions and Test Cases →
+</a>
+            </div>
+        {% else %}
+            <div class="question-placeholder">
+    <h2>Ready to Generate Python Questions?</h2>
+
+    <p>
+        Generate Python programming problems, starter code and
+        test cases using Groq AI.
+    </p>
+
+    <button
+        type="button"
+        id="generateButton"
+        class="generate-button"
+    >
+        ✦ Generate Questions with AI
+    </button>
+
+    <p id="generationMessage"></p>
+</div>
+        {% endif %}
+
+    </section>
+</div>
+<script>
+    const generateButton = document.getElementById("generateButton");
+    const generationMessage = document.getElementById("generationMessage");
+
+    if (generateButton) {
+        generateButton.addEventListener("click", async function () {
+
+            const confirmed = confirm(
+                "Generate Python programming questions for this assessment?"
+            );
+
+            if (!confirmed) return;
+
+            generateButton.disabled = true;
+            generateButton.textContent = "Generating Questions...";
+            generationMessage.textContent =
+                "Groq AI is preparing your Python questions. Please wait.";
+
+            try {
+                const response = await fetch(
+                    "/assessments/practical/generate/{{ exam.id }}",
+                    {
+                        method: "POST"
+                    }
+                );
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(
+                        result.detail || "Question generation failed."
+                    );
+                }
+
+                generationMessage.textContent =
+                    result.message;
+
+                window.location.reload();
+
+            } catch (error) {
+                generationMessage.textContent = error.message;
+
+                generateButton.disabled = false;
+                generateButton.textContent =
+                    "✦ Generate Questions with AI";
+            }
+        });
+    }
+</script>
+</body>
+</html>

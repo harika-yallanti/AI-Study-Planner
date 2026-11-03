@@ -1,0 +1,418 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review Practical Assessment | AI Study Planner</title>
+
+    <link rel="stylesheet" href="/static/css/style.css">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #1e293b;
+        }
+
+        .page {
+            max-width: 1100px;
+            margin: 35px auto;
+            padding: 20px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #0f766e;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .header-card,
+        .question-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 22px;
+            box-shadow: 0 4px 15px rgba(23, 43, 77, 0.05);
+        }
+
+        h1, h2, h3 {
+            color: #172b4d;
+        }
+
+        h1 {
+            font-size: 27px;
+            margin-bottom: 10px;
+        }
+
+        .muted {
+            color: #64748b;
+            line-height: 1.6;
+        }
+
+        .summary {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px 25px;
+            margin-top: 20px;
+        }
+
+        .summary span {
+            color: #475569;
+            font-size: 14px;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 7px 12px;
+            border-radius: 20px;
+            background: #fef3c7;
+            color: #92400e;
+            font-size: 12px;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+
+        .question-card h2 {
+            font-size: 19px;
+            margin-bottom: 15px;
+        }
+
+        .question-text {
+            color: #334155;
+            line-height: 1.7;
+            white-space: pre-wrap;
+            margin-bottom: 20px;
+        }
+
+        .section-label {
+            display: block;
+            font-size: 14px;
+            font-weight: bold;
+            color: #172b4d;
+            margin: 17px 0 8px;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 115px;
+            resize: vertical;
+            padding: 13px;
+            border: 1px solid #cbd5e1;
+            border-radius: 9px;
+            font-family: Consolas, monospace;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #0f766e;
+        }
+
+        .test-case {
+            padding: 14px;
+            margin-top: 10px;
+            border: 1px solid #e2e8f0;
+            border-radius: 9px;
+            background: #f8fafc;
+        }
+
+        .test-case strong {
+            display: block;
+            margin-bottom: 8px;
+            color: #0f766e;
+            font-size: 13px;
+        }
+
+        .test-case pre {
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+            font-family: Consolas, monospace;
+            font-size: 13px;
+            color: #334155;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        button,
+        .button-link {
+            padding: 11px 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 13px;
+            text-decoration: none;
+        }
+
+        .edit-button {
+            background: #0f766e;
+            color: white;
+        }
+
+        .delete-button {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .save-button {
+            background: #172b4d;
+            color: white;
+        }
+
+        .cancel-button {
+            background: #e2e8f0;
+            color: #334155;
+        }
+
+        .publish-section {
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            border-radius: 13px;
+            padding: 22px;
+            margin-top: 25px;
+        }
+
+        .publish-section h2 {
+            color: #065f46;
+            margin-bottom: 8px;
+        }
+
+        .publish-button {
+            margin-top: 16px;
+            width: 100%;
+            padding: 14px;
+            background: #0f766e;
+            color: white;
+            font-size: 15px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 30px;
+            color: #64748b;
+        }
+
+        @media (max-width: 600px) {
+            .page {
+                margin: 10px auto;
+                padding: 12px;
+            }
+
+            .header-card,
+            .question-card {
+                padding: 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="page">
+
+    <a href="/assessments/practical" class="back-link">
+        ← Back to Practical Assessments
+    </a>
+
+    <section class="header-card">
+        <h1>{{ exam.exam_title }}</h1>
+
+        <p class="muted">
+            Review your AI-generated Python questions and test cases.
+            Make any required changes before publishing.
+        </p>
+
+        <span class="status">{{ exam.status|capitalize }}</span>
+
+        <div class="summary">
+            <span><strong>Subject:</strong> {{ exam.subject_name }}</span>
+            <span><strong>Topic:</strong> {{ exam.topic_name or "General" }}</span>
+            <span><strong>Duration:</strong> {{ exam.duration_minutes }} minutes</span>
+            <span><strong>Questions:</strong> {{ questions|length }} / {{ exam.question_count }}</span>
+            <span><strong>Marks:</strong> {{ exam.total_marks }}</span>
+        </div>
+    </section>
+
+    {% if questions %}
+
+        {% for question in questions %}
+        <section class="question-card">
+
+            <h2>
+                Question {{ loop.index }}
+                <span class="muted">· {{ question.marks }} marks</span>
+            </h2>
+
+            <p class="question-text">{{ question.question_text }}</p>
+
+            <span class="section-label">Starter Python Code</span>
+            <textarea readonly>{{ question.starter_code or "" }}</textarea>
+
+            <span class="section-label">
+                Test Cases ({{ question.test_cases_data|length }})
+            </span>
+
+            {% for case in question.test_cases_data %}
+            <div class="test-case">
+                <strong>Test Case {{ loop.index }}</strong>
+
+                <span class="section-label">Input</span>
+                <pre>{{ case.input }}</pre>
+
+                <span class="section-label">Expected Output</span>
+                <pre>{{ case.expected_output }}</pre>
+            </div>
+            {% endfor %}
+
+            {% if exam.status == "draft" %}
+
+            <div class="actions">
+                <button
+                    type="button"
+                    class="edit-button"
+                    onclick="toggleEdit('edit-{{ question.id }}')"
+                >
+                    Edit Question
+                </button>
+
+                <form
+                    method="POST"
+                    action="/assessments/practical/question/delete/{{ question.id }}"
+                    onsubmit="return confirm('Delete this question?');"
+                >
+                    <button type="submit" class="delete-button">
+                        Delete Question
+                    </button>
+                </form>
+            </div>
+
+            <form
+                id="edit-{{ question.id }}"
+                method="POST"
+                action="/assessments/practical/question/update/{{ question.id }}"
+                style="display:none; margin-top:20px;"
+            >
+                <label class="section-label">Edit Problem Statement</label>
+                <textarea name="question_text" required>{{ question.question_text }}</textarea>
+
+                <label class="section-label">Edit Starter Code</label>
+                <textarea name="starter_code">{{ question.starter_code or "" }}</textarea>
+
+                <label class="section-label">
+                    Edit Test Cases (JSON format)
+                </label>
+                <textarea name="test_cases" required>{{ question.test_cases_data|tojson(indent=2) }}</textarea>
+
+                <label class="section-label">Marks</label>
+                <input
+                    type="number"
+                    name="marks"
+                    value="{{ question.marks }}"
+                    min="1"
+                    max="100"
+                    required
+                    style="padding:11px; border:1px solid #cbd5e1; border-radius:8px;"
+                >
+
+                <div class="actions">
+                    <button type="submit" class="save-button">
+                        Save Changes
+                    </button>
+
+                    <button
+                        type="button"
+                        class="cancel-button"
+                        onclick="toggleEdit('edit-{{ question.id }}')"
+                    >
+                        Cancel
+                    </button>
+                </div>
+            </form>
+
+            {% endif %}
+
+        </section>
+        {% endfor %}
+
+    {% else %}
+
+        <section class="question-card empty-state">
+            <h2>No Questions Available</h2>
+            <p>Generate questions before reviewing or publishing.</p>
+        </section>
+
+    {% endif %}
+
+    {% if exam.status == "draft" %}
+    <section class="publish-section">
+
+        <h2>Ready to Publish?</h2>
+
+        <p class="muted">
+            Publishing makes this assessment available in your published
+            practical assessments. Check all problem statements and
+            test cases before continuing.
+        </p>
+
+        <form
+            method="POST"
+            action="/assessments/practical/publish/{{ exam.id }}"
+            onsubmit="return confirm('Publish this practical assessment?');"
+        >
+            <button
+                type="submit"
+                class="publish-button"
+                {% if questions|length != exam.question_count %}disabled{% endif %}
+            >
+                Publish Practical Assessment
+            </button>
+        </form>
+
+        {% if questions|length != exam.question_count %}
+            <p class="muted" style="margin-top:12px;">
+                You need exactly {{ exam.question_count }} questions
+                before publishing.
+            </p>
+        {% endif %}
+
+    </section>
+    {% else %}
+        <section class="publish-section">
+            <h2>Assessment Published</h2>
+            <p class="muted">
+                This assessment has been published. Editing and deletion
+                are disabled.
+            </p>
+        </section>
+    {% endif %}
+
+</div>
+
+<script>
+    function toggleEdit(id) {
+        const form = document.getElementById(id);
+
+        if (form) {
+            form.style.display =
+                form.style.display === "none" ? "block" : "none";
+        }
+    }
+</script>
+
+</body>
+</html>

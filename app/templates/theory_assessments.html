@@ -1,0 +1,863 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Theory Assessments | AI Study Planner</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #1e293b;
+            min-height: 100vh;
+        }
+
+        .page-container {
+            max-width: 1180px;
+            margin: auto;
+            padding: 32px;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #0f766e;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 25px;
+        }
+
+        .back-link:hover {
+            color: #115e59;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 28px;
+        }
+
+        .eyebrow {
+            display: inline-block;
+            color: #0f766e;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 1.4px;
+            margin-bottom: 10px;
+        }
+
+        .page-header h1 {
+            font-size: 30px;
+            color: #172b4d;
+            margin-bottom: 9px;
+        }
+
+        .page-header p {
+            color: #64748b;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .header-tag {
+            background: #e0f2f1;
+            color: #0f766e;
+            border-radius: 30px;
+            padding: 10px 16px;
+            font-size: 12px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .hero-panel {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 25px;
+            padding: 30px 34px;
+            margin-bottom: 28px;
+            border-radius: 18px;
+            background: linear-gradient(115deg, #172b4d, #0f766e);
+            color: white;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            max-width: 700px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-content h2 {
+            color: white;
+            font-size: 23px;
+            margin-bottom: 10px;
+        }
+
+        .hero-content p {
+            color: #dbeafe;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .hero-icon {
+            font-size: 70px;
+            color: rgba(255, 255, 255, 0.2);
+            flex-shrink: 0;
+        }
+
+        .setup-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1.6fr) minmax(260px, 0.8fr);
+            gap: 24px;
+            align-items: start;
+        }
+
+        .setup-card,
+        .summary-card {
+            background: white;
+            border: 1px solid #e5eaf1;
+            border-radius: 17px;
+            box-shadow: 0 5px 18px rgba(23, 43, 77, 0.045);
+        }
+
+        .setup-card {
+            padding: 28px;
+        }
+
+        .card-heading {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            margin-bottom: 26px;
+        }
+
+        .heading-icon {
+            width: 46px;
+            height: 46px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            border-radius: 12px;
+            background: #e0f2f1;
+            color: #0f766e;
+            font-size: 21px;
+        }
+
+        .card-heading h2 {
+            color: #172b4d;
+            font-size: 19px;
+            margin-bottom: 7px;
+        }
+
+        .card-heading p {
+            color: #64748b;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .form-group {
+            margin-bottom: 23px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #334155;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .field-hint {
+            color: #94a3b8;
+            font-size: 12px;
+            margin-top: 8px;
+            line-height: 1.5;
+        }
+
+        .select-wrapper {
+            position: relative;
+        }
+
+        .form-group select {
+            width: 100%;
+            padding: 14px 15px;
+            border: 1px solid #d8e0eb;
+            border-radius: 10px;
+            background: #fff;
+            color: #334155;
+            font-size: 14px;
+            outline: none;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .form-group select:focus {
+            border-color: #0f766e;
+            box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.10);
+        }
+
+        .form-group select:disabled {
+            background: #f1f5f9;
+            color: #94a3b8;
+            cursor: not-allowed;
+        }
+
+        .selection-status {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 12px 14px;
+            border-radius: 9px;
+            background: #f8fafc;
+            color: #64748b;
+            font-size: 12px;
+            line-height: 1.5;
+            margin-top: 5px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #94a3b8;
+            flex-shrink: 0;
+        }
+
+        .selection-status.success {
+            background: #ecfdf5;
+            color: #047857;
+        }
+
+        .selection-status.success .status-dot {
+            background: #10b981;
+        }
+
+        .selection-status.error {
+            background: #fef2f2;
+            color: #b91c1c;
+        }
+
+        .selection-status.error .status-dot {
+            background: #ef4444;
+        }
+
+        .start-button {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            padding: 15px 20px;
+            margin-top: 27px;
+            border: none;
+            border-radius: 10px;
+            background: #0f766e;
+            color: white;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .start-button:hover:not(:disabled) {
+            background: #115e59;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 15px rgba(15, 118, 110, 0.2);
+        }
+
+        .start-button:disabled {
+            background: #cbd5e1;
+            color: #64748b;
+            cursor: not-allowed;
+        }
+
+        .summary-card {
+            padding: 24px;
+        }
+
+        .summary-card h3 {
+            font-size: 16px;
+            color: #172b4d;
+            margin-bottom: 7px;
+        }
+
+        .summary-subtitle {
+            color: #64748b;
+            font-size: 12px;
+            line-height: 1.6;
+            margin-bottom: 22px;
+        }
+
+        .summary-item {
+            padding: 15px 0;
+            border-bottom: 1px solid #edf1f5;
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+
+        .summary-label {
+            color: #94a3b8;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.7px;
+            margin-bottom: 7px;
+            text-transform: uppercase;
+        }
+
+        .summary-value {
+            color: #334155;
+            font-size: 14px;
+            font-weight: 600;
+            overflow-wrap: anywhere;
+        }
+
+        .summary-placeholder {
+            color: #94a3b8;
+            font-weight: 400;
+            font-style: italic;
+        }
+
+        .summary-note {
+            display: flex;
+            gap: 10px;
+            padding: 13px;
+            margin-top: 17px;
+            border-radius: 10px;
+            background: #eff6ff;
+            color: #475569;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .mode-section {
+            margin-top: 28px;
+            display: none;
+        }
+
+        .mode-section.visible {
+            display: block;
+            animation: reveal 0.3s ease;
+        }
+
+        @keyframes reveal {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .mode-heading {
+            margin-bottom: 17px;
+        }
+
+        .mode-heading h2 {
+            color: #172b4d;
+            font-size: 20px;
+            margin-bottom: 7px;
+        }
+
+        .mode-heading p {
+            color: #64748b;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .mode-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .mode-card {
+            padding: 23px;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            background: white;
+            transition: 0.2s;
+        }
+
+        .mode-card:hover {
+            border-color: #0f766e;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(23, 43, 77, 0.07);
+        }
+
+        .mode-icon {
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            font-size: 21px;
+            margin-bottom: 16px;
+        }
+
+        .ai-mode .mode-icon {
+            background: #e0f2f1;
+            color: #0f766e;
+        }
+
+        .manual-mode .mode-icon {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+
+        .mode-card h3 {
+            color: #172b4d;
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        .mode-card p {
+            color: #64748b;
+            font-size: 13px;
+            line-height: 1.7;
+            min-height: 66px;
+            margin-bottom: 17px;
+        }
+
+        .mode-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 9px;
+            background: #0f766e;
+            color: white;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .manual-mode .mode-button {
+            background: #2563eb;
+        }
+
+        .mode-button:hover {
+            filter: brightness(0.92);
+        }
+
+        body.dark-theme {
+            background: #0f172a;
+            color: #e2e8f0;
+        }
+
+        body.dark-theme .page-header h1,
+        body.dark-theme .card-heading h2,
+        body.dark-theme .summary-card h3,
+        body.dark-theme .mode-heading h2,
+        body.dark-theme .mode-card h3 {
+            color: #f1f5f9;
+        }
+
+        body.dark-theme .page-header p,
+        body.dark-theme .card-heading p,
+        body.dark-theme .summary-subtitle,
+        body.dark-theme .mode-heading p,
+        body.dark-theme .mode-card p {
+            color: #cbd5e1;
+        }
+
+        body.dark-theme .setup-card,
+        body.dark-theme .summary-card,
+        body.dark-theme .mode-card {
+            background: #1e293b;
+            border-color: #334155;
+        }
+
+        body.dark-theme .form-group label,
+        body.dark-theme .summary-value {
+            color: #e2e8f0;
+        }
+
+        body.dark-theme .form-group select {
+            background: #0f172a;
+            border-color: #475569;
+            color: #f1f5f9;
+        }
+
+        body.dark-theme .form-group select:disabled {
+            background: #334155;
+            color: #94a3b8;
+        }
+
+        body.dark-theme .selection-status {
+            background: #334155;
+            color: #cbd5e1;
+        }
+
+        body.dark-theme .selection-status.success {
+            background: #064e3b;
+            color: #a7f3d0;
+        }
+
+        body.dark-theme .selection-status.error {
+            background: #7f1d1d;
+            color: #fecaca;
+        }
+
+        body.dark-theme .summary-item {
+            border-color: #334155;
+        }
+
+        body.dark-theme .summary-note {
+            background: #172554;
+            color: #cbd5e1;
+        }
+
+        body.dark-theme .mode-card:hover {
+            border-color: #0f766e;
+        }
+
+        @media (max-width: 850px) {
+            .setup-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .summary-card {
+                order: -1;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .page-container {
+                padding: 20px 15px;
+            }
+
+            .page-header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .page-header h1 {
+                font-size: 25px;
+            }
+
+            .hero-panel {
+                padding: 24px;
+            }
+
+            .hero-content h2 {
+                font-size: 20px;
+            }
+
+            .hero-icon {
+                display: none;
+            }
+
+            .setup-card {
+                padding: 21px;
+            }
+
+            .mode-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .mode-card p {
+                min-height: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<main class="page-container">
+
+    <a href="/assessments" class="back-link">
+        ← Back to Assessments
+    </a>
+
+    <header class="page-header">
+        <div>
+            <span class="eyebrow">ASSESSMENT CENTRE</span>
+            <h1>Theory Assessments</h1>
+            <p>Build your knowledge, challenge your understanding and measure your progress.</p>
+        </div>
+
+        <span class="header-tag">📖 THEORY EXAM</span>
+    </header>
+
+    <section class="hero-panel">
+        <div class="hero-content">
+            <h2>Prepare with purpose. Perform with confidence.</h2>
+            <p>
+                Choose a subject and topic to create a focused theory assessment.
+                Let AI generate MCQ and descriptive questions for your selected topic.
+            </p>
+        </div>
+        <div class="hero-icon">✦</div>
+    </section>
+
+    <section class="setup-layout">
+
+        <div class="setup-card">
+
+            <div class="card-heading">
+                <div class="heading-icon">🎯</div>
+                <div>
+                    <h2>Configure Your Assessment</h2>
+                    <p>Select the learning area you want to evaluate.</p>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="subjectSelect">Subject</label>
+                <div class="select-wrapper">
+                    <select id="subjectSelect">
+                        <option value="">Choose your subject</option>
+                        {% for subject in subjects %}
+                        <option value="{{ subject.id }}">
+                            {{ subject.subject_name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <p class="field-hint">Choose from the subjects available in your study planner.</p>
+            </div>
+
+            <div class="form-group">
+                <label for="topicSelect">Topic</label>
+                <select id="topicSelect" disabled>
+                    <option value="">Select a subject first</option>
+                </select>
+                <p class="field-hint">Questions will be focused on the topic you select.</p>
+            </div>
+
+            <div class="selection-status" id="selectionStatus">
+                <span class="status-dot"></span>
+                <span id="statusMessage">Select a subject and topic to continue.</span>
+            </div>
+
+            <button type="button" class="start-button" id="startButton" disabled>
+                Start Assessment Setup <span>→</span>
+            </button>
+
+        </div>
+
+        <aside class="summary-card">
+
+            <h3>Your Assessment</h3>
+            <p class="summary-subtitle">Review your selection before choosing how to create your exam.</p>
+
+            <div class="summary-item">
+                <div class="summary-label">Assessment Type</div>
+                <div class="summary-value">Theory</div>
+            </div>
+
+            <div class="summary-item">
+                <div class="summary-label">Selected Subject</div>
+                <div class="summary-value summary-placeholder" id="summarySubject">
+                    Not selected
+                </div>
+            </div>
+
+            <div class="summary-item">
+                <div class="summary-label">Selected Topic</div>
+                <div class="summary-value summary-placeholder" id="summaryTopic">
+                    Not selected
+                </div>
+            </div>
+
+            <div class="summary-note">
+                <span>💡</span>
+                <span>Your questions will be organized around your selected subject and topic.</span>
+            </div>
+
+        </aside>
+
+    </section>
+
+    <section class="mode-section" id="modeSection">
+    <div class="mode-heading">
+        <h2>AI-Powered Assessment</h2>
+        <p>
+            Your theory questions will be generated automatically
+            based on your selected subject and topic.
+        </p>
+    </div>
+
+    <div class="mode-grid">
+        <article class="mode-card ai-mode">
+            <div class="mode-icon">✦</div>
+            <h3>AI-Generated Assessment</h3>
+            <p>
+                Let AI create topic-focused MCQ and descriptive questions.
+                Review the generated questions before publishing your exam.
+            </p>
+            <button type="button" class="mode-button" id="aiModeButton">
+                Create with AI →
+            </button>
+        </article>
+    </div>
+</section>
+
+</main>
+
+<script>
+    const subjectSelect = document.getElementById("subjectSelect");
+    const topicSelect = document.getElementById("topicSelect");
+    const startButton = document.getElementById("startButton");
+    const statusBox = document.getElementById("selectionStatus");
+    const statusMessage = document.getElementById("statusMessage");
+    const summarySubject = document.getElementById("summarySubject");
+    const summaryTopic = document.getElementById("summaryTopic");
+    const modeSection = document.getElementById("modeSection");
+
+    function updateSummary() {
+        const subjectText = subjectSelect.options[subjectSelect.selectedIndex]?.text;
+        const topicText = topicSelect.options[topicSelect.selectedIndex]?.text;
+
+        summarySubject.textContent = subjectSelect.value
+            ? subjectText.trim()
+            : "Not selected";
+
+        summaryTopic.textContent = topicSelect.value
+            ? topicText.trim()
+            : "Not selected";
+
+        summarySubject.classList.toggle("summary-placeholder", !subjectSelect.value);
+        summaryTopic.classList.toggle("summary-placeholder", !topicSelect.value);
+    }
+
+    function updateStatus(message, type = "") {
+        statusMessage.textContent = message;
+        statusBox.className = "selection-status";
+
+        if (type) {
+            statusBox.classList.add(type);
+        }
+    }
+
+    subjectSelect.addEventListener("change", async function () {
+        const subjectId = this.value;
+
+        topicSelect.innerHTML = '<option value="">Loading topics...</option>';
+        topicSelect.disabled = true;
+        startButton.disabled = true;
+        modeSection.classList.remove("visible");
+        updateSummary();
+
+        if (!subjectId) {
+            topicSelect.innerHTML = '<option value="">Select a subject first</option>';
+            updateStatus("Select a subject and topic to continue.");
+            return;
+        }
+
+        updateStatus("Loading topics for your selected subject...");
+
+        try {
+            const response = await fetch(
+                `/assessments/theory/topics/${subjectId}`
+            );
+
+            if (!response.ok) {
+                throw new Error("Unable to load topics. Please try again.");
+            }
+
+            const data = await response.json();
+
+            if (!data.success) {
+                throw new Error(data.message || "Unable to load topics.");
+            }
+
+            topicSelect.innerHTML = '<option value="">Choose a topic</option>';
+
+            if (data.topics.length === 0) {
+                topicSelect.innerHTML = '<option value="">No topics available</option>';
+                updateStatus("No topics found. Add topics to this subject first.", "error");
+                updateSummary();
+                return;
+            }
+
+            data.topics.forEach(topic => {
+                const option = document.createElement("option");
+                option.value = topic.id;
+                option.textContent = topic.topic_name;
+                topicSelect.appendChild(option);
+            });
+
+            topicSelect.disabled = false;
+            updateStatus(`${data.topics.length} topics available. Now choose a topic.`);
+            updateSummary();
+
+        } catch (error) {
+            topicSelect.innerHTML = '<option value="">Unable to load topics</option>';
+            updateStatus(error.message, "error");
+            updateSummary();
+        }
+    });
+
+    topicSelect.addEventListener("change", function () {
+        const hasSelection = Boolean(subjectSelect.value && topicSelect.value);
+
+        startButton.disabled = !hasSelection;
+        modeSection.classList.remove("visible");
+
+        if (hasSelection) {
+            updateStatus("Subject and topic selected. You can continue.", "success");
+        } else {
+            updateStatus("Choose a topic to continue.");
+        }
+
+        updateSummary();
+    });
+
+    startButton.addEventListener("click", function () {
+    if (!subjectSelect.value || !topicSelect.value) {
+        updateStatus("Please select both a subject and a topic.", "error");
+        return;
+    }
+
+    const subjectId = subjectSelect.value;
+    const topicId = topicSelect.value;
+
+    window.location.href =
+        `/assessments/theory/create?subject_id=${encodeURIComponent(subjectId)}&topic_id=${encodeURIComponent(topicId)}&mode=ai`;
+});
+
+    document.getElementById("aiModeButton").addEventListener("click", function () {
+        const subjectId = subjectSelect.value;
+        const topicId = topicSelect.value;
+
+        window.location.href =
+            `/assessments/theory/create?subject_id=${subjectId}&topic_id=${topicId}&mode=ai`;
+    });
+
+    document.getElementById("manualModeButton").addEventListener("click", function () {
+        const subjectId = subjectSelect.value;
+        const topicId = topicSelect.value;
+
+        window.location.href =
+            `/assessments/theory/create?subject_id=${subjectId}&topic_id=${topicId}&mode=manual`;
+    });
+</script>
+
+<script src="/static/js/theme.js"></script>
+
+</body>
+</html>

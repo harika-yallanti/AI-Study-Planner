@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assessment Instructions | AI Study Planner</title>
+
+    <link rel="stylesheet" href="/static/css/style.css">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #1e293b;
+        }
+
+        .page {
+            max-width: 850px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 22px;
+            color: #0f766e;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.2s ease;
+        }
+
+        .back-link:hover {
+            color: #115e59;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 18px;
+            padding: 32px;
+            box-shadow: 0 8px 25px rgba(23, 43, 77, 0.07);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 7px 13px;
+            border-radius: 20px;
+            background: #dcfce7;
+            color: #166534;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 16px;
+        }
+
+        h1 {
+            color: #172b4d;
+            font-size: 28px;
+            margin-bottom: 10px;
+            overflow-wrap: anywhere;
+        }
+
+        .description {
+            color: #64748b;
+            line-height: 1.7;
+            margin-bottom: 28px;
+        }
+
+        .details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 32px;
+        }
+
+        .detail {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 17px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .detail:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 14px rgba(23, 43, 77, 0.06);
+        }
+
+        .detail-label {
+            color: #64748b;
+            font-size: 12px;
+            margin-bottom: 8px;
+        }
+
+        .detail-value {
+            color: #172b4d;
+            font-size: 17px;
+            font-weight: bold;
+            overflow-wrap: anywhere;
+        }
+
+        h2 {
+            color: #172b4d;
+            font-size: 19px;
+            margin-bottom: 15px;
+        }
+
+        .instructions {
+            padding-left: 23px;
+            color: #475569;
+            line-height: 2;
+            margin-bottom: 25px;
+        }
+
+        .instructions li {
+            padding-left: 5px;
+            margin-bottom: 3px;
+        }
+
+        .notice {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 12px;
+            padding: 17px;
+            color: #1e40af;
+            line-height: 1.7;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        /* Action buttons */
+        .button-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            padding-top: 5px;
+        }
+
+        .button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 48px;
+            padding: 13px 21px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 14px;
+            transition: all 0.25s ease;
+        }
+
+        .secondary {
+            background: #f1f5f9;
+            color: #334155;
+            border: 1px solid #cbd5e1;
+        }
+
+        .secondary:hover {
+            background: #e2e8f0;
+            transform: translateY(-2px);
+        }
+
+        .start-form {
+            margin: 0;
+        }
+
+        .start-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 11px;
+            min-width: 230px;
+            min-height: 52px;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 11px;
+            background: linear-gradient(135deg, #0f766e, #0d9488);
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: 0.2px;
+            cursor: pointer;
+            box-shadow: 0 5px 13px rgba(15, 118, 110, 0.22);
+            transition: all 0.25s ease;
+        }
+
+        .start-button:hover {
+            background: linear-gradient(135deg, #115e59, #0f766e);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 18px rgba(15, 118, 110, 0.3);
+        }
+
+        .start-button:active {
+            transform: translateY(-1px);
+            box-shadow: 0 3px 8px rgba(15, 118, 110, 0.2);
+        }
+
+        .start-button:focus-visible,
+        .button:focus-visible {
+            outline: 3px solid #99f6e4;
+            outline-offset: 3px;
+        }
+
+        .play-icon {
+            width: 19px;
+            height: 19px;
+            fill: currentColor;
+            flex-shrink: 0;
+        }
+
+        /* Dark theme */
+        body.dark-theme {
+            background: #0f172a;
+            color: #e2e8f0;
+        }
+
+        body.dark-theme .card {
+            background: #1e293b;
+            border-color: #334155;
+        }
+
+        body.dark-theme h1,
+        body.dark-theme h2 {
+            color: #f1f5f9;
+        }
+
+        body.dark-theme .description,
+        body.dark-theme .instructions {
+            color: #cbd5e1;
+        }
+
+        body.dark-theme .detail {
+            background: #0f172a;
+            border-color: #475569;
+        }
+
+        body.dark-theme .detail-value {
+            color: #f1f5f9;
+        }
+
+        body.dark-theme .detail-label {
+            color: #94a3b8;
+        }
+
+        body.dark-theme .notice {
+            background: #172554;
+            border-color: #1e40af;
+            color: #bfdbfe;
+        }
+
+        body.dark-theme .secondary {
+            background: #334155;
+            color: #e2e8f0;
+            border-color: #475569;
+        }
+
+        body.dark-theme .secondary:hover {
+            background: #475569;
+        }
+
+        @media (max-width: 550px) {
+            .page {
+                margin: 15px auto;
+                padding: 12px;
+            }
+
+            .card {
+                padding: 21px;
+            }
+
+            h1 {
+                font-size: 23px;
+            }
+
+            .details {
+                grid-template-columns: 1fr;
+            }
+
+            .button-row {
+                flex-direction: column-reverse;
+                align-items: stretch;
+            }
+
+            .button-row form,
+            .button-row .button {
+                width: 100%;
+            }
+
+            .start-button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<main class="page">
+
+    <a href="/assessments/practical/available" class="back-link">
+        ← Back to Available Assessments
+    </a>
+
+    <section class="card">
+
+        <span class="badge">Published Practical Assessment</span>
+
+        <h1>{{ exam.exam_title }}</h1>
+
+        <p class="description">
+            Read the instructions carefully before beginning your
+            Python programming assessment.
+        </p>
+
+        <div class="details">
+
+            <div class="detail">
+                <p class="detail-label">Subject</p>
+                <p class="detail-value">{{ exam.subject_name }}</p>
+            </div>
+
+            <div class="detail">
+                <p class="detail-label">Topic</p>
+                <p class="detail-value">{{ exam.topic_name or "General" }}</p>
+            </div>
+
+            <div class="detail">
+                <p class="detail-label">Duration</p>
+                <p class="detail-value">{{ exam.duration_minutes }} minutes</p>
+            </div>
+
+            <div class="detail">
+                <p class="detail-label">Number of Questions</p>
+                <p class="detail-value">{{ exam.question_count }}</p>
+            </div>
+
+            <div class="detail">
+                <p class="detail-label">Total Marks</p>
+                <p class="detail-value">{{ exam.total_marks }}</p>
+            </div>
+
+            <div class="detail">
+                <p class="detail-label">Programming Language</p>
+                <p class="detail-value">Python</p>
+            </div>
+
+        </div>
+
+        <h2>Assessment Instructions</h2>
+
+        <ol class="instructions">
+            <li>Read each programming problem carefully.</li>
+            <li>Write your solution using Python.</li>
+            <li>Follow the required input and output format.</li>
+            <li>Check your solution before submitting it.</li>
+            <li>Manage your time across all questions.</li>
+            <li>Submit your answers before the assessment timer expires.</li>
+        </ol>
+
+        <div class="notice">
+            <strong>Important:</strong>
+            Your assessment timer and code-submission interface will
+            be activated when you start the assessment. Do not refresh
+            or close an active assessment without saving your work.
+        </div>
+
+        <div class="button-row">
+
+            <a href="/assessments/practical/available"
+               class="button secondary">
+                ← Back
+            </a>
+
+            <form
+                action="/assessments/practical/start/{{ exam.id }}"
+                method="POST"
+                class="start-form"
+            >
+                <button type="submit" class="start-button">
+                    <svg class="play-icon" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M8 5.5c0-.8.9-1.3 1.6-.9l10 6.5a1.1 1.1 0 0 1 0 1.8l-10 6.5c-.7.4-1.6-.1-1.6-.9z"/>
+                    </svg>
+                    Start Assessment
+                    <span aria-hidden="true">→</span>
+                </button>
+            </form>
+
+        </div>
+
+    </section>
+</main>
+
+<script src="/static/js/theme.js"></script>
+</body>
+</html>

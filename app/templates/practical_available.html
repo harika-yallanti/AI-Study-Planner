@@ -1,0 +1,265 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Available Practical Assessments | AI Study Planner</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #1e293b;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 22px;
+            color: #0f766e;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .header {
+            background: linear-gradient(120deg, #172b4d, #0f766e);
+            color: white;
+            padding: 30px;
+            border-radius: 16px;
+            margin-bottom: 28px;
+        }
+
+        .header h1 {
+            font-size: 27px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #e2e8f0;
+            line-height: 1.6;
+        }
+
+        .section-title {
+            color: #172b4d;
+            font-size: 21px;
+            margin-bottom: 18px;
+        }
+
+        .assessment-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+            gap: 20px;
+        }
+
+        .assessment-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 22px;
+            box-shadow: 0 4px 15px rgba(23, 43, 77, 0.05);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .published {
+            display: inline-block;
+            width: fit-content;
+            background: #dcfce7;
+            color: #166534;
+            padding: 6px 11px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .assessment-card h3 {
+            color: #172b4d;
+            font-size: 19px;
+            margin-bottom: 10px;
+            overflow-wrap: anywhere;
+        }
+
+        .subject {
+            color: #0f766e;
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .topic {
+            color: #64748b;
+            font-size: 13px;
+            margin-bottom: 18px;
+        }
+
+        .details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 13px;
+            padding: 15px 0;
+            border-top: 1px solid #e2e8f0;
+            border-bottom: 1px solid #e2e8f0;
+            margin-bottom: 18px;
+        }
+
+        .detail-label {
+            color: #64748b;
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+
+        .detail-value {
+            color: #172b4d;
+            font-weight: bold;
+            font-size: 15px;
+        }
+
+        .start-button {
+            display: block;
+            text-align: center;
+            margin-top: auto;
+            padding: 12px;
+            background: #0f766e;
+            color: white;
+            border-radius: 9px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .start-button:hover {
+            background: #115e59;
+        }
+
+        .empty-state {
+            background: white;
+            border: 1px dashed #cbd5e1;
+            border-radius: 14px;
+            padding: 45px 20px;
+            text-align: center;
+        }
+
+        .empty-state h3 {
+            color: #172b4d;
+            margin-bottom: 10px;
+        }
+
+        .empty-state p {
+            color: #64748b;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                margin: 15px auto;
+                padding: 12px;
+            }
+
+            .header {
+                padding: 23px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+
+    <a href="/assessments/practical" class="back-link">
+        ← Back to Practical Assessments
+    </a>
+
+    <section class="header">
+        <h1>Available Practical Assessments</h1>
+        <p>
+            Test your programming knowledge by solving Python problems.
+            Review your performance after submitting your answers.
+        </p>
+    </section>
+
+    <h2 class="section-title">Published Assessments</h2>
+
+    {% if assessments %}
+
+        <div class="assessment-grid">
+
+            {% for exam in assessments %}
+
+            <article class="assessment-card">
+
+                <span class="published">Published</span>
+
+                <h3>{{ exam.exam_title }}</h3>
+
+                <p class="subject">{{ exam.subject_name }}</p>
+
+                <p class="topic">
+                    Topic: {{ exam.topic_name or "General" }}
+                </p>
+
+                <div class="details">
+
+                    <div>
+                        <p class="detail-label">Questions</p>
+                        <p class="detail-value">{{ exam.question_count }}</p>
+                    </div>
+
+                    <div>
+                        <p class="detail-label">Duration</p>
+                        <p class="detail-value">
+                            {{ exam.duration_minutes }} min
+                        </p>
+                    </div>
+
+                    <div>
+                        <p class="detail-label">Total Marks</p>
+                        <p class="detail-value">{{ exam.total_marks }}</p>
+                    </div>
+
+                    <div>
+                        <p class="detail-label">Assessment Type</p>
+                        <p class="detail-value">Python</p>
+                    </div>
+
+                </div>
+
+                <a
+                    href="/assessments/practical/instructions/{{ exam.id }}"
+                    class="start-button"
+                >
+                    View Instructions →
+                </a>
+
+            </article>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <section class="empty-state">
+            <h3>No Published Practical Assessments</h3>
+            <p>
+                Your published practical assessments will appear here.
+                Create and publish an assessment to get started.
+            </p>
+        </section>
+
+    {% endif %}
+
+</div>
+</body>
+</html>

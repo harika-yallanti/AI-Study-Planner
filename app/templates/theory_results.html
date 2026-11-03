@@ -1,0 +1,741 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assessment Results | AI Study Planner</title>
+
+    <link rel="stylesheet" href="/static/css/style.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #172b4d;
+        }
+
+        .dashboard {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background: #172b4d;
+            color: white;
+            padding: 25px 18px;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 40px;
+        }
+
+        .sidebar nav {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .sidebar nav a {
+            color: #dbeafe;
+            text-decoration: none;
+            padding: 13px 15px;
+            border-radius: 8px;
+            transition: 0.2s;
+        }
+
+        .sidebar nav a:hover,
+        .sidebar nav a.active {
+            background: #0f766e;
+            color: white;
+        }
+
+        .sidebar-bottom {
+            margin-top: auto;
+            padding-top: 30px;
+        }
+
+        #logoutButton {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: #dc2626;
+            color: white;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        #logoutButton:hover {
+            background: #b91c1c;
+        }
+
+        /* Main content */
+        .main-content {
+            flex: 1;
+            min-width: 0;
+            padding: 30px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 28px;
+        }
+
+        .topbar h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+            color: var(--text-color);
+        }
+
+        .topbar p {
+            color: var(--muted-color);
+            line-height: 1.5;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .theme-button {
+            padding: 10px 13px;
+            border: 1px solid #dbe3ef;
+            border-radius: 9px;
+            background: white;
+            color: #172b4d;
+            cursor: pointer;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: white;
+            padding: 10px 16px;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(23, 43, 77, 0.05);
+        }
+
+        .avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: #0f766e;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .profile-name {
+            font-weight: bold;
+            color: var(--text-color);
+        }
+
+        .profile-label {
+            font-size: 12px;
+            color: var(--muted-color);
+            margin-top: 4px;
+        }
+
+        /* Result header */
+        .page-heading {
+            margin-bottom: 22px;
+        }
+
+        .page-heading h2 {
+            font-size: 21px;
+            color: var(--text-color);
+            margin-bottom: 7px;
+        }
+
+        .page-heading p {
+            color: var(--muted-color);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* Score card */
+        .score-card {
+            background: white;
+            padding: 30px;
+            border-radius: 18px;
+            border: 1px solid #e7edf5;
+            box-shadow: 0 5px 20px rgba(15, 23, 42, 0.06);
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .score-circle {
+            width: 145px;
+            height: 145px;
+            border-radius: 50%;
+            border: 9px solid #0f766e;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 20px auto;
+        }
+
+        .score-circle strong {
+            font-size: 32px;
+            color: #0f766e;
+        }
+
+        .score-circle span {
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        .score-details {
+            display: flex;
+            justify-content: center;
+            gap: 35px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .score-details div {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .score-details strong {
+            display: block;
+            color: #172b4d;
+            font-size: 20px;
+            margin-top: 6px;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .performance-message {
+            max-width: 600px;
+            margin: 15px auto 0;
+            padding: 13px 18px;
+            background: #ecfdf5;
+            color: #166534;
+            border-radius: 10px;
+            line-height: 1.5;
+            font-weight: 600;
+        }
+
+        /* Question review */
+        .review-heading {
+            font-size: 21px;
+            color: var(--text-color);
+            margin-bottom: 18px;
+        }
+
+        .question-card {
+            background: white;
+            padding: 24px;
+            border-radius: 15px;
+            margin-bottom: 18px;
+            border: 1px solid #e7edf5;
+            box-shadow: 0 3px 14px rgba(15, 23, 42, 0.05);
+        }
+
+        .question-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .question-top h3 {
+            font-size: 16px;
+            color: var(--text-color);
+        }
+
+        .question-result {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .marks {
+            color: #0f766e;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .result-badge {
+            padding: 6px 11px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .result-badge.correct {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .result-badge.incorrect {
+            background: #ffe4e6;
+            color: #be123c;
+        }
+
+        .result-badge.evaluated {
+            background: #e0f2fe;
+            color: #075985;
+        }
+
+        .question-text {
+            color: var(--text-color);
+            line-height: 1.7;
+            margin-bottom: 18px;
+            overflow-wrap: anywhere;
+        }
+
+        .answer-block {
+            background: #f8fafc;
+            padding: 14px;
+            border-radius: 10px;
+            margin-top: 12px;
+            line-height: 1.6;
+            overflow-wrap: anywhere;
+            white-space: pre-wrap;
+        }
+
+        .answer-block strong {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 13px;
+            color: #475569;
+        }
+
+        .feedback {
+            margin-top: 14px;
+            padding: 13px;
+            border-radius: 9px;
+            background: #ecfdf5;
+            color: #166534;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        .feedback.incorrect {
+            background: #fff1f2;
+            color: #be123c;
+        }
+
+        .feedback strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        /* Navigation button */
+        .back-button {
+            display: inline-block;
+            text-decoration: none;
+            background: #0f766e;
+            color: white;
+            padding: 12px 22px;
+            border-radius: 9px;
+            margin-top: 8px;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        .back-button:hover {
+            background: #115e59;
+        }
+
+        /* Dark theme */
+        body.dark-theme {
+            background: #0f172a;
+            color: #e2e8f0;
+        }
+
+        body.dark-theme .profile,
+        body.dark-theme .score-card,
+        body.dark-theme .question-card {
+            background: #1e293b;
+            border-color: #334155;
+        }
+
+        body.dark-theme .topbar h1,
+        body.dark-theme .page-heading h2,
+        body.dark-theme .review-heading,
+        body.dark-theme .question-top h3,
+        body.dark-theme .question-text,
+        body.dark-theme .profile-name {
+            color: #f1f5f9;
+        }
+
+        body.dark-theme .topbar p,
+        body.dark-theme .page-heading p,
+        body.dark-theme .profile-label,
+        body.dark-theme .score-details div {
+            color: #cbd5e1;
+        }
+
+        body.dark-theme .theme-button {
+            background: #1e293b;
+            border-color: #475569;
+            color: #e2e8f0;
+        }
+
+        body.dark-theme .score-details strong {
+            color: #f1f5f9;
+        }
+
+        body.dark-theme .answer-block {
+            background: #0f172a;
+            color: #e2e8f0;
+        }
+
+        body.dark-theme .answer-block strong {
+            color: #cbd5e1;
+        }
+
+        body.dark-theme .performance-message {
+            background: #064e3b;
+            color: #a7f3d0;
+        }
+
+        body.dark-theme .feedback {
+            background: #064e3b;
+            color: #a7f3d0;
+        }
+
+        body.dark-theme .feedback.incorrect {
+            background: #4c0519;
+            color: #fecdd3;
+        }
+
+        body.dark-theme .result-badge.correct {
+            background: #064e3b;
+            color: #a7f3d0;
+        }
+
+        body.dark-theme .result-badge.incorrect {
+            background: #4c0519;
+            color: #fecdd3;
+        }
+
+        body.dark-theme .result-badge.evaluated {
+            background: #172554;
+            color: #bfdbfe;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .dashboard {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                padding: 18px;
+            }
+
+            .logo {
+                margin-bottom: 18px;
+            }
+
+            .sidebar nav {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+
+            .sidebar-bottom {
+                margin-top: 18px;
+                padding-top: 0;
+            }
+        }
+
+        @media (max-width: 700px) {
+            .main-content {
+                padding: 20px;
+            }
+
+            .topbar {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .header-actions {
+                width: 100%;
+                justify-content: space-between;
+                flex-wrap: wrap;
+            }
+
+            .score-card {
+                padding: 22px 15px;
+            }
+
+            .question-card {
+                padding: 18px;
+            }
+
+            .score-details {
+                gap: 20px;
+            }
+
+            .question-top {
+                flex-direction: column;
+            }
+
+            .question-result {
+                justify-content: flex-start;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="logo">AI Study Planner</div>
+
+        <nav>
+            {% if request.session.get("user_role") == "admin" %}
+                <a href="/admin/users">Admin Dashboard</a>
+            {% endif %}
+
+            <a href="/dashboard">Dashboard</a>
+            <a href="/subjects">My Subjects</a>
+            <a href="/study-plan">Study Plan</a>
+            <a href="/study-progress">Study Progress</a>
+            <a href="/exams">Exams</a>
+            <a href="/assessments">Assessments</a>
+            <a href="/assessments/history" class="active">Assessment History</a>
+            <a href="/notes">📝 Notes</a>
+            <a href="/resources">📚 Learning Resources</a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <button id="logoutButton" type="button">Logout</button>
+        </div>
+    </aside>
+
+    <!-- Main content -->
+    <main class="main-content">
+
+        <header class="topbar">
+            <div>
+                <h1>Assessment Results</h1>
+                <p>
+                    {{ attempt.exam_title }} · {{ attempt.subject_name }}
+                </p>
+            </div>
+
+            <div class="header-actions">
+                <button type="button" class="theme-button" id="themeButton">
+                    🌙 Dark Mode
+                </button>
+
+                <div class="profile">
+                    <div class="avatar" id="profileAvatar">
+                        {{ request.session.get("user_name", "U")[0]|upper }}
+                    </div>
+
+                    <div>
+                        <div class="profile-name" id="profileName">
+                            {{ request.session.get("user_name", "User") }}
+                        </div>
+
+                        <div class="profile-label">
+                            {{ request.session.get("user_role", "Student")|capitalize }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <section class="page-heading">
+            <h2>Your Performance Summary</h2>
+            <p>Review your final score and the feedback for each question.</p>
+        </section>
+
+        <!-- Score summary -->
+        <section class="score-card">
+
+            <span class="status">Evaluation Completed</span>
+
+            <p class="performance-message">
+                {{ performance_message }}
+            </p>
+
+            <div class="score-circle">
+                <strong>
+                    {{ "%.1f"|format(attempt.percentage or 0) }}%
+                </strong>
+                <span>Your Score</span>
+            </div>
+
+            <div class="score-details">
+
+                <div>
+                    Marks Obtained
+                    <strong>
+                        {{ "%.2f"|format(attempt.score or 0) }}
+                    </strong>
+                </div>
+
+                <div>
+                    Total Marks
+                    <strong>
+                        {{ "%.2f"|format(attempt.total_marks or 0) }}
+                    </strong>
+                </div>
+
+                <div>
+                    Questions
+                    <strong>{{ responses|length }}</strong>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Question-wise review -->
+        <h2 class="review-heading">Question-wise Review</h2>
+
+        {% for item in responses %}
+            <div class="question-card">
+
+                <div class="question-top">
+                    <h3>Question {{ loop.index }}</h3>
+
+                    <div class="question-result">
+
+                        <span class="marks">
+                            {{ "%.2f"|format(item.awarded_marks or 0) }}
+                            / {{ item.maximum_marks }} marks
+                        </span>
+
+                        {% if item.question_type == "mcq" %}
+                            {% if item.is_correct == 1 %}
+                                <span class="result-badge correct">
+                                    Correct
+                                </span>
+                            {% else %}
+                                <span class="result-badge incorrect">
+                                    Incorrect
+                                </span>
+                            {% endif %}
+                        {% else %}
+                            <span class="result-badge evaluated">
+                                AI Evaluated
+                            </span>
+                        {% endif %}
+
+                    </div>
+                </div>
+
+                <p class="question-text">
+                    {{ item.question_text }}
+                </p>
+
+                <div class="answer-block">
+                    <strong>Your Answer</strong>
+                    {{ item.answer_text or "Not answered" }}
+                </div>
+
+                {% if item.question_type == "mcq" %}
+                    <div class="answer-block">
+                        <strong>Correct Answer</strong>
+                        {{ item.correct_answer or "Not available" }}
+                    </div>
+
+                {% elif item.question_type == "descriptive" %}
+                    <div class="answer-block">
+                        <strong>Reference Answer</strong>
+                        {{ item.expected_answer or "Not available" }}
+                    </div>
+                {% endif %}
+
+                {% if item.explanation %}
+                    <div class="answer-block">
+                        <strong>Explanation</strong>
+                        {{ item.explanation }}
+                    </div>
+                {% endif %}
+
+                {% if item.feedback %}
+                    <div class="feedback {% if item.is_correct == 0 %}incorrect{% endif %}">
+                        <strong>Evaluation Feedback</strong>
+                        {{ item.feedback }}
+                    </div>
+                {% endif %}
+
+            </div>
+        {% endfor %}
+
+        <a href="/assessments/history" class="back-button">
+            ← Back to Assessment History
+        </a>
+
+    </main>
+</div>
+
+<script>
+    const profileName = document.getElementById("profileName");
+    const userName = profileName.textContent.trim();
+
+    document.getElementById("profileAvatar").textContent =
+        userName.charAt(0).toUpperCase();
+
+    document.getElementById("logoutButton").addEventListener("click", async function () {
+        try {
+            const response = await fetch("/users/logout", {
+                method: "POST"
+            });
+
+            if (response.ok) {
+                window.location.href = "/login";
+            } else {
+                alert("Unable to log out. Please try again.");
+            }
+        } catch (error) {
+            alert("Could not connect to the server.");
+        }
+    });
+</script>
+
+<script src="/static/js/theme.js"></script>
+
+</body>
+</html>
